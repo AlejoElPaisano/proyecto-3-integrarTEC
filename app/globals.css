@@ -1,26 +1,151 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── Design tokens (Tailwind v4 @theme) ────────────────────── */
+@theme {
+  /* Colors */
+  --color-surface:      #0b0f1a;
+  --color-card:         rgba(14, 20, 38, 0.6);
+  --color-card-hover:   rgba(18, 24, 46, 0.75);
+  --color-border:       rgba(129, 140, 248, 0.12);
+  --color-border-hover: rgba(129, 140, 248, 0.25);
+  --color-border-focus: #818cf8;
+  --color-accent:       #818cf8;
+  --color-accent-hover: #a5b4fc;
+  --color-accent-soft:  rgba(129, 140, 248, 0.12);
+  --color-success:      #22c55e;
+  --color-success-soft: rgba(34, 197, 94, 0.12);
+  --color-warning:      #f59e0b;
+  --color-error:        #ef4444;
+  --color-pink:         #ec4899;
+  --color-pink-glow:    rgba(236, 72, 153, 0.3);
+  --color-cyan:         #06b6d4;
+  --color-orange:       #f97316;
+  --color-orange-glow:  rgba(249, 115, 22, 0.35);
+
+  /* Text */
+  --color-text:           #eeedf5;
+  --color-text-secondary: #9690b8;
+  --color-text-tertiary:  #7a7aaa;
+
+  /* Gradients */
+  --gradient-cta:  linear-gradient(135deg, #ec4899, #818cf8);
+  --gradient-blue: linear-gradient(135deg, #818cf8, #6d5cf7);
+
+  /* Glass */
+  --glass-bg:     rgba(14, 20, 38, 0.6);
+  --glass-border: rgba(129, 140, 248, 0.12);
+  --glass-shadow: 0 8px 48px rgba(0, 0, 0, 0.5),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* Spacing & Radius */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px;  --space-5: 20px;  --space-6: 24px;
+  --space-8: 32px;  --space-10: 40px; --space-12: 48px;
+
+  --radius-sm: 6px;   --radius-md: 10px;
+  --radius-lg: 16px;  --radius-xl: 24px;
+  --radius-card: 16px;
+  --radius-pill: 99px;
+
+  /* Typography */
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), monospace;
+
+  /* Motion */
+  --ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast:  150ms;
+  --duration-normal: 300ms;
+  --duration-slow:  500ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base global ───────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+  color: var(--color-text);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    rgba(129, 140, 248, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(129, 140, 248, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  padding: 8px 16px;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.glass-card {
+  position: relative;
+  overflow: hidden;
+}
+.glass-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgba(129, 140, 248, 0.03) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
