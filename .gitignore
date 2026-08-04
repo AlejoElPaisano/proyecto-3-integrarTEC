@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Entorno de OpenCode
+.opencode/
+
+# Código heredado del proyecto anterior
+Proyecto2ViejoGrupo6/
