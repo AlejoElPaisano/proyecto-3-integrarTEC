@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { AppLayout } from "@/shared/components/ui/AppLayout";
+import HistoryPanel from "@/features/batch/components/HistoryPanel";
+import { FavoritesPanel } from "@/features/favorites/components/FavoritesPanel";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +39,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <AppLayout>{children}</AppLayout>
+        <HistoryPanel />
+        <FavoritesPanel />
+      </body>
     </html>
   );
 }

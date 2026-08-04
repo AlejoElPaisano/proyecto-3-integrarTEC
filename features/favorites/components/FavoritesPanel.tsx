@@ -3,20 +3,25 @@
 import { useState } from "react"
 import type { FavoriteEntry } from "@/features/favorites/types"
 import { useHasMounted } from "@/shared/hooks/useHasMounted"
+import { useFavorites } from "@/features/favorites/hooks/useFavorites"
 
 interface FavoritesPanelProps {
-  favorites: FavoriteEntry[]
-  onRemove: (id: string) => void
+  favorites?: FavoriteEntry[]
+  onRemove?: (id: string) => void
   compact?: boolean
 }
 
 export function FavoritesPanel({
-  favorites,
-  onRemove,
+  favorites: propsFavorites,
+  onRemove: propsOnRemove,
   compact,
 }: FavoritesPanelProps) {
   const hasMounted = useHasMounted()
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const storeFavorites = useFavorites()
+
+  const favorites = propsFavorites ?? storeFavorites.favorites
+  const onRemove = propsOnRemove ?? storeFavorites.removeFavorite
 
   async function handleCopy(id: string, ciphertext: string) {
     try {
