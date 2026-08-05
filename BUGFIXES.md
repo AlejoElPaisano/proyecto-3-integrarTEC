@@ -96,7 +96,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 4 - Missing explicit responsive breakpoints
 
-- Status: [ ] Pending
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Main interfaces rely mostly on fixed dimensions and inline styles.
   The history panel uses a fixed width and the generator and batch layouts have few
@@ -110,11 +110,21 @@ and a Conventional Commit in English are complete.
   - Confirm no horizontal overflow at the supported breakpoints.
   - Confirm controls remain readable and usable with keyboard and touch input.
   - Review responsive classes or media queries for the prioritized components.
-- Planned commit: `fix(responsive): add mobile layouts for generator and history`
+- Resolution:
+  - `GeneratorForm` now uses a mobile-first single-column layout with compact mobile
+    spacing and `sm` enhancements for larger controls.
+  - `HistoryPanel` uses a viewport-safe mobile width (`inset-x-2`) and switches to a
+    right-aligned fixed panel at `sm`, with wrapped rows and responsive padding.
+  - `BatchGenerator` stacks controls on mobile, switches to a row at `sm`, and uses a
+    two-column result grid from `md` onward.
+  - Global scrollbar styling preserves usability without an embedded component style.
+  - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
+  - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
+    `pnpm build` all pass.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
-- Status: [ ] Pending
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Migrated components combine extensive `style={{ ... }}` objects,
   embedded style tags, and Tailwind utility classes.
@@ -128,7 +138,19 @@ and a Conventional Commit in English are complete.
   - Review prioritized components for equivalent Tailwind behavior.
   - Confirm responsive and hover states remain unchanged or improved.
   - Run lint and production build after the style migration.
-- Planned commit: `style(ui): migrate remaining inline styles to Tailwind`
+- Resolution:
+  - Removed component-level inline layout styles and the embedded style block from
+    `GeneratorForm`.
+  - Migrated the priority layout, controls, states, and hover styles in `HistoryPanel`
+    to Tailwind utilities.
+  - Completed the responsive/control layout migration in `BatchGenerator` with
+    Tailwind variants instead of inline layout rules.
+  - Kept CSS global only for shared scrollbar behavior and design tokens.
+  - Added `scripts/verify-ui.mjs` to guard priority components against inline layout
+    styles and missing responsive variants.
+  - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
+  - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
+    `pnpm build` all pass.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 
