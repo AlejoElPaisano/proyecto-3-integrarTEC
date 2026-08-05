@@ -14,7 +14,7 @@ function assert(condition, message) {
 	}
 }
 
-const [store, generator, randomHelper, passwordActions, favoritesPanel, favoritesStore, historyPanel] = await Promise.all([
+const [store, generator, randomHelper, passwordActions, favoritesPanel, favoritesStore, historyPanel, copyButton, batchGenerator] = await Promise.all([
 	readProjectFile("features/generator/store.ts"),
 	readProjectFile("features/generator/generate.ts"),
 	readProjectFile("shared/lib/crypto/random.ts"),
@@ -22,6 +22,8 @@ const [store, generator, randomHelper, passwordActions, favoritesPanel, favorite
 	readProjectFile("features/favorites/components/FavoritesPanel.tsx"),
 	readProjectFile("features/favorites/store.ts"),
 	readProjectFile("features/batch/components/HistoryPanel.tsx"),
+	readProjectFile("shared/components/ui/CopyButton.tsx"),
+	readProjectFile("features/batch/components/BatchGenerator.tsx"),
 ]);
 
 const partializeStart = store.indexOf("partialize:");
@@ -78,6 +80,24 @@ assert(
 	!historyPanel.includes("encrypted.ciphertext") &&
 		historyPanel.includes("navigator.clipboard.writeText(password)"),
 	"session history must copy its in-memory plaintext value",
+);
+assert(
+	!copyButton.includes("alert(") && copyButton.includes('role="alert"'),
+	"CopyButton must expose clipboard errors inline without alert",
+);
+assert(
+	batchGenerator.includes("copyErrorIndex") &&
+		batchGenerator.includes("copyAllError") &&
+		batchGenerator.includes('role="alert"'),
+	"batch copy actions must expose individual and bulk errors",
+);
+assert(
+	historyPanel.includes("copyErrorId") && historyPanel.includes('role="alert"'),
+	"history copy errors must be visible and accessible",
+);
+assert(
+	passwordActions.includes("saveError") && passwordActions.includes('role="alert"'),
+	"favorite save errors must be visible and accessible",
 );
 
 console.log("Security verification passed: history persistence and randomness are guarded.");

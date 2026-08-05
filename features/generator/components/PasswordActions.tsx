@@ -20,9 +20,11 @@ export function PasswordActions({
 	onRegenerate,
 }: PasswordActionsProps) {
 	const [saved, setSaved] = useState(false);
+	const [saveError, setSaveError] = useState<string | null>(null);
 	const { addFavorite } = useFavorites();
 
 	async function handleSaveFavorite() {
+		setSaveError(null);
 		try {
 			await addFavorite(password, password, {
 				bits,
@@ -33,8 +35,13 @@ export function PasswordActions({
 			});
 			setSaved(true);
 			setTimeout(() => setSaved(false), 2000);
-		} catch {
-			// silent
+		} catch (error) {
+			setSaved(false);
+			setSaveError(
+				error instanceof Error && error.message
+					? `No se pudo guardar la favorita: ${error.message}`
+					: "No se pudo guardar la favorita. Intenta nuevamente.",
+			);
 		}
 	}
 
@@ -103,7 +110,8 @@ export function PasswordActions({
 					type="button"
 					onClick={handleSaveFavorite}
 					disabled={!password || saved}
-					aria-label="Guardar como favorita"
+					aria-label={saved ? "Favorita guardada" : "Guardar como favorita"}
+					aria-live="polite"
 					style={{
 						all: "unset",
 						cursor: "pointer",
@@ -141,6 +149,19 @@ export function PasswordActions({
 
 				<CopyButton text={password} full label="Copiar" />
 			</div>
+			{saveError && (
+				<p
+					role="alert"
+					style={{
+						marginTop: "0.5rem",
+						color: "var(--color-error)",
+						fontSize: "0.75rem",
+						textAlign: "center",
+					}}
+				>
+					{saveError}
+				</p>
+			)}
 		</>
 	);
 }

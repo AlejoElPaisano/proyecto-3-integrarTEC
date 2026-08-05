@@ -13,20 +13,27 @@ export default function BatchGenerator() {
 	const setBatchCount = usePasswordStore((state) => state.setBatchCount);
 	const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 	const [copiedAll, setCopiedAll] = useState(false);
+	const [copyErrorIndex, setCopyErrorIndex] = useState<number | null>(null);
+	const [copyAllError, setCopyAllError] = useState<string | null>(null);
 
 	async function handleCopy(password: string, index: number) {
+		setCopyErrorIndex(null);
 		try {
+			if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
 			await navigator.clipboard.writeText(password);
 			setCopiedIndex(index);
 			setTimeout(() => setCopiedIndex(null), 2000);
 		} catch {
 			setCopiedIndex(null);
+			setCopyErrorIndex(index);
 		}
 	}
 
 	async function handleCopyAll() {
 		if (!batchResults) return;
+		setCopyAllError(null);
 		try {
+			if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
 			await navigator.clipboard.writeText(
 				batchResults.results.map((r) => r.password).join("\n"),
 			);
@@ -34,6 +41,7 @@ export default function BatchGenerator() {
 			setTimeout(() => setCopiedAll(false), 2000);
 		} catch {
 			setCopiedAll(false);
+			setCopyAllError("No se pudieron copiar todas las frases. Verifica los permisos del navegador.");
 		}
 	}
 
@@ -96,12 +104,19 @@ export default function BatchGenerator() {
 					<button
 						type="button"
 						onClick={handleCopyAll}
+						aria-label={copiedAll ? "Todas las frases fueron copiadas" : "Copiar todas las frases"}
+						aria-live="polite"
 						className={`flex items-center justify-center gap-[0.4rem] rounded-sm border border-border px-2 py-[0.55rem] font-sans text-[0.8rem] font-medium cursor-pointer transition-all duration-150 ease-out ${
 							copiedAll ? "text-success" : "text-text-secondary"
 						}`}
 					>
 						{copiedAll ? "✅ Copiadas todas" : "📋 Copiar todas"}
 					</button>
+					{copyAllError && (
+						<p role="alert" className="text-[0.75rem] text-red-500">
+							{copyAllError}
+						</p>
+					)}
 
 					{batchWarnings.length > 0 && (
 						<div className="flex items-center gap-2 rounded-md border border-orange-500/20 bg-orange-500/[0.08] px-4 py-[0.65rem] text-[0.8rem] font-medium text-orange-500">
@@ -120,7 +135,7 @@ export default function BatchGenerator() {
 							return (
 								<div
 									key={`${i}-${result.password}`}
-									className={`flex items-center gap-2 rounded-md border px-[0.85rem] py-[0.65rem] transition-all duration-150 ease-out ${
+									className={`flex flex-wrap items-center gap-2 rounded-md border px-[0.85rem] py-[0.65rem] transition-all duration-150 ease-out ${
 										isWarned
 											? "border-orange-500/25 bg-orange-500/[0.04]"
 											: "border-border bg-accent-soft"
@@ -138,6 +153,7 @@ export default function BatchGenerator() {
 										type="button"
 										onClick={() => handleCopy(result.password, i)}
 										aria-label={`Copiar frase ${i + 1}`}
+										aria-live="polite"
 										className={`shrink-0 cursor-pointer rounded-sm px-[0.4rem] py-[0.2rem] text-base transition-all duration-150 ease-out ${
 											copiedIndex === i
 												? "text-success"
@@ -146,6 +162,12 @@ export default function BatchGenerator() {
 									>
 										{copiedIndex === i ? "✅" : "📋"}
 									</button>
+
+									{copyErrorIndex === i && (
+										<p role="alert" className="basis-full text-[0.75rem] text-red-500">
+											No se pudo copiar esta frase. Verifica los permisos del navegador.
+										</p>
+									)}
 
 									{isWarned && (
 										<span

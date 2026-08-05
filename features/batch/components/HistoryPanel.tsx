@@ -29,6 +29,7 @@ export default function HistoryPanel() {
 	const toggleHistory = usePasswordStore((state) => state.toggleHistory);
 	const hideButton = pathname === "/generator";
 	const [copiedIndex, setCopiedIndex] = useState<string | null>(null);
+	const [copyErrorId, setCopyErrorId] = useState<string | null>(null);
 	const [view, setView] = useState<"history" | "favorites">("history");
 	const [confirmAction, setConfirmAction] = useState<{
 		type: "clear" | "entry" | "favorite";
@@ -57,6 +58,7 @@ export default function HistoryPanel() {
 	}
 
 	async function handleCopy(password: string, id: string) {
+		setCopyErrorId(null);
 		try {
 			if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable")
 			await navigator.clipboard.writeText(password)
@@ -64,6 +66,7 @@ export default function HistoryPanel() {
 			setTimeout(() => setCopiedIndex(null), 2000);
 		} catch {
 			setCopiedIndex(null);
+			setCopyErrorId(id);
 		}
 	}
 
@@ -293,6 +296,7 @@ export default function HistoryPanel() {
 										key={entry.id}
 										style={{
 											display: "flex",
+											flexWrap: "wrap",
 											alignItems: "center",
 											gap: "0.5rem",
 											padding: "0.75rem 1rem",
@@ -345,7 +349,8 @@ export default function HistoryPanel() {
 											onClick={() => {
 												if (entry.password) handleCopy(entry.password, entry.id);
 											}}
-											aria-label={`Copiar frase ${sessionHistory.length - i}`}
+ 											aria-label={`Copiar frase ${sessionHistory.length - i}`}
+											aria-live="polite"
 											style={{
 												all: "unset",
 												cursor: "pointer",
@@ -360,6 +365,19 @@ export default function HistoryPanel() {
 										>
 											{copiedIndex === entry.id ? "✅" : "📋"}
 										</button>
+
+										{copyErrorId === entry.id && (
+											<p
+												role="alert"
+												style={{
+													flexBasis: "100%",
+													color: "var(--color-error)",
+													fontSize: "0.7rem",
+												}}
+											>
+												No se pudo copiar esta frase. Verifica los permisos del navegador.
+											</p>
+										)}
 
 										<button
 											type="button"

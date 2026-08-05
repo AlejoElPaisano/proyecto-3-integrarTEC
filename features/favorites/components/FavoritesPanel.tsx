@@ -137,7 +137,12 @@ export function FavoritesPanel({
             <button
               type="button"
               onClick={() => void handleCopy(fav.id)}
-              aria-label="Copiar o desbloquear favorita"
+              aria-label={
+                copiedId === fav.id
+                  ? "Favorita copiada"
+                  : "Copiar o desbloquear favorita"
+              }
+              aria-live="polite"
               style={{
                 all: "unset",
                 cursor: "pointer",
