@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * @fileoverview Servicio de cifrado y descifrado simétrico AES-GCM (Web Crypto API).
  * 

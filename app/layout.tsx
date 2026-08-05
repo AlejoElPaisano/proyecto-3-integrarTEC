@@ -3,17 +3,16 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppLayout } from "@/shared/components/ui/AppLayout";
 import HistoryPanel from "@/features/batch/components/HistoryPanel";
-import { FavoritesPanel } from "@/features/favorites/components/FavoritesPanel";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-inter",
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-jetbrains",
   display: "swap",
 });
 
@@ -42,7 +41,6 @@ export default function RootLayout({
       <body>
         <AppLayout>{children}</AppLayout>
         <HistoryPanel />
-        <FavoritesPanel />
       </body>
     </html>
   );

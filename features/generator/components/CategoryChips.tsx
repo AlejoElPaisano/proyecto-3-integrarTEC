@@ -2,6 +2,7 @@
 
 import wordLists from "@/features/generator/wordLists.json";
 import { usePasswordStore } from "@/features/generator/store";
+import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 const CATEGORY_LABELS: Record<string, string> = {
 	animales: "Animales",
@@ -14,6 +15,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export function CategoryChips() {
+	const hasMounted = useHasMounted();
 	const categories = Object.keys(wordLists);
 	const selectedCategories = usePasswordStore((state) => state.config.selectedCategories);
 	const setConfig = usePasswordStore((state) => state.setConfig);
@@ -24,6 +26,8 @@ export function CategoryChips() {
 			: [...selectedCategories, cat];
 		setConfig({ selectedCategories: updated });
 	};
+
+	if (!hasMounted) return null;
 
 	return (
 		<div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center" }}>

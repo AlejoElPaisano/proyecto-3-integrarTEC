@@ -48,8 +48,8 @@
   --radius-pill: 99px;
 
   /* Typography */
-  --font-sans: var(--font-sans), system-ui, sans-serif;
-  --font-mono: var(--font-mono), monospace;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), monospace;
 
   /* Motion */
   --ease-out:       cubic-bezier(0.16, 1, 0.3, 1);
@@ -139,6 +139,24 @@ body::after {
     transparent 50%
   );
   pointer-events: none;
+}
+
+.history-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent-soft) transparent;
+}
+.history-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.history-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.history-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-accent-soft);
+  border-radius: 99px;
+}
+.history-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -18,19 +18,46 @@ export function FavoritesPanel({
 }: FavoritesPanelProps) {
   const hasMounted = useHasMounted()
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [unlockId, setUnlockId] = useState<string | null>(null)
+  const [unlockPassphrase, setUnlockPassphrase] = useState("")
+  const [copyError, setCopyError] = useState<string | null>(null)
   const storeFavorites = useFavorites()
 
   const favorites = propsFavorites ?? storeFavorites.favorites
   const onRemove = propsOnRemove ?? storeFavorites.removeFavorite
 
-  async function handleCopy(id: string, ciphertext: string) {
-    try {
-      await navigator.clipboard.writeText(ciphertext)
+  async function handleCopy(id: string) {
+    setCopyError(null)
+    const status = await storeFavorites.copyToClipboard(
+      id,
+      unlockId === id ? unlockPassphrase : undefined,
+    )
+
+    if (status === "copied") {
       setCopiedId(id)
       setTimeout(() => setCopiedId(null), 2000)
-    } catch {
-      // silent
+      setUnlockId(null)
+      setUnlockPassphrase("")
+      return
     }
+
+    if (status === "locked") {
+      setUnlockId(id)
+      setUnlockPassphrase("")
+      return
+    }
+
+    if (status === "invalid-passphrase") {
+      setCopyError("La contraseña no pudo desbloquear esta favorita.")
+      return
+    }
+
+    if (status === "clipboard-unavailable") {
+      setCopyError("No se pudo acceder al portapapeles en este navegador.")
+      return
+    }
+
+    setCopyError("No se encontró la favorita seleccionada.")
   }
 
   if (!hasMounted || favorites.length === 0) return null
@@ -62,10 +89,11 @@ export function FavoritesPanel({
           <div
             key={fav.id}
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: compact ? "0.5rem 0.75rem" : "0.75rem 1rem",
+               display: "flex",
+               alignItems: "center",
+               gap: "0.5rem",
+               flexWrap: "wrap",
+               padding: compact ? "0.5rem 0.75rem" : "0.75rem 1rem",
               borderRadius: compact ? "10px" : "12px",
               background: "var(--color-accent-soft)",
               border: "1px solid var(--color-border)",
@@ -108,8 +136,13 @@ export function FavoritesPanel({
 
             <button
               type="button"
-              onClick={() => handleCopy(fav.id, fav.encrypted.ciphertext)}
-              aria-label="Copiar favorita"
+              onClick={() => void handleCopy(fav.id)}
+              aria-label={
+                copiedId === fav.id
+                  ? "Favorita copiada"
+                  : "Copiar o desbloquear favorita"
+              }
+              aria-live="polite"
               style={{
                 all: "unset",
                 cursor: "pointer",
@@ -148,6 +181,97 @@ export function FavoritesPanel({
             >
               🗑️
             </button>
+
+            {unlockId === fav.id && (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void handleCopy(fav.id)
+                }}
+                style={{
+                  flexBasis: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.4rem",
+                  marginTop: "0.5rem",
+                }}
+              >
+                <label
+                  htmlFor={`favorite-passphrase-${fav.id}`}
+                  style={{
+                    fontSize: "0.7rem",
+                    color: "var(--color-text-secondary)",
+                  }}
+                >
+                  Ingresá la contraseña original para desbloquear y copiar
+                </label>
+                <input
+                  id={`favorite-passphrase-${fav.id}`}
+                  type="password"
+                  value={unlockPassphrase}
+                  onChange={(event) => setUnlockPassphrase(event.target.value)}
+                  autoComplete="current-password"
+                  autoFocus
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.45rem 0.6rem",
+                    borderRadius: "8px",
+                    border: "1px solid var(--color-border)",
+                    background: "var(--color-surface)",
+                    color: "var(--color-text)",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.75rem",
+                  }}
+                />
+                {copyError && (
+                  <p
+                    role="alert"
+                    style={{
+                      color: "var(--color-error)",
+                      fontSize: "0.7rem",
+                    }}
+                  >
+                    {copyError}
+                  </p>
+                )}
+                <div style={{ display: "flex", gap: "0.4rem" }}>
+                  <button
+                    type="submit"
+                    style={{
+                      cursor: "pointer",
+                      padding: "0.35rem 0.6rem",
+                      border: "1px solid var(--color-accent)",
+                      borderRadius: "6px",
+                      background: "var(--color-accent-soft)",
+                      color: "var(--color-accent)",
+                      fontSize: "0.7rem",
+                    }}
+                  >
+                    Desbloquear y copiar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUnlockId(null)
+                      setUnlockPassphrase("")
+                      setCopyError(null)
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      padding: "0.35rem 0.6rem",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "6px",
+                      background: "transparent",
+                      color: "var(--color-text-secondary)",
+                      fontSize: "0.7rem",
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         ))}
       </div>

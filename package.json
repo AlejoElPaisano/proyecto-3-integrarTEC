@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify:security": "node scripts/verify-security.mjs",
+    "verify:architecture": "node scripts/verify-architecture.mjs",
+    "verify:ui": "node scripts/verify-ui.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

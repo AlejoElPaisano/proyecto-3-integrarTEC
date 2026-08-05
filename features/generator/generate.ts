@@ -1,13 +1,17 @@
+'use client'
+
 import type { PasswordConfig, PasswordResult } from "./types";
 import wordLists from "./wordLists.json";
 import { calculateEntropy, getStrengthLevel } from "./entropy";
 import { analyzePassword } from "./analysis";
+import { secureRandomInt } from "@/shared/lib/crypto/random";
 
 function pickRandom<T>(list: T[]): T {
-	const randomArray = new Uint32Array(1);
-	crypto.getRandomValues(randomArray);
-	const randomIndex = randomArray[0] % list.length;
-	return list[randomIndex];
+	if (list.length === 0) {
+		throw new RangeError("Cannot pick a value from an empty list");
+	}
+
+	return list[secureRandomInt(list.length)];
 }
 
 function applyFormatting(
@@ -26,13 +30,13 @@ function applyFormatting(
 	let finalPassword = processedWords.join(config.separator);
 
 	if (config.includeNumbers) {
-		const randomNumber = Math.floor(Math.random() * 90) + 10;
+		const randomNumber = secureRandomInt(90) + 10;
 		finalPassword += `${config.separator}${randomNumber}`;
 	}
 
 	if (config.includeSymbols) {
 		const symbols = ["!", "@", "#", "$", "%", "&", "*", "?"];
-		const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+		const randomSymbol = symbols[secureRandomInt(symbols.length)];
 		finalPassword += randomSymbol;
 	}
 

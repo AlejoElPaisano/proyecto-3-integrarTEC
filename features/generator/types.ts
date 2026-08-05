@@ -55,7 +55,8 @@ export interface PasswordResult {
 
 export interface SessionEntry {
 	id: string;
-	password: string;
+	/** Available only in memory; never included in persisted history. */
+	password?: string;
 	bits: number;
 	timestamp: number;
 }

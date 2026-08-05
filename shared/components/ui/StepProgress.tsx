@@ -1,5 +1,9 @@
+ 'use client'
+
+import { usePasswordStore } from '@/features/generator/store'
+
 interface StepProgressProps {
-  currentStep: number
+  currentStep?: number
 }
 
 const STEPS = [
@@ -15,6 +19,9 @@ const PROGRESS_WIDTH: Record<number, string> = {
 }
 
 export function StepProgress({ currentStep }: StepProgressProps) {
+  const storeStep = usePasswordStore((state) => state.currentStep)
+  const activeStep = currentStep ?? storeStep
+
   return (
     <div
       role="tablist"
@@ -47,7 +54,7 @@ export function StepProgress({ currentStep }: StepProgressProps) {
           top: '20px',
           left: 'calc(50% - 160px)',
           height: '2px',
-          width: PROGRESS_WIDTH[currentStep] ?? '0%',
+          width: PROGRESS_WIDTH[activeStep] ?? '0%',
           maxWidth: '320px',
           background: 'linear-gradient(90deg, var(--color-pink), var(--color-accent))',
           borderRadius: '1px',
@@ -56,8 +63,8 @@ export function StepProgress({ currentStep }: StepProgressProps) {
       />
 
       {STEPS.map((step) => {
-        const isActive = currentStep === step.number
-        const isDone   = currentStep > step.number
+        const isActive = activeStep === step.number
+        const isDone   = activeStep > step.number
 
         return (
           <div

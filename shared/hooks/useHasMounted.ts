@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
+
+function subscribe(onStoreChange: () => void) {
+  const timeout = window.setTimeout(onStoreChange, 0)
+  return () => window.clearTimeout(timeout)
+}
 
 export function useHasMounted() {
-  const [hasMounted, setHasMounted] = useState(false)
-
-  useEffect(() => {
-    setHasMounted(true)
-  }, [])
-
-  return hasMounted
+  return useSyncExternalStore(subscribe, () => true, () => false)
 }

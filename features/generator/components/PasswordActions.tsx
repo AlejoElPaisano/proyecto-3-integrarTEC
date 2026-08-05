@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { CopyButton } from "@/shared/components/ui/CopyButton";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
-import { encryptPassword } from "@/services/crypto.service";
 
 interface PasswordActionsProps {
 	password: string;
@@ -21,32 +20,29 @@ export function PasswordActions({
 	onRegenerate,
 }: PasswordActionsProps) {
 	const [saved, setSaved] = useState(false);
+	const [saveError, setSaveError] = useState<string | null>(null);
 	const { addFavorite } = useFavorites();
 
 	async function handleSaveFavorite() {
+		setSaveError(null);
 		try {
 			await addFavorite(password, password, {
 				bits,
 				strength: strength as "weak" | "medium" | "strong" | "very-strong",
 				wordCount,
-				label: password.length > 30 ? password.slice(0, 27) + "..." : password,
 				createdAt: Date.now(),
 				updatedAt: Date.now(),
 			});
 			setSaved(true);
 			setTimeout(() => setSaved(false), 2000);
-		} catch {
-			// silent
+		} catch (error) {
+			setSaved(false);
+			setSaveError(
+				error instanceof Error && error.message
+					? `No se pudo guardar la favorita: ${error.message}`
+					: "No se pudo guardar la favorita. Intenta nuevamente.",
+			);
 		}
-	}
-
-	async function handleCopyEncrypted() {
-		if (!password) {
-			return ""
-		}
-
-		const encrypted = await encryptPassword(password, password) 	
-		return encrypted.ciphertext
 	}
 
 	return (
@@ -114,7 +110,8 @@ export function PasswordActions({
 					type="button"
 					onClick={handleSaveFavorite}
 					disabled={!password || saved}
-					aria-label="Guardar como favorita"
+					aria-label={saved ? "Favorita guardada" : "Guardar como favorita"}
+					aria-live="polite"
 					style={{
 						all: "unset",
 						cursor: "pointer",
@@ -150,8 +147,21 @@ export function PasswordActions({
 					{saved ? "⭐ Guardada" : "⭐ Guardar"}
 				</button>
 
-				<CopyButton getText={handleCopyEncrypted} full label="Copiar" />
+				<CopyButton text={password} full label="Copiar" />
 			</div>
+			{saveError && (
+				<p
+					role="alert"
+					style={{
+						marginTop: "0.5rem",
+						color: "var(--color-error)",
+						fontSize: "0.75rem",
+						textAlign: "center",
+					}}
+				>
+					{saveError}
+				</p>
+			)}
 		</>
 	);
 }

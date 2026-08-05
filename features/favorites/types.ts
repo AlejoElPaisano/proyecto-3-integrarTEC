@@ -21,6 +21,13 @@ export interface FavoriteState {
   unlocked: boolean
 }
 
+export type FavoriteCopyStatus =
+  | "copied"
+  | "not-found"
+  | "locked"
+  | "invalid-passphrase"
+  | "clipboard-unavailable"
+
 export interface FavoritesStore extends FavoriteState {
   addFavorite: (
     password: string,
@@ -28,5 +35,8 @@ export interface FavoritesStore extends FavoriteState {
     metadata: FavoriteMetadata,
   ) => Promise<void>
   removeFavorite: (id: string) => void
-  copyToClipboard: (id: string, passphrase: string) => Promise<string | null>
+  copyToClipboard: (
+    id: string,
+    passphrase?: string,
+  ) => Promise<FavoriteCopyStatus>
 }
