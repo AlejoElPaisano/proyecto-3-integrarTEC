@@ -1,6 +1,9 @@
 import { useCallback } from "react"
 import { useFavoriteStore } from "@/features/favorites/store"
-import type { FavoriteMetadata } from "@/features/favorites/types"
+import type {
+  FavoriteCopyStatus,
+  FavoriteMetadata,
+} from "@/features/favorites/types"
 
 export function useFavorites() {
   const favorites = useFavoriteStore((s) => s.favorites)
@@ -22,7 +25,10 @@ export function useFavorites() {
   )
 
   const handleCopy = useCallback(
-    async (id: string, passphrase: string): Promise<string | null> => {
+    async (
+      id: string,
+      passphrase?: string,
+    ): Promise<FavoriteCopyStatus> => {
       return copyToClipboard(id, passphrase)
     },
     [copyToClipboard],

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { usePasswordStore } from "@/features/generator/store";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { FavoritesPanel } from "@/features/favorites/components/FavoritesPanel";
-import { encryptPassword } from "@/services/crypto.service";
 import { ConfirmDialog } from "@/shared/components/ui/ConfirmDialog";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
@@ -59,8 +58,8 @@ export default function HistoryPanel() {
 
 	async function handleCopy(password: string, id: string) {
 		try {
-			const encrypted = await encryptPassword(password, password)
-			await navigator.clipboard.writeText(encrypted.ciphertext)
+			if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable")
+			await navigator.clipboard.writeText(password)
 			setCopiedIndex(id);
 			setTimeout(() => setCopiedIndex(null), 2000);
 		} catch {

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { CopyButton } from "@/shared/components/ui/CopyButton";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
-import { encryptPassword } from "@/services/crypto.service";
 
 interface PasswordActionsProps {
 	password: string;
@@ -29,7 +28,6 @@ export function PasswordActions({
 				bits,
 				strength: strength as "weak" | "medium" | "strong" | "very-strong",
 				wordCount,
-				label: password.length > 30 ? password.slice(0, 27) + "..." : password,
 				createdAt: Date.now(),
 				updatedAt: Date.now(),
 			});
@@ -38,15 +36,6 @@ export function PasswordActions({
 		} catch {
 			// silent
 		}
-	}
-
-	async function handleCopyEncrypted() {
-		if (!password) {
-			return ""
-		}
-
-		const encrypted = await encryptPassword(password, password) 	
-		return encrypted.ciphertext
 	}
 
 	return (
@@ -150,7 +139,7 @@ export function PasswordActions({
 					{saved ? "⭐ Guardada" : "⭐ Guardar"}
 				</button>
 
-				<CopyButton getText={handleCopyEncrypted} full label="Copiar" />
+				<CopyButton text={password} full label="Copiar" />
 			</div>
 		</>
 	);
