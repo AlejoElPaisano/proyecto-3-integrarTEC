@@ -349,7 +349,7 @@ export default function HistoryPanel() {
 											onClick={() => {
 												if (entry.password) handleCopy(entry.password, entry.id);
 											}}
- 											aria-label={`Copiar frase ${sessionHistory.length - i}`}
+										aria-label={`Copiar frase ${sessionHistory.length - i}`}
 											aria-live="polite"
 											style={{
 												all: "unset",
