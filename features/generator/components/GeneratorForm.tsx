@@ -5,8 +5,10 @@ import { usePasswordStore } from "@/features/generator/store";
 import type { PasswordConfig } from "@/features/generator/types";
 import { CategoryChips } from "@/features/generator/components/CategoryChips";
 import { Toggle } from "@/shared/components/ui/Toggle";
+import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: string) => void }) {
+	const hasMounted = useHasMounted();
 	const config = usePasswordStore((state) => state.config);
 	const generate = usePasswordStore((state) => state.generate);
 	const setStep = usePasswordStore((state) => state.setStep);
@@ -35,6 +37,8 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
 		generate();
 		setStep(3);
 	};
+
+	if (!hasMounted) return null;
 
 	const btnStyles = `
 .btn-generate {

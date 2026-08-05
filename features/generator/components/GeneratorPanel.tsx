@@ -6,8 +6,10 @@ import { usePasswordStore } from "@/features/generator/store";
 import { EntropyMeter } from "@/shared/components/ui/EntropyMeter";
 import { FunStats } from "@/shared/components/ui/FunStats";
 import { PasswordActions } from "@/features/generator/components/PasswordActions";
+import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 export default function GeneratorPanel({ onActiveTip }: { onActiveTip?: (key: string | null) => void }) {
+	const hasMounted = useHasMounted();
 	const currentResult = usePasswordStore((state) => state.currentResult);
 	const currentStep = usePasswordStore((state) => state.currentStep);
 	const config = usePasswordStore((state) => state.config);
@@ -28,6 +30,8 @@ export default function GeneratorPanel({ onActiveTip }: { onActiveTip?: (key: st
 		setStep(1);
 		router.push("/");
 	}
+
+	if (!hasMounted) return null;
 
 	if (currentStep === 2) {
 		return (

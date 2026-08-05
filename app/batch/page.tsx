@@ -4,18 +4,21 @@ import { useEffect } from "react";
 import Link from "next/link";
 import BatchGenerator from "@/features/batch/components/BatchGenerator";
 import { usePasswordStore } from "@/features/generator/store";
+import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 export default function BatchPage() {
 	const setStep = usePasswordStore((state) => state.setStep);
 	const generateBatch = usePasswordStore((state) => state.generateBatch);
+	const hasMounted = useHasMounted();
 
 	useEffect(() => {
 		setStep(3);
 	}, [setStep]);
 
 	useEffect(() => {
+		if (!hasMounted) return;
 		generateBatch();
-	}, [generateBatch]);
+	}, [generateBatch, hasMounted]);
 
 	return (
 		<div

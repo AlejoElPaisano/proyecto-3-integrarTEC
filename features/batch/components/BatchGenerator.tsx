@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { usePasswordStore } from "@/features/generator/store";
+import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 export default function BatchGenerator() {
+	const hasMounted = useHasMounted();
 	const batchResults = usePasswordStore((state) => state.batchResults);
 	const batchCount = usePasswordStore((state) => state.batchCount);
 	const batchWarnings = usePasswordStore((state) => state.batchWarnings);
@@ -36,6 +38,8 @@ export default function BatchGenerator() {
 	}
 
 	const warnedIndices = new Set(batchWarnings.map((w) => w.index));
+
+	if (!hasMounted) return null;
 
 	return (
 		<div className="flex flex-col gap-6">
