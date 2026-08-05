@@ -213,6 +213,38 @@ and a Conventional Commit in English are complete.
   - `pnpm lint`
   - `pnpm build`
 
+## Migration Regression 2 - Persisted Zustand state rendered before hydration
+
+- Status: [x] Resolved
+- Origin: Introduced during the React to Next.js migration.
+- Current behavior: Several direct consumers of persisted Zustand state could render
+  default server values before `localStorage` hydration completed. The root layout also
+  rendered `FavoritesPanel` independently while `HistoryPanel` rendered it inside its
+  favorites view.
+- Impact: The UI could briefly show stale configuration or batch values, cause hydration
+  mismatches, and render favorites twice. Font tokens also referenced themselves after
+  `next/font` assigned the same custom property names.
+- Target behavior: Persisted-state consumers render only after the client store is
+  hydrated, favorites have one owner in the layout, and CSS font tokens reference the
+  actual `next/font` variables without recursion.
+- Verification:
+  - Confirm direct persisted-state consumers use `useHasMounted` before rendering.
+  - Confirm batch generation starts only after hydration.
+  - Confirm `app/layout.tsx` mounts only `HistoryPanel`, which owns the favorites view.
+  - Confirm `--font-sans` and `--font-mono` reference distinct `next/font` variables.
+  - Run `pnpm exec tsc --noEmit`, `pnpm lint`, and `pnpm build`.
+- Resolution:
+  - Added `useHasMounted` guards to direct persisted-state consumers in the generator
+    and batch flows.
+  - Batch generation now waits for the client store to hydrate before running.
+  - `app/layout.tsx` now mounts only `HistoryPanel`; its favorites view owns the single
+    `FavoritesPanel` instance.
+  - `next/font` variables are named `--font-inter` and `--font-jetbrains`, while the
+    Tailwind font tokens reference those distinct variables.
+  - Commit: `bfb2cd0 fix(hydration): guard persisted state and deduplicate favorites`
+  - Verification: `pnpm run verify:security`, `pnpm exec tsc --noEmit`, `pnpm lint`,
+    and `pnpm build` all pass.
+
 ## Priority
 
 1. Bugs 1 and 2: security and password-generation correctness.
