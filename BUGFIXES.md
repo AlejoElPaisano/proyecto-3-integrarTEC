@@ -257,6 +257,38 @@ and a Conventional Commit in English are complete.
   - Verification: `pnpm run verify:security`, `pnpm exec tsc --noEmit`, `pnpm lint`,
     and `pnpm build` all pass.
 
+## Migration Regression 3 - Route pages became Client Components
+
+- Status: [x] Resolved
+- Origin: Introduced during the React to Next.js migration.
+- Current behavior: The three route files under `app/` were marked with `'use client'`
+  even when their static shells could be rendered on the server. Browser-only state,
+  navigation, and effects were mixed directly into the route modules.
+- Impact: Larger client bundles, less server-rendered UI, and a higher risk of importing
+  Zustand, `localStorage`, or Web Crypto into Server Component trees accidentally.
+- Target behavior: Keep route pages as Server Components. Isolate interactivity in small
+  Client Components and mark browser-only modules explicitly with `'use client'`.
+- Verification:
+  - Confirm `/`, `/generator`, and `/batch` have no `'use client'` directive.
+  - Confirm browser-only modules declare their Client boundary.
+  - Confirm route files do not import or access Zustand, `localStorage`, `navigator`,
+    or Web Crypto directly.
+  - Run `pnpm run verify:architecture`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
+    `pnpm build`.
+- Resolution:
+  - `app/page.tsx`, `app/generator/page.tsx`, and `app/batch/page.tsx` are now Server
+    Components containing only route shells and static content.
+  - `StartButton`, `GeneratorPageClient`, and `BatchStateController` isolate navigation,
+    effects, and Zustand actions in focused Client Components.
+  - `StepProgress` is a small Client Component that reads the current wizard step while
+    `WizardLayout` remains server-renderable.
+  - Browser-only modules explicitly declare `'use client'`: stores, persistence,
+    Web Crypto services, and the random helper.
+  - `scripts/verify-architecture.mjs` guards route boundaries and browser API usage.
+  - Commit: `d4fded2 refactor(architecture): isolate client interactivity from route pages`
+  - Verification: `pnpm run verify:architecture`, `pnpm run verify:security`,
+    `pnpm exec tsc --noEmit`, `pnpm lint`, and `pnpm build` all pass.
+
 ## Priority
 
 1. Bugs 1 and 2: security and password-generation correctness.
