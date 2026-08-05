@@ -10,6 +10,8 @@ import type {
 import { checkReuseWarnings } from "./similarity";
 import { generateBatch, generatePassword } from "./generate";
 
+const HISTORY_STORAGE_VERSION = 1;
+
 const defaultConfig: PasswordConfig = {
 	wordCount: 4,
 	separator: "-",
@@ -38,6 +40,45 @@ interface PasswordState {
 	setBatchCount: (n: number) => void;
 	clearHistory: () => void;
 	removeFromHistory: (id: string) => void;
+}
+
+interface PersistedSessionEntry {
+	id: string;
+	bits: number;
+	timestamp: number;
+}
+
+interface PersistedPasswordState {
+	sessionHistory: PersistedSessionEntry[];
+	config: PasswordConfig;
+	batchCount: number;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null;
+}
+
+function sanitizeSessionHistory(value: unknown): PersistedSessionEntry[] {
+	if (!Array.isArray(value)) return [];
+
+	return value.flatMap((entry): PersistedSessionEntry[] => {
+		if (!isRecord(entry)) return [];
+		if (
+			typeof entry.id !== "string" ||
+			!Number.isFinite(entry.bits) ||
+			!Number.isFinite(entry.timestamp)
+		) {
+			return [];
+		}
+
+		return [
+			{
+				id: entry.id,
+				bits: entry.bits as number,
+				timestamp: entry.timestamp as number,
+			},
+		];
+	});
 }
 
 export const usePasswordStore = create<PasswordState>()(
@@ -83,8 +124,12 @@ export const usePasswordStore = create<PasswordState>()(
 					timestamp: Date.now(),
 				}));
 
-				const historyPasswords = state.sessionHistory.map((e) => e.password);
-				const newPasswords = entries.map((e) => e.password);
+				const historyPasswords = state.sessionHistory.flatMap((entry) =>
+					typeof entry.password === "string" ? [entry.password] : [],
+				);
+				const newPasswords = entries
+					.map((entry) => entry.password)
+					.filter((password): password is string => typeof password === "string");
 				const warnings = checkReuseWarnings(newPasswords, historyPasswords);
 
 				set({
@@ -105,24 +150,39 @@ export const usePasswordStore = create<PasswordState>()(
 		}),
 		{
 			name: "passfrases-history-v1",
-			partialize: (state) => ({
-				sessionHistory: state.sessionHistory,
+			version: HISTORY_STORAGE_VERSION,
+			partialize: (state): PersistedPasswordState => ({
+				sessionHistory: state.sessionHistory.map(({ id, bits, timestamp }) => ({
+					id,
+					bits,
+					timestamp,
+				})),
 				config: state.config,
 				batchCount: state.batchCount,
 			}),
+			migrate: (persistedState) => {
+				const data = isRecord(persistedState) ? persistedState : {};
+
+				return {
+					...data,
+					sessionHistory: sanitizeSessionHistory(data.sessionHistory),
+				};
+			},
 			merge: (persisted, current) => {
-				const data = persisted as Partial<PasswordState> | undefined
-				if (!data) return current
+				const data = persisted as Partial<PersistedPasswordState> | undefined;
+				if (!data) return current;
+
 				return {
 					...current,
-					...data,
+					sessionHistory: sanitizeSessionHistory(data.sessionHistory),
+					batchCount: data.batchCount ?? current.batchCount,
 					config: {
 						...current.config,
 						...(data.config ?? {}),
 						selectedCategories:
 							data.config?.selectedCategories ?? current.config.selectedCategories,
 					},
-				}
+				};
 			},
 		},
 	),

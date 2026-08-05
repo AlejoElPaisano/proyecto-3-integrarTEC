@@ -325,7 +325,7 @@ export default function HistoryPanel() {
 												color: "var(--color-text)",
 											}}
 										>
-											{entry.password}
+											{entry.password ?? "No disponible tras recargar"}
 										</span>
 
 										<span
@@ -342,9 +342,10 @@ export default function HistoryPanel() {
 
 										<button
 											type="button"
-											onClick={() =>
-												handleCopy(entry.password, entry.id)
-											}
+											disabled={!entry.password}
+											onClick={() => {
+												if (entry.password) handleCopy(entry.password, entry.id);
+											}}
 											aria-label={`Copiar frase ${sessionHistory.length - i}`}
 											style={{
 												all: "unset",
