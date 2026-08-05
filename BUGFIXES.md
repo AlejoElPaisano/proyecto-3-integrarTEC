@@ -183,6 +183,36 @@ and a Conventional Commit in English are complete.
   - Review branch and pull request history during the final project audit.
 - Planned commit: `docs: document migration feature ownership`
 
+## Migration Regression 1 - Clipboard copied encrypted payloads
+
+- Status: [x] Resolved
+- Origin: Introduced during the React to Next.js migration.
+- Current behavior: The main generator action and session history encrypted the
+  plaintext again and copied `ciphertext`. The favorites panel copied the persisted
+  ciphertext directly. In addition, generated favorites used the plaintext password
+  as their visible metadata label.
+- Impact: Users received unusable encrypted strings instead of their password, and
+  favorite metadata could expose the password in `localStorage`.
+- Target behavior: Copy plaintext only after a successful authorized decrypt. Never
+  copy ciphertext or persist the encryption passphrase. A favorite restored without an
+  in-memory key must ask the user for the original password before copying.
+- Resolution:
+  - `PasswordActions` now passes the generated plaintext directly to `CopyButton`.
+  - `HistoryPanel` copies the in-memory plaintext and no longer calls encryption for
+    clipboard operations.
+  - Favorites keep their passphrase only in a module-level memory map for the current
+    session. Restored favorites use an explicit password unlock form.
+  - Favorite copy operations return explicit statuses and only report success after
+    `navigator.clipboard.writeText` succeeds.
+  - Favorite persistence is migrated to version 2 and strips legacy sensitive labels.
+  - `scripts/verify-security.mjs` guards all copy paths against ciphertext copying.
+  - Commit: `10ee547 fix(favorites): copy decrypted passwords safely`
+- Verification:
+  - `pnpm run verify:security`
+  - `pnpm exec tsc --noEmit`
+  - `pnpm lint`
+  - `pnpm build`
+
 ## Priority
 
 1. Bugs 1 and 2: security and password-generation correctness.
