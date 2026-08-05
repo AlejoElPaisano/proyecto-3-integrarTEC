@@ -13,7 +13,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 1 - Plaintext passwords persisted in session history
 
-- Status: [ ] Pending
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: `features/generator/store.ts` persists `sessionHistory`, including
   each entry's `password`, under `passfrases-history-v1` in `localStorage`.
@@ -26,11 +26,21 @@ and a Conventional Commit in English are complete.
   - Confirm no persisted history entry contains a `password` field or plaintext value.
   - Confirm the history UI still works during the current session.
   - Verify legacy persisted data is migrated or safely discarded.
-- Planned commit: `fix(security): remove plaintext passwords from persisted history`
+- Resolution:
+  - `features/generator/store.ts` now persists only `id`, `bits`, and `timestamp` for
+    history entries. The in-memory `password` field is never included in `partialize`.
+  - Zustand persistence is versioned and migrates legacy entries through
+    `sanitizeSessionHistory`, which drops plaintext passwords and invalid records.
+  - `features/generator/types.ts` models the password as memory-only, and the history
+    UI explains when a restored entry cannot be copied after a reload.
+  - Commit: `9b95621 fix(security): remove plaintext passwords from persisted history`
+  - Additional validation support: `ad180ef fix(hydration): isolate legacy project from Next checks`
+  - Verification: `pnpm run verify:security`, `pnpm exec tsc --noEmit`, `pnpm lint`,
+    and `pnpm build` all pass.
 
 ## Bug 2 - Non-cryptographic randomness in number and symbol generation
 
-- Status: [ ] Pending
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: `features/generator/generate.ts` uses `Math.random()` for the
   numeric suffix and optional symbol, while word selection uses Web Crypto.
@@ -43,7 +53,16 @@ and a Conventional Commit in English are complete.
   - Generate passwords with numbers and symbols enabled.
   - Confirm values stay within the configured number and symbol sets.
   - Add or run a regression test covering the secure random helper.
-- Planned commit: `fix(crypto): replace non-cryptographic password randomness`
+- Resolution:
+  - `shared/lib/crypto/random.ts` provides `secureRandomInt` using
+    `crypto.getRandomValues()` and rejection sampling to avoid modulo bias.
+  - Word selection, numeric suffixes, and symbols in
+    `features/generator/generate.ts` now use the shared helper.
+  - `scripts/verify-security.mjs` and the `verify:security` package script guard the
+    persistence projection and prevent `Math.random()` from returning to generation.
+  - Commit: `e0331c2 fix(crypto): replace non-cryptographic password randomness`
+  - Verification: `pnpm run verify:security`, `pnpm exec tsc --noEmit`, `pnpm lint`,
+    and `pnpm build` all pass.
 
 ## Bug 3 - Native alert and silent errors in clipboard operations
 
