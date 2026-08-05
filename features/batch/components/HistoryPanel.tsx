@@ -74,13 +74,6 @@ export default function HistoryPanel() {
 
 	return (
 		<>
-			<style>{`
-.history-scroll::-webkit-scrollbar { width: 6px; }
-.history-scroll::-webkit-scrollbar-track { background: transparent; }
-.history-scroll::-webkit-scrollbar-thumb { background: var(--color-accent-soft); border-radius: 99px; }
-.history-scroll::-webkit-scrollbar-thumb:hover { background: var(--color-border); }
-.history-scroll { scrollbar-width: thin; scrollbar-color: var(--color-accent-soft) transparent; }
-`}</style>
 			{!hideButton && (
 				<button
 					type="button"
@@ -105,62 +98,28 @@ export default function HistoryPanel() {
 
 			{historyOpen && (
 				<div
-					style={{
-						position: "fixed",
-						bottom: "5.5rem",
-						right: "1.5rem",
-						zIndex: 1000,
-						display: "flex",
-						flexDirection: "column",
-						maxHeight: "460px",
-						width: "340px",
-						overflow: "hidden",
-						borderRadius: "var(--radius-lg)",
-						border: "1px solid var(--color-border)",
-						background: "var(--glass-bg)",
-						backdropFilter: "blur(24px)",
-						WebkitBackdropFilter: "blur(24px)",
-						boxShadow: "var(--glass-shadow)",
-						animation: "fadeIn var(--duration-normal) var(--ease-out)",
-					}}
+					className="fixed inset-x-2 bottom-24 z-[1000] flex max-h-[min(70vh,460px)] w-[calc(100vw-1rem)] max-w-[340px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-(--color-border) bg-(--glass-bg) shadow-[var(--glass-shadow)] backdrop-blur-2xl animate-[fadeIn_300ms_ease-out] sm:right-6 sm:left-auto sm:w-[340px]"
 					role="dialog"
 					aria-label={
 						view === "favorites" ? "Favoritos" : "Historial de sesión"
 					}
 				>
-					<div
-						style={{
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "space-between",
-							padding: "1rem 1.25rem",
-							borderBottom: "1px solid var(--color-border)",
-						}}
-					>
-						<h3
-							style={{
-								display: "flex",
-								alignItems: "center",
-								gap: "0.5rem",
-								fontSize: "0.85rem",
-								fontWeight: 700,
-								color: "var(--color-text)",
-							}}
+				<div
+					className="flex flex-wrap items-center justify-between gap-2 border-b border-(--color-border) px-4 py-3 sm:px-5"
+				>
+					<h3
+						className="flex items-center gap-2 text-[0.85rem] font-bold text-(--color-text)"
 						>
 							{view === "favorites"
 								? "⭐ Favoritos"
 								: "🤖 Historial de sesión"}
 							<span
-								style={{
-									fontSize: "0.7rem",
-									fontWeight: 500,
-									color: "var(--color-text-tertiary)",
-								}}
+								className="text-[0.7rem] font-medium text-(--color-text-tertiary)"
 							>
 								({view === "favorites" ? favorites.length : sessionHistory.length})
 							</span>
 						</h3>
-						<div style={{ display: "flex", gap: "0.375rem" }}>
+						<div className="flex flex-wrap justify-end gap-1.5">
 							<button
 								type="button"
 								onClick={() =>
@@ -171,22 +130,7 @@ export default function HistoryPanel() {
 										? "Ver historial"
 										: "Ver favoritos"
 								}
-								style={{
-									all: "unset",
-									cursor: "pointer",
-									padding: "0.25rem 0.5rem",
-									borderRadius: "var(--radius-sm)",
-									border: "1px solid var(--color-border)",
-									fontSize: "0.75rem",
-									color: "var(--color-accent)",
-									transition: "background var(--duration-fast) var(--ease-out)",
-								}}
-								onMouseEnter={(e) => {
-									e.currentTarget.style.background = "var(--color-accent-soft)";
-								}}
-								onMouseLeave={(e) => {
-									e.currentTarget.style.background = "transparent";
-								}}
+								className="cursor-pointer rounded-[var(--radius-sm)] border border-(--color-border) bg-transparent px-2 py-1 text-xs text-(--color-accent) transition-colors duration-[var(--duration-fast)] hover:bg-(--color-accent-soft)"
 							>
 								{view === "favorites" ? "🤖 Historial" : "⭐ Favoritos"}
 							</button>
@@ -195,24 +139,7 @@ export default function HistoryPanel() {
 									type="button"
 									onClick={() => setConfirmAction({ type: "clear" })}
 									aria-label="Limpiar historial"
-									style={{
-										all: "unset",
-										cursor: "pointer",
-										padding: "0.25rem 0.5rem",
-										borderRadius: "var(--radius-sm)",
-										border: "1px solid var(--color-border)",
-										fontSize: "0.75rem",
-										color: "var(--color-text-tertiary)",
-										transition: "color, border-color var(--duration-fast) var(--ease-out)",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.borderColor = "var(--color-error)";
-										e.currentTarget.style.color = "var(--color-error)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.borderColor = "var(--color-border)";
-										e.currentTarget.style.color = "var(--color-text-tertiary)";
-									}}
+									className="cursor-pointer rounded-[var(--radius-sm)] border border-(--color-border) bg-transparent px-2 py-1 text-xs text-(--color-text-tertiary) transition-colors duration-[var(--duration-fast)] hover:border-(--color-error) hover:text-(--color-error)"
 								>
 									🗑 Limpiar
 								</button>
@@ -221,23 +148,7 @@ export default function HistoryPanel() {
 								type="button"
 								onClick={toggleHistory}
 								aria-label="Cerrar"
-								style={{
-									all: "unset",
-									cursor: "pointer",
-									padding: "0.25rem 0.5rem",
-									borderRadius: "var(--radius-sm)",
-									fontSize: "1.1rem",
-									color: "var(--color-text-tertiary)",
-									transition: "color, background-color var(--duration-fast) var(--ease-out)",
-								}}
-								onMouseEnter={(e) => {
-									e.currentTarget.style.background = "var(--color-accent-soft)";
-									e.currentTarget.style.color = "var(--color-text)";
-								}}
-								onMouseLeave={(e) => {
-									e.currentTarget.style.background = "transparent";
-									e.currentTarget.style.color = "var(--color-text-tertiary)";
-								}}
+								className="cursor-pointer rounded-[var(--radius-sm)] border-0 bg-transparent px-2 py-1 text-lg text-(--color-text-tertiary) transition-colors duration-[var(--duration-fast)] hover:bg-(--color-accent-soft) hover:text-(--color-text)"
 							>
 								✕
 							</button>
@@ -245,27 +156,14 @@ export default function HistoryPanel() {
 					</div>
 
 					<div
-						className="history-scroll"
-						style={{
-							flex: 1,
-							overflowY: "auto",
-							padding: "0.75rem 1.25rem",
-						}}
+						className="history-scroll min-h-0 flex-1 overflow-y-auto px-3 py-3 sm:px-5"
 					>
 						{view === "favorites" ? (
 							favorites.length === 0 ? (
 								<div
-									style={{
-										padding: "2rem 1rem",
-										borderRadius: "14px",
-										background: "var(--color-accent-soft)",
-										border: "1px solid var(--color-border)",
-										textAlign: "center",
-										fontSize: "0.8rem",
-										color: "var(--color-text-tertiary)",
-									}}
+									className="rounded-[14px] border border-(--color-border) bg-(--color-accent-soft) px-4 py-8 text-center text-xs text-(--color-text-tertiary)"
 								>
-									<div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⭐</div>
+									<div className="mb-2 text-2xl">⭐</div>
 									<p>No tenés favoritos guardados</p>
 								</div>
 							) : (
@@ -276,17 +174,9 @@ export default function HistoryPanel() {
 							)
 						) : sessionHistory.length === 0 ? (
 							<div
-								style={{
-									padding: "2rem 1rem",
-									borderRadius: "14px",
-									background: "var(--color-accent-soft)",
-									border: "1px solid var(--color-border)",
-									textAlign: "center",
-									fontSize: "0.8rem",
-									color: "var(--color-text-tertiary)",
-								}}
+								className="rounded-[14px] border border-(--color-border) bg-(--color-accent-soft) px-4 py-8 text-center text-xs text-(--color-text-tertiary)"
 							>
-								<div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>📭</div>
+								<div className="mb-2 text-2xl">📭</div>
 								<p>Todavía no generaste ninguna frase</p>
 							</div>
 						) : (
@@ -294,51 +184,22 @@ export default function HistoryPanel() {
 								{sessionHistory.map((entry, i) => (
 									<div
 										key={entry.id}
-										style={{
-											display: "flex",
-											flexWrap: "wrap",
-											alignItems: "center",
-											gap: "0.5rem",
-											padding: "0.75rem 1rem",
-											borderRadius: "12px",
-											background: "var(--color-accent-soft)",
-											border: "1px solid var(--color-border)",
-											marginBottom: "0.5rem",
-											transition: "color, background-color, border-color, box-shadow var(--duration-fast) var(--ease-out)",
-										}}
+										className="mb-2 flex flex-wrap items-center gap-2 rounded-xl border border-(--color-border) bg-(--color-accent-soft) px-3 py-3 transition-colors duration-[var(--duration-fast)] hover:border-(--color-border-hover) sm:px-4"
 									>
 										<span
-											style={{
-												minWidth: "1.2rem",
-												fontFamily: "var(--font-mono)",
-												fontSize: "0.65rem",
-												fontWeight: 700,
-												color: "var(--color-text-tertiary)",
-											}}
+											className="min-w-5 font-mono text-[0.65rem] font-bold text-(--color-text-tertiary)"
 										>
 											#{sessionHistory.length - i}
 										</span>
 
 										<span
-											style={{
-												flex: 1,
-												wordBreak: "break-all",
-												fontFamily: "var(--font-mono)",
-												fontSize: "0.75rem",
-												color: "var(--color-text)",
-											}}
+											className="min-w-0 flex-1 break-all font-mono text-xs text-(--color-text)"
 										>
 											{entry.password ?? "No disponible tras recargar"}
 										</span>
 
 										<span
-											style={{
-												minWidth: "3.5rem",
-												whiteSpace: "nowrap",
-												textAlign: "right",
-												fontSize: "0.6rem",
-												color: "var(--color-text-tertiary)",
-											}}
+											className="min-w-14 whitespace-nowrap text-right text-[0.6rem] text-(--color-text-tertiary)"
 										>
 											{timeAgo(entry.timestamp)}
 										</span>
@@ -351,17 +212,7 @@ export default function HistoryPanel() {
 											}}
 										aria-label={`Copiar frase ${sessionHistory.length - i}`}
 											aria-live="polite"
-											style={{
-												all: "unset",
-												cursor: "pointer",
-												flexShrink: 0,
-												fontSize: "0.85rem",
-												color:
-													copiedIndex === entry.id
-														? "var(--color-success)"
-														: "var(--color-text-tertiary)",
-												transition: "color var(--duration-fast) var(--ease-out)",
-											}}
+											className={`shrink-0 cursor-pointer rounded px-1 py-0.5 text-sm transition-colors duration-[var(--duration-fast)] ${copiedIndex === entry.id ? "text-(--color-success)" : "text-(--color-text-tertiary)"}`}
 										>
 											{copiedIndex === entry.id ? "✅" : "📋"}
 										</button>
@@ -369,11 +220,7 @@ export default function HistoryPanel() {
 										{copyErrorId === entry.id && (
 											<p
 												role="alert"
-												style={{
-													flexBasis: "100%",
-													color: "var(--color-error)",
-													fontSize: "0.7rem",
-												}}
+												className="basis-full text-[0.7rem] text-(--color-error)"
 											>
 												No se pudo copiar esta frase. Verifica los permisos del navegador.
 											</p>
@@ -383,20 +230,7 @@ export default function HistoryPanel() {
 											type="button"
 											onClick={() => setConfirmAction({ type: "entry", id: entry.id })}
 											aria-label="Eliminar del historial"
-											style={{
-												all: "unset",
-												cursor: "pointer",
-												flexShrink: 0,
-												fontSize: "0.75rem",
-												color: "var(--color-text-tertiary)",
-												transition: "color var(--duration-fast) var(--ease-out)",
-											}}
-											onMouseEnter={(e) => {
-												e.currentTarget.style.color = "var(--color-error)";
-											}}
-											onMouseLeave={(e) => {
-												e.currentTarget.style.color = "var(--color-text-tertiary)";
-											}}
+											className="shrink-0 cursor-pointer rounded px-1 py-0.5 text-xs text-(--color-text-tertiary) transition-colors duration-[var(--duration-fast)] hover:text-(--color-error)"
 										>
 											🗑️
 										</button>
@@ -407,13 +241,7 @@ export default function HistoryPanel() {
 					</div>
 
 					<div
-						style={{
-							padding: "0.625rem 1.25rem",
-							borderTop: "1px solid var(--color-border)",
-							textAlign: "center",
-							fontSize: "0.65rem",
-							color: "var(--color-text-tertiary)",
-						}}
+						className="border-t border-(--color-border) px-4 py-2.5 text-center text-[0.65rem] text-(--color-text-tertiary)"
 					>
 						{view === "history"
 							? "El historial vive solo en memoria · No se persiste"

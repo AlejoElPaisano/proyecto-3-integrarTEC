@@ -51,15 +51,15 @@ export default function BatchGenerator() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex items-center justify-between gap-4">
-				<div className="flex items-center gap-3">
-					<label
-						htmlFor="batchCount"
+			<div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+					<span
+						id="batch-count-label"
 						className="text-[0.85rem] font-semibold text-text"
 					>
 						Cantidad
-					</label>
-					<div id="batchCount" role="group" aria-label="Cantidad de frases a generar" className="flex gap-[0.35rem]">
+					</span>
+					<div id="batchCount" role="group" aria-labelledby="batch-count-label" className="flex flex-wrap gap-[0.35rem]">
 						{[3, 5, 10, 20].map((n) => (
 							<button
 								type="button"
@@ -82,7 +82,7 @@ export default function BatchGenerator() {
 				<button
 					type="button"
 					onClick={generateBatch}
-					className="flex items-center gap-[0.4rem] whitespace-nowrap rounded-md bg-[image:var(--gradient-blue)] px-5 py-[0.65rem] font-sans text-[0.9rem] font-bold text-white cursor-pointer transition-all duration-150 ease-out hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(99,102,241,0.3)]"
+					className="flex w-full items-center justify-center gap-[0.4rem] whitespace-nowrap rounded-md bg-[image:var(--gradient-blue)] px-5 py-[0.65rem] font-sans text-[0.9rem] font-bold text-white cursor-pointer transition-all duration-150 ease-out hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(99,102,241,0.3)] sm:w-auto"
 				>
 					✨ Generar {batchCount} frases
 				</button>
@@ -129,7 +129,7 @@ export default function BatchGenerator() {
 						</div>
 					)}
 
-					<div className="flex flex-col gap-[0.6rem]">
+					<div className="grid grid-cols-1 gap-[0.6rem] md:grid-cols-2">
 						{batchResults.results.map((result, i) => {
 							const isWarned = warnedIndices.has(i);
 							return (
