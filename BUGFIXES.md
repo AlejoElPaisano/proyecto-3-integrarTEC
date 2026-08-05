@@ -96,7 +96,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 4 - Missing explicit responsive breakpoints
 
-- Status: [x] Resolved
+- Status: [~] In progress
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Main interfaces rely mostly on fixed dimensions and inline styles.
   The history panel uses a fixed width and the generator and batch layouts have few
@@ -121,10 +121,12 @@ and a Conventional Commit in English are complete.
   - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
+  - Follow-up: Audit remaining route and shared components before marking the bug
+    fully resolved.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
-- Status: [x] Resolved
+- Status: [~] In progress
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Migrated components combine extensive `style={{ ... }}` objects,
   embedded style tags, and Tailwind utility classes.
@@ -151,6 +153,8 @@ and a Conventional Commit in English are complete.
   - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
+  - Follow-up: Continue migrating remaining inline styles outside the three priority
+    components before marking the bug fully resolved.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 
