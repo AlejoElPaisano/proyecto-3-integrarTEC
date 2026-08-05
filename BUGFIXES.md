@@ -66,7 +66,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 3 - Native alert and silent errors in clipboard operations
 
-- Status: [ ] Pending
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project, with additional
   silent catches in migrated components.
 - Current behavior: `shared/components/ui/CopyButton.tsx` calls `alert()` when copying
@@ -80,7 +80,19 @@ and a Conventional Commit in English are complete.
   - Simulate denied or unavailable clipboard permissions.
   - Confirm an error is visible and announced with an appropriate ARIA role.
   - Confirm successful copies still show temporary feedback.
-- Planned commit: `fix(accessibility): replace native clipboard alerts`
+- Resolution:
+  - `shared/components/ui/CopyButton.tsx` now catches failures from both `getText`
+    and the Clipboard API, rendering the message inline with `role="alert"`.
+  - `BatchGenerator` and `HistoryPanel` now expose individual and bulk copy failures
+    without clearing or hiding the affected error state.
+  - `PasswordActions` now reports favorite-save failures visibly, while successful
+    saves retain their existing feedback.
+  - Favorite unlock and copy success states expose accessible labels and live feedback.
+  - `scripts/verify-security.mjs` verifies that no application source calls `alert()`
+    and that copy error states are present in each flow.
+  - Commit: `609b911 fix(accessibility): replace native clipboard alerts`
+  - Verification: `pnpm run verify:security`, `pnpm exec tsc --noEmit`, `pnpm lint`,
+    and `pnpm build` all pass.
 
 ## Bug 4 - Missing explicit responsive breakpoints
 
