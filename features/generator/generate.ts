@@ -1,3 +1,5 @@
+'use client'
+
 import type { PasswordConfig, PasswordResult } from "./types";
 import wordLists from "./wordLists.json";
 import { calculateEntropy, getStrengthLevel } from "./entropy";

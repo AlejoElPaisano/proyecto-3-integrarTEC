@@ -1,3 +1,5 @@
+'use client'
+
 const UINT32_RANGE = 2 ** 32;
 
 /** Returns a uniform cryptographically secure integer in [0, maxExclusive). */

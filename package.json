@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:security": "node scripts/verify-security.mjs"
+    "verify:security": "node scripts/verify-security.mjs",
+    "verify:architecture": "node scripts/verify-architecture.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

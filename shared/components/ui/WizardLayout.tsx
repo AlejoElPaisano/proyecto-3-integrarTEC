@@ -7,7 +7,7 @@ interface WizardLayoutProps {
   glow?: boolean
 }
 
-export function WizardLayout({ children, currentStep = 1, glow = true }: WizardLayoutProps) {
+export function WizardLayout({ children, currentStep, glow = true }: WizardLayoutProps) {
   return (
     <div
       style={{

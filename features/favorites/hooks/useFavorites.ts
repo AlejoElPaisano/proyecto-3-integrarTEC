@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback } from "react"
 import { useFavoriteStore } from "@/features/favorites/store"
 import type {
