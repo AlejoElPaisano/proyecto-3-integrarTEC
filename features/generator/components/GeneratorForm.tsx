@@ -39,21 +39,81 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
   if (!hasMounted) return null
 
   return (
-    <div className="rounded-[var(--radius-lg)] border border-(--color-border) bg-(--color-card) p-4 shadow-[var(--glass-shadow)] sm:p-5">
-      <h2 className="mb-3 text-lg font-semibold text-(--color-text)">
-        Personalizá tu contraseña
-      </h2>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem", textAlign: "left" }}>
+      <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+        <div
+          aria-hidden="true"
+          style={{
+            fontSize: "2.5rem",
+            display: "inline-block",
+            marginBottom: "0.4rem",
+            filter: "drop-shadow(0 0 20px rgba(99,102,241,0.3))",
+          }}
+        >
+          🎨
+        </div>
 
-      <div className="mb-2 rounded-xl border border-(--color-border) p-3 sm:px-4">
+        <h1
+          style={{
+            fontSize: "1.8rem",
+            fontWeight: 800,
+            letterSpacing: "-0.03em",
+            background: "linear-gradient(135deg, #e2e2f0, #a78bfa)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            marginBottom: "0.3rem",
+          }}
+        >
+          Personalizá tu contraseña
+        </h1>
+
+        <p
+          style={{
+            color: "var(--color-text-secondary)",
+            fontSize: "0.95rem",
+          }}
+        >
+          Ajustá la longitud, separadores y categorías a tu medida.
+        </p>
+      </div>
+
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
         <label
           htmlFor="wordCount"
-          className="mb-2 flex items-center justify-between text-sm font-medium text-(--color-text-secondary)"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+            marginBottom: "0.6rem",
+          }}
         >
-          <span className="flex items-center gap-2">
-            <span aria-hidden="true" className="text-base">📝</span>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>📝</span>
             Cantidad de palabras
           </span>
-          <span className="font-bold text-(--color-accent)">{config.wordCount}</span>
+          <span
+            style={{
+              fontWeight: 800,
+              fontSize: "0.95rem",
+              color: "#ec4899",
+              background: "rgba(236, 72, 153, 0.15)",
+              padding: "0.15rem 0.6rem",
+              borderRadius: "8px",
+            }}
+          >
+            {config.wordCount}
+          </span>
         </label>
         <input
           id="wordCount"
@@ -66,22 +126,41 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
             updateOption("wordCount", Number(event.target.value))
             onSettingChange?.("wordCount")
           }}
-          className="w-full cursor-pointer accent-(--color-accent)"
+          style={{
+            width: "100%",
+            cursor: "pointer",
+            accentColor: "var(--color-pink)",
+          }}
         />
-        <div className="mt-2 flex justify-between text-xs text-(--color-text-tertiary)">
-          <span>2</span>
-          <span>4</span>
-          <span>6</span>
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.4rem", fontSize: "0.75rem", color: "var(--color-text-tertiary)", fontWeight: 600 }}>
+          <span>2 palabras</span>
+          <span>4 palabras</span>
+          <span>6 palabras</span>
         </div>
       </div>
 
-      <div className="mb-2 rounded-xl border border-(--color-border) p-3 sm:px-4">
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
         <label
           htmlFor="separator"
-          className="mb-2 flex items-center gap-2 text-sm font-medium text-(--color-text-secondary)"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+            marginBottom: "0.5rem",
+          }}
         >
-          <span aria-hidden="true" className="text-base">🔗</span>
-          Separador
+          <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>🔗</span>
+          Separador de palabras
         </label>
         <select
           id="separator"
@@ -90,7 +169,18 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
             updateOption("separator", event.target.value)
             onSettingChange?.("separator")
           }}
-          className="w-full cursor-pointer rounded-xl border border-(--color-border) bg-(--color-surface) px-3 py-2.5 font-sans text-sm text-(--color-text) transition-[border-color,box-shadow] duration-[var(--duration-fast)] ease-(--ease-out) focus:border-(--color-border-focus) focus:shadow-[0_0_0_1px_var(--color-border-focus)] focus:outline-none"
+          style={{
+            width: "100%",
+            cursor: "pointer",
+            borderRadius: "10px",
+            border: "1px solid var(--color-border)",
+            background: "var(--color-surface)",
+            padding: "0.6rem 0.85rem",
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.875rem",
+            color: "var(--color-text)",
+            outline: "none",
+          }}
         >
           <option value="-">Guión ( - )</option>
           <option value=".">Punto ( . )</option>
@@ -99,19 +189,41 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
         </select>
       </div>
 
-      <div className="mb-2 rounded-xl border border-(--color-border) p-3 sm:px-4">
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
         <button
           type="button"
           onClick={() => setShowAdvanced((current) => !current)}
           aria-expanded={showAdvanced}
-          className="flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-sm font-semibold text-(--color-accent) transition-colors duration-[var(--duration-fast)] hover:text-(--color-accent-hover)"
+          style={{
+            all: "unset",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            cursor: "pointer",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+          }}
         >
-          <span aria-hidden="true" className="text-base">⚙️</span>
-          {showAdvanced ? "Ocultar opciones avanzadas ↑" : "Ver opciones avanzadas ↓"}
+          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>⚙️</span>
+            Opciones avanzadas
+          </span>
+          <span style={{ fontSize: "0.85rem", color: "var(--color-pink)", fontWeight: 700 }}>
+            {showAdvanced ? "Ocultar ↑" : "Mostrar ↓"}
+          </span>
         </button>
 
         {showAdvanced && (
-          <div className="mt-4 flex flex-col gap-3">
+          <div style={{ marginTop: "0.85rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
             <Toggle
               id="includeNumbers"
               label="Incluir números"
@@ -146,17 +258,60 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
         )}
       </div>
 
-      <div className="mb-3 rounded-xl border border-(--color-border) p-3 sm:px-4">
-        <p className="mb-2 text-xs font-medium text-(--color-text-secondary)">
-          Elegí las categorías que quieras incluir:
-        </p>
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+            marginBottom: "0.65rem",
+          }}
+        >
+          <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>🏷️</span>
+          Categorías de palabras
+        </label>
         <CategoryChips />
       </div>
 
       <button
         type="button"
         onClick={handleGenerate}
-        className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] border-0 bg-[image:var(--gradient-cta)] px-8 py-4 text-lg font-bold text-white transition-[transform,box-shadow] duration-150 ease-(--ease-out) hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(236,72,153,0.35)]"
+        style={{
+          all: "unset",
+          cursor: "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "0.5rem",
+          marginTop: "0.5rem",
+          padding: "1rem 2rem",
+          borderRadius: "14px",
+          background: "linear-gradient(135deg, #ec4899, #818cf8)",
+          color: "#fff",
+          fontSize: "1.125rem",
+          fontWeight: 700,
+          fontFamily: "var(--font-sans)",
+          transition: "all 150ms cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 4px 20px rgba(236,72,153,0.25)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-2px)"
+          e.currentTarget.style.boxShadow = "0 8px 32px rgba(236,72,153,0.35)"
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)"
+          e.currentTarget.style.boxShadow = "0 4px 20px rgba(236,72,153,0.25)"
+        }}
         aria-label="Generar contraseña con las opciones seleccionadas"
       >
         ✨ Generar frase mágica
@@ -164,3 +319,4 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
     </div>
   )
 }
+

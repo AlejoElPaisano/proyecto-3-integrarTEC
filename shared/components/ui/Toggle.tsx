@@ -21,11 +21,11 @@ export function Toggle({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "0.5rem 0.85rem",
+        padding: "0.6rem 0.85rem",
         borderRadius: "10px",
-        background: "transparent",
-        border: "1px solid var(--color-border)",
-        transition: "color, background-color, border-color, box-shadow var(--duration-fast) var(--ease-out)",
+        background: checked ? "rgba(236, 72, 153, 0.08)" : "var(--color-surface)",
+        border: checked ? "1px solid rgba(236, 72, 153, 0.25)" : "1px solid var(--color-border)",
+        transition: "all var(--duration-fast) var(--ease-out)",
       }}
     >
       <div>
@@ -67,14 +67,32 @@ export function Toggle({
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-(--radius-pill) border-none transition-colors duration-[var(--duration-fast)] ease-(--ease-out) focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-accent)] focus:outline-none ${
-          checked ? "bg-(--color-accent)" : "bg-(--color-text-tertiary)"
-        }`}
+        style={{
+          position: "relative",
+          display: "inline-flex",
+          height: "1.5rem",
+          width: "2.75rem",
+          flexShrink: 0,
+          alignItems: "center",
+          borderRadius: "9999px",
+          border: "none",
+          cursor: "pointer",
+          background: checked ? "linear-gradient(135deg, #ec4899, #818cf8)" : "var(--color-text-tertiary)",
+          transition: "background var(--duration-fast) var(--ease-out)",
+          padding: "2px",
+        }}
       >
         <span
-          className={`inline-block h-4 w-4 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition-transform duration-[var(--duration-fast)] ease-(--ease-out) ${
-            checked ? "translate-x-6" : "translate-x-1"
-          }`}
+          style={{
+            display: "inline-block",
+            height: "1.25rem",
+            width: "1.25rem",
+            borderRadius: "50%",
+            background: "#ffffff",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+            transform: checked ? "translateX(1.25rem)" : "translateX(0)",
+            transition: "transform var(--duration-fast) var(--ease-out)",
+          }}
         />
       </button>
     </div>
