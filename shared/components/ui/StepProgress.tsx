@@ -1,4 +1,4 @@
- 'use client'
+'use client'
 
 import { usePasswordStore } from '@/features/generator/store'
 
@@ -64,7 +64,7 @@ export function StepProgress({ currentStep }: StepProgressProps) {
 
       {STEPS.map((step) => {
         const isActive = activeStep === step.number
-        const isDone   = activeStep > step.number
+        const isDone = activeStep > step.number
 
         return (
           <div
@@ -99,13 +99,13 @@ export function StepProgress({ currentStep }: StepProgressProps) {
                 background: isActive
                   ? 'var(--gradient-cta)'
                   : isDone
-                  ? 'var(--gradient-blue)'
-                  : 'rgba(12,18,40,0.8)',
+                    ? 'var(--gradient-blue)'
+                    : 'rgba(12,18,40,0.8)',
                 border: isActive
                   ? '2px solid var(--color-pink)'
                   : isDone
-                  ? '2px solid var(--color-accent)'
-                  : '2px solid var(--color-border)',
+                    ? '2px solid var(--color-accent)'
+                    : '2px solid var(--color-border)',
                 color: isActive || isDone ? '#fff' : 'var(--color-text-tertiary)',
                 boxShadow: isActive
                   ? '0 0 20px var(--color-pink-glow)'
@@ -125,8 +125,8 @@ export function StepProgress({ currentStep }: StepProgressProps) {
                 color: isActive
                   ? 'var(--color-pink)'
                   : isDone
-                  ? 'var(--color-accent)'
-                  : 'var(--color-text-tertiary)',
+                    ? 'var(--color-accent)'
+                    : 'var(--color-text-tertiary)',
               }}
             >
               {step.label}

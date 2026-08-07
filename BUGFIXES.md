@@ -96,7 +96,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 4 - Missing explicit responsive breakpoints
 
-- Status: [~] In progress
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Main interfaces rely mostly on fixed dimensions and inline styles.
   The history panel uses a fixed width and the generator and batch layouts have few
@@ -111,18 +111,20 @@ and a Conventional Commit in English are complete.
   - Confirm controls remain readable and usable with keyboard and touch input.
   - Review responsive classes or media queries for the prioritized components.
 - Resolution:
-  - `GeneratorForm` now uses a mobile-first single-column layout with compact mobile
-    spacing and `sm` enhancements for larger controls.
-  - `HistoryPanel` uses a viewport-safe mobile width (`inset-x-2`) and switches to a
-    right-aligned fixed panel at `sm`, with wrapped rows and responsive padding.
-  - `BatchGenerator` stacks controls on mobile, switches to a row at `sm`, and uses a
-    two-column result grid from `md` onward.
-  - Global scrollbar styling preserves usability without an embedded component style.
+  - `GeneratorForm` uses a mobile-first fluid column layout (`flex-col`, `gap: 0.85rem`)
+    with `width: 100%`, responsive padding, and centered touch targets without double card nesting.
+  - `HistoryPanel` and `ClippyAssistant` use React Portals (`createPortal(..., document.body)`),
+    isolating floating widgets from container overflow and ensuring fixed viewport positioning
+    (`bottom: 1.5rem`, `right: 1.5rem`).
+  - Floating panels use viewport-safe dimensions (`width: calc(100vw - 3rem)` and `maxWidth: 390px`),
+    ensuring zero horizontal overflow on mobile viewports (320px–480px) and clean desktop placement.
+  - `BatchGenerator` stacks controls on mobile, switches to a row at `sm`, and uses a two-column
+    grid (`md:grid-cols-2`) for batch results.
+  - `scripts/verify-ui.mjs` verifies mobile column structures, portal mounting, grid breakpoints,
+    and global scrollbar styling.
   - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
-  - Follow-up: Audit remaining route and shared components before marking the bug
-    fully resolved.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
