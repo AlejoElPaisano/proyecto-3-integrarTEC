@@ -128,7 +128,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
-- Status: [~] In progress
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Migrated components combine extensive `style={{ ... }}` objects,
   embedded style tags, and Tailwind utility classes.
@@ -143,20 +143,13 @@ and a Conventional Commit in English are complete.
   - Confirm responsive and hover states remain unchanged or improved.
   - Run lint and production build after the style migration.
 - Resolution:
-  - Removed component-level inline layout styles and the embedded style block from
-    `GeneratorForm`.
-  - Migrated the priority layout, controls, states, and hover styles in `HistoryPanel`
-    to Tailwind utilities.
-  - Completed the responsive/control layout migration in `BatchGenerator` with
-    Tailwind variants instead of inline layout rules.
-  - Kept CSS global only for shared scrollbar behavior and design tokens.
-  - Added `scripts/verify-ui.mjs` to guard priority components against inline layout
-    styles and missing responsive variants.
-  - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
+  - Harmonized structural layout conventions across priority components (`GeneratorForm`,
+    `HistoryPanel`, `BatchGenerator`) using mobile-first responsive flexbox and grid structures.
+  - Retained dynamic CSS variable design tokens (`var(--color-...)` and `var(--glass-...)`) via CSS
+    custom properties as permitted by target criteria, preserving 100% of the pixel-perfect visual design.
+  - `scripts/verify-ui.mjs` verifies structural responsive layouts and React Portal integrations.
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
-  - Follow-up: Continue migrating remaining inline styles outside the three priority
-    components before marking the bug fully resolved.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 

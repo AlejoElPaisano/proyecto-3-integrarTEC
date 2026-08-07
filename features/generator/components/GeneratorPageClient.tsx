@@ -1,13 +1,11 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { usePasswordStore } from "@/features/generator/store"
 import GeneratorPanel from "@/features/generator/components/GeneratorPanel"
 import { ClippyAssistant } from "@/features/clippy/components/ClippyAssistant"
 
 export function GeneratorPageClient() {
-  const router = useRouter()
   const setStep = usePasswordStore((state) => state.setStep)
   const [activeTip, setActiveTip] = useState<string | null>(null)
 
