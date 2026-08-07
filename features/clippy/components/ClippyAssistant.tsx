@@ -2,83 +2,84 @@
 
 import { usePasswordStore } from "@/features/generator/store";
 import { useState, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 const TIPS: Record<string, { icon: string; title: string; text: string }[]> = {
-  1: [
-    {
-      icon: "💡",
-      title: "¿Qué es un passphrase?",
-      text: "Una frase de varias palabras al azar. Fácil de recordar, difícil de adivinar.",
-    },
-    {
-      icon: "🔐",
-      title: "Más palabras = más seguro",
-      text: "Cada palabra adicional multiplica la entropía. Recomendamos 4 o más.",
-    },
-  ],
-  2: [
-    {
-      icon: "💬",
-      title: "¡Hola!",
-      text: "Bienvenido a la personalización. Mové el slider o probá los toggles y te explico cada opción.",
-    },
-  ],
-  3: [
-    {
-      icon: "✅",
-      title: "Verificá la entropía",
-      text: "Buscá al menos 60 bits para cuentas importantes, 80+ para máxima seguridad.",
-    },
-    {
-      icon: "📋",
-      title: "Copiá y guardá",
-      text: "Usá el botón de copiar y almacená tu frase de forma segura.",
-    },
-  ],
+	1: [
+		{
+			icon: "💡",
+			title: "¿Qué es un passphrase?",
+			text: "Una frase de varias palabras al azar. Fácil de recordar, difícil de adivinar.",
+		},
+		{
+			icon: "🔐",
+			title: "Más palabras = más seguro",
+			text: "Cada palabra adicional multiplica la entropía. Recomendamos 4 o más.",
+		},
+	],
+	2: [
+		{
+			icon: "💬",
+			title: "¡Hola!",
+			text: "Bienvenido a la personalización. Mové el slider o probá los toggles y te explico cada opción.",
+		},
+	],
+	3: [
+		{
+			icon: "✅",
+			title: "Verificá la entropía",
+			text: "Buscá al menos 60 bits para cuentas importantes, 80+ para máxima seguridad.",
+		},
+		{
+			icon: "📋",
+			title: "Copiá y guardá",
+			text: "Usá el botón de copiar y almacená tu frase de forma segura.",
+		},
+	],
 };
 
 const SETTING_TIPS: Record<string, { icon: string; title: string; text: string }> = {
-  wordCount: {
-    icon: "📏",
-    title: "Cantidad de palabras",
-    text: "¡Excelente! Cada palabra extra suma ~3-4 bits de entropía. Con 4 palabras tenés ~44 bits, suficiente para cuentas diarias. Con 6 llegás a ~66 bits, ideal para cosas importantes.",
-  },
-  separator: {
-    icon: "🔗",
-    title: "Separador",
-    text: "¡Bien elegido! Los separadores distinguen visualmente cada palabra y evitan errores al leer o tipear. Guiones y puntos son los más usados por su claridad.",
-  },
-  includeNumbers: {
-    icon: "🔢",
-    title: "Números",
-    text: "¡Números activados! Un número de 2 dígitos suma ~6.5 bits extra. Cero esfuerzo para tu memoria, gran ganancia de seguridad.",
-  },
-  includeSymbols: {
-    icon: "🔣",
-    title: "Símbolos",
-    text: "¡Símbolos activados! Un símbolo suma ~3 bits. Combinado con números, son ~10 bits extras. Hack de seguridad gratuito.",
-  },
-  capitalize: {
-    icon: "🔠",
-    title: "Capitalizar",
-    text: "¡Mayúsculas activadas! Cada inicial mayúscula suma 1 bit por palabra. En 4 palabras son 4 bits regalados sin que cambies tu forma de recordar.",
-  },
-  noNumbers: {
-    icon: "🔢",
-    title: "Sin números",
-    text: "Los números suman ~6.5 bits extra sin esfuerzo. Recomendamos activarlos para mayor seguridad.",
-  },
-  noSymbols: {
-    icon: "🔣",
-    title: "Sin símbolos",
-    text: "Agregar un símbolo aporta ~3 bits adicionales. Es una mejora sencilla que fortalece tu contraseña.",
-  },
-  noCapitalize: {
-    icon: "🔠",
-    title: "Sin mayúsculas",
-    text: "Las mayúsculas aportan 1 bit por palabra. Activarlas no afecta la memorabilidad pero sí la seguridad.",
-  },
+	wordCount: {
+		icon: "📏",
+		title: "Cantidad de palabras",
+		text: "¡Excelente! Cada palabra extra suma ~3-4 bits de entropía. Con 4 palabras tenés ~44 bits, suficiente para cuentas diarias. Con 6 llegás a ~66 bits, ideal para cosas importantes.",
+	},
+	separator: {
+		icon: "🔗",
+		title: "Separador",
+		text: "¡Bien elegido! Los separadores distinguen visualmente cada palabra y evitan errores al leer o tipear. Guiones y puntos son los más usados por su claridad.",
+	},
+	includeNumbers: {
+		icon: "🔢",
+		title: "Números",
+		text: "¡Números activados! Un número de 2 dígitos suma ~6.5 bits extra. Cero esfuerzo para tu memoria, gran ganancia de seguridad.",
+	},
+	includeSymbols: {
+		icon: "🔣",
+		title: "Símbolos",
+		text: "¡Símbolos activados! Un símbolo suma ~3 bits. Combinado con números, son ~10 bits extras. Hack de seguridad gratuito.",
+	},
+	capitalize: {
+		icon: "🔠",
+		title: "Capitalizar",
+		text: "¡Mayúsculas activadas! Cada inicial mayúscula suma 1 bit por palabra. En 4 palabras son 4 bits regalados sin que cambies tu forma de recordar.",
+	},
+	noNumbers: {
+		icon: "🔢",
+		title: "Sin números",
+		text: "Los números suman ~6.5 bits extra sin esfuerzo. Recomendamos activarlos para mayor seguridad.",
+	},
+	noSymbols: {
+		icon: "🔣",
+		title: "Sin símbolos",
+		text: "Agregar un símbolo aporta ~3 bits adicionales. Es una mejora sencilla que fortalece tu contraseña.",
+	},
+	noCapitalize: {
+		icon: "🔠",
+		title: "Sin mayúsculas",
+		text: "Las mayúsculas aportan 1 bit por palabra. Activarlas no afecta la memorabilidad pero sí la seguridad.",
+	},
 };
 
 export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: string | null; floating?: boolean }) {
@@ -128,7 +129,7 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 
 	const showBubble = autoTip && !historyOpen && !isDismissed;
 
-	return (
+	return createPortal(
 		<div
 			style={{
 				position: "fixed",
@@ -147,25 +148,30 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 					style={{
 						display: "flex",
 						flexDirection: "column",
-						gap: "0.75rem",
-						padding: "0.85rem 1rem",
-						borderRadius: "14px",
-						background: "var(--color-accent-soft)",
-						border: "1px solid var(--color-border)",
-						fontSize: "0.85rem",
-						maxWidth: "320px",
+						gap: "0.85rem",
+						padding: "1.1rem 1.25rem",
+						borderRadius: "18px",
+						background: "var(--color-card)",
+						backdropFilter: "blur(20px)",
+						WebkitBackdropFilter: "blur(20px)",
+						border: "1px solid var(--glass-border)",
+						boxShadow: "var(--glass-shadow)",
+						fontSize: "0.875rem",
+						maxWidth: "380px",
+						width: "calc(100vw - 3rem)",
 					}}
 				>
 					<div style={{ display: "flex", alignItems: "flex-start", gap: "0.85rem" }}>
 						<div
 							aria-hidden="true"
 							style={{
-								width: "44px",
-								height: "44px",
+								width: "42px",
+								height: "42px",
 								borderRadius: "12px",
 								display: "grid",
 								placeItems: "center",
 								background: "var(--color-accent-soft)",
+								border: "1px solid var(--color-border)",
 								flexShrink: 0,
 								fontSize: "1.3rem",
 							}}
@@ -176,16 +182,21 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 							<strong
 								style={{
 									display: "block",
-									fontSize: "0.9rem",
-									marginBottom: "0.1rem",
+									fontSize: "0.95rem",
+									fontWeight: 700,
+									color: "var(--color-text)",
+									marginBottom: "0.2rem",
+									lineHeight: 1.3,
 								}}
 							>
 								{autoTip.title}
 							</strong>
 							<span
 								style={{
-									fontSize: "0.8rem",
+									fontSize: "0.85rem",
 									color: "var(--color-text-secondary)",
+									lineHeight: 1.45,
+									display: "block",
 								}}
 							>
 								{autoTip.text}
@@ -194,15 +205,29 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 						<button
 							type="button"
 							onClick={() => setDismissedTipKey(tipKey)}
-							aria-label="Descartar"
+							aria-label="Descartar tip"
 							style={{
 								all: "unset",
 								cursor: "pointer",
 								flexShrink: 0,
-								fontSize: "1rem",
-								lineHeight: 1,
+								width: "24px",
+								height: "24px",
+								borderRadius: "50%",
+								display: "grid",
+								placeItems: "center",
+								fontSize: "0.75rem",
 								color: "var(--color-text-tertiary)",
-								padding: "2px",
+								background: "var(--color-accent-soft)",
+								border: "1px solid var(--color-border)",
+								transition: "all var(--duration-fast) var(--ease-out)",
+							}}
+							onMouseEnter={(e) => {
+								e.currentTarget.style.color = "var(--color-text)";
+								e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.color = "var(--color-text-tertiary)";
+								e.currentTarget.style.background = "var(--color-accent-soft)";
 							}}
 						>
 							✕
@@ -210,10 +235,10 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 					</div>
 
 					{autoTip.type === "result" && autoTip.recommendations.length > 0 && (
-						<div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-							<div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8rem", fontWeight: 700, color: "var(--color-text)" }}>
+						<div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", marginTop: "0.25rem", paddingTop: "0.75rem", borderTop: "1px solid var(--color-border)" }}>
+							<div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem", fontWeight: 700, color: "var(--color-text)" }}>
 								<span style={{ fontSize: "1rem" }}>🛡️</span>
-								Sugerencias para reforzar tu frase
+								Sugerencias de seguridad
 							</div>
 							{autoTip.recommendations.map((rec) => (
 								<div
@@ -221,23 +246,23 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 									style={{
 										display: "flex",
 										alignItems: "flex-start",
-										gap: "0.6rem",
-										padding: "0.6rem 0.85rem",
-										borderRadius: "10px",
+										gap: "0.65rem",
+										padding: "0.65rem 0.85rem",
+										borderRadius: "12px",
 										background: "var(--color-accent-soft)",
 										border: "1px solid var(--color-border)",
-										fontSize: "0.78rem",
+										fontSize: "0.8rem",
 									}}
 								>
-									<span style={{ fontSize: "0.9rem", flexShrink: 0 }}>
+									<span style={{ fontSize: "0.95rem", flexShrink: 0, marginTop: "1px" }}>
 										{rec.icon === "shield" ? "🛡️" : rec.icon === "warning" ? "⚠️" : "ℹ️"}
 									</span>
 									<div>
-										<strong style={{ display: "block", marginBottom: "0.1rem", color: "var(--color-text)" }}>
+										<strong style={{ display: "block", marginBottom: "0.15rem", color: "var(--color-text)", fontSize: "0.825rem" }}>
 											{rec.title}
 										</strong>
 										{rec.detail && (
-											<span style={{ color: "var(--color-text-secondary)", lineHeight: 1.4 }}>
+											<span style={{ color: "var(--color-text-secondary)", lineHeight: 1.4, fontSize: "0.78rem" }}>
 												{rec.detail}
 											</span>
 										)}
@@ -302,6 +327,7 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 					</span>
 				)}
 			</button>
-		</div>
+		</div>,
+		document.body
 	);
 }

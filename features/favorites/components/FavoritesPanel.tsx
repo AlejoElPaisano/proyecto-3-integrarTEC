@@ -89,11 +89,11 @@ export function FavoritesPanel({
           <div
             key={fav.id}
             style={{
-               display: "flex",
-               alignItems: "center",
-               gap: "0.5rem",
-               flexWrap: "wrap",
-               padding: compact ? "0.5rem 0.75rem" : "0.75rem 1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              flexWrap: "wrap",
+              padding: compact ? "0.5rem 0.75rem" : "0.75rem 1rem",
               borderRadius: compact ? "10px" : "12px",
               background: "var(--color-accent-soft)",
               border: "1px solid var(--color-border)",
