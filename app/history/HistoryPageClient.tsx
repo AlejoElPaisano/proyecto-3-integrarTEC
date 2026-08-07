@@ -17,8 +17,10 @@ export function HistoryPageClient() {
   const handleCopy = async (id: string, text: string) => {
     setCopyErrorId(null)
     try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable")
       await navigator.clipboard.writeText(text)
       setCopiedId(id)
+      setCopyErrorId(null)
       setTimeout(() => setCopiedId(null), 2000)
     } catch {
       setCopyErrorId(id)
@@ -116,7 +118,6 @@ export function HistoryPageClient() {
                         type="button"
                         onClick={() => void handleCopy(item.id, item.password!)}
                         aria-label={copiedId === item.id ? "Contraseña copiada" : "Copiar contraseña"}
-                        aria-live="polite"
                         className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg font-sans text-xs transition-colors duration-150 ease-out"
                         style={{
                           background: copiedId === item.id ? "rgba(34, 197, 94, 0.15)" : "var(--color-surface)",
@@ -130,6 +131,7 @@ export function HistoryPageClient() {
                     {copyErrorId === item.id && (
                       <p
                         role="alert"
+                        aria-live="polite"
                         className="text-[0.65rem] font-semibold"
                         style={{ color: "var(--color-error)" }}
                       >
