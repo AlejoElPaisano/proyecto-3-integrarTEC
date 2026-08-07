@@ -6,8 +6,8 @@ PassFrases is a modern, mathematically secure passphrase generator migrated from
 
 - **High-Entropy Passphrase Generation**: Generates memorable passphrases with custom separators, capitalization, numbers, and symbols.
 - **100% Cryptographically Secure**: Uses `crypto.getRandomValues()` with rejection sampling to eliminate modulo bias across word, number, and symbol selections.
-- **7 Thematic Word Categories (167 total words)**:
-  - 🐶 **Animales** (27 words)
+- **7 Thematic Word Categories (165 total words)**:
+  - 🐶 **Animales** (25 words)
   - 🌿 **Naturaleza** (25 words)
   - 🏃 **Verbos** (25 words)
   - 🎨 **Colores** (25 words)

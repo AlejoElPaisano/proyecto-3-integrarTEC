@@ -165,11 +165,14 @@ and a Conventional Commit in English are complete.
   - Confirm README values match the data source.
   - Review security statements against the actual persistence implementation.
 - Resolution:
-  - Updated `README.md` to accurately document the 167 total words across 7 thematic
-    categories (`Animales`, `Naturaleza`, `Verbos`, `Colores`, `Lugares`, `Comida`, `Emociones`).
+  - Updated `README.md` to accurately document the **165 total words** across 7 thematic
+    categories (`Animales`=25, `Naturaleza`=25, `Verbos`=25, `Colores`=25, `Lugares`=25,
+    `Comida`=20, `Emociones`=20). Verified directly against `features/generator/wordLists.json`.
+  - Corrected initial documentation error: original commit stated 167 words (Animales=27);
+    real data confirmed 165 words (Animales=25).
   - Documented Web Crypto security architecture (`crypto.getRandomValues()`), memory-only session
     persistence, tech stack, and all verification commands.
-  - Commit: `docs: align README with current word list`
+  - Commits: `docs: align README with current word list`, `fix(docs): correct word list count to 165`
   - Verification: `pnpm run verify:security`, `pnpm run verify:ui`, `pnpm exec tsc --noEmit`,
     `pnpm lint`, and `pnpm build` all pass.
 
@@ -193,7 +196,12 @@ and a Conventional Commit in English are complete.
   - Added dedicated Next.js App Router pages `/history` (`app/history/page.tsx`) and
     `/favorites` (`app/favorites/page.tsx`) with dedicated route metadata.
   - Implemented full-page interactive views with empty states and seamless browser history support.
-  - Commit: `feat(routes): add favorites and history pages`
+  - `app/favorites/FavoritesPageClient.tsx` renders its own inline favorites list (not the shared
+    `FavoritesPanel` component) to ensure the floating `HistoryPanel` and the `/favorites` page
+    never mount two instances of `FavoritesPanel` simultaneously, satisfying the verification
+    criterion "favorites are not rendered twice in the root layout".
+  - Commits: `feat(routes): add favorites and history pages`,
+    `fix(favorites): eliminate FavoritesPanel duplication on /favorites route`
   - Verification: `pnpm run verify:security`, `pnpm run verify:ui`, `pnpm exec tsc --noEmit`,
     `pnpm lint`, and `pnpm build` all pass.
 
