@@ -131,7 +131,6 @@ export function HistoryPageClient() {
                     {copyErrorId === item.id && (
                       <p
                         role="alert"
-                        aria-live="polite"
                         className="text-[0.65rem] font-semibold"
                         style={{ color: "var(--color-error)" }}
                       >
