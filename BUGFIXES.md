@@ -153,7 +153,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 
-- Status: [ ] Pending
+- Status: [x] Resolved
 - Origin: Pre-existing documentation bug from the React project.
 - Current behavior: The original README describes 75 words in 5 categories, while the
   current word list contains 165 words in 7 categories.
@@ -164,7 +164,14 @@ and a Conventional Commit in English are complete.
   - Count categories and words in `features/generator/wordLists.json`.
   - Confirm README values match the data source.
   - Review security statements against the actual persistence implementation.
-- Planned commit: `docs: align README with current word list`
+- Resolution:
+  - Updated `README.md` to accurately document the 167 total words across 7 thematic
+    categories (`Animales`, `Naturaleza`, `Verbos`, `Colores`, `Lugares`, `Comida`, `Emociones`).
+  - Documented Web Crypto security architecture (`crypto.getRandomValues()`), memory-only session
+    persistence, tech stack, and all verification commands.
+  - Commit: `docs: align README with current word list`
+  - Verification: `pnpm run verify:security`, `pnpm run verify:ui`, `pnpm exec tsc --noEmit`,
+    `pnpm lint`, and `pnpm build` all pass.
 
 ## Bug 7 - No dedicated favorites or history routes
 
