@@ -12,14 +12,16 @@ export function HistoryPageClient() {
   const clearHistory = usePasswordStore((state) => state.clearHistory)
   const removeFromHistory = usePasswordStore((state) => state.removeFromHistory)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [copyErrorId, setCopyErrorId] = useState<string | null>(null)
 
   const handleCopy = async (id: string, text: string) => {
+    setCopyErrorId(null)
     try {
       await navigator.clipboard.writeText(text)
       setCopiedId(id)
       setTimeout(() => setCopiedId(null), 2000)
     } catch {
-      // Fallback
+      setCopyErrorId(id)
     }
   }
 
@@ -112,8 +114,9 @@ export function HistoryPageClient() {
                     {item.password && (
                       <button
                         type="button"
-                        onClick={() => handleCopy(item.id, item.password!)}
-                        aria-label="Copiar contraseña"
+                        onClick={() => void handleCopy(item.id, item.password!)}
+                        aria-label={copiedId === item.id ? "Contraseña copiada" : "Copiar contraseña"}
+                        aria-live="polite"
                         className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg font-sans text-xs transition-colors duration-150 ease-out"
                         style={{
                           background: copiedId === item.id ? "rgba(34, 197, 94, 0.15)" : "var(--color-surface)",
@@ -123,6 +126,15 @@ export function HistoryPageClient() {
                       >
                         {copiedId === item.id ? "✅" : "📋"}
                       </button>
+                    )}
+                    {copyErrorId === item.id && (
+                      <p
+                        role="alert"
+                        className="text-[0.65rem] font-semibold"
+                        style={{ color: "var(--color-error)" }}
+                      >
+                        No se pudo copiar
+                      </p>
                     )}
                     <button
                       type="button"
