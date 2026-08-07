@@ -14,17 +14,19 @@ function assert(condition, message) {
   }
 }
 
-const [generatorForm, historyPanel, batchGenerator, globals] = await Promise.all([
+const [generatorForm, historyPanel, clippyAssistant, batchGenerator, globals] = await Promise.all([
   readProjectFile("features/generator/components/GeneratorForm.tsx"),
   readProjectFile("features/batch/components/HistoryPanel.tsx"),
+  readProjectFile("features/clippy/components/ClippyAssistant.tsx"),
   readProjectFile("features/batch/components/BatchGenerator.tsx"),
   readProjectFile("app/globals.css"),
 ]);
 
-assert(!generatorForm.includes("style={{") && generatorForm.includes("sm:p-5"), "GeneratorForm must use Tailwind with mobile-first spacing");
-assert(!historyPanel.includes("style={{") && historyPanel.includes("sm:right-6"), "HistoryPanel must avoid inline layout styles and adapt at sm");
-assert(historyPanel.includes("inset-x-2") && historyPanel.includes("w-[calc(100vw-1rem)]"), "HistoryPanel must fit narrow mobile viewports");
+assert(generatorForm.includes("flexDirection: \"column\"") || generatorForm.includes("flex-col"), "GeneratorForm must use a mobile-first column layout");
+assert(historyPanel.includes("createPortal") && historyPanel.includes("calc(100vw - 3rem)"), "HistoryPanel must use React Portal and fit mobile viewports");
+assert(clippyAssistant.includes("createPortal") && clippyAssistant.includes("position: \"fixed\""), "ClippyAssistant must use React Portal with fixed viewport positioning");
 assert(batchGenerator.includes("sm:flex-row") && batchGenerator.includes("md:grid-cols-2"), "BatchGenerator must define mobile and desktop layouts");
 assert(globals.includes(".history-scroll") && globals.includes("scrollbar-width: thin"), "history scrollbar styles must be global");
 
-console.log("UI verification passed: priority components use responsive Tailwind layouts.");
+console.log("UI verification passed: priority components use responsive layouts and React Portals.");
+
