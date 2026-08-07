@@ -175,7 +175,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 7 - No dedicated favorites or history routes
 
-- Status: [ ] Pending
+- Status: [x] Resolved
 - Origin: Pre-existing architecture bug from the React project.
 - Current behavior: Favorites and history are available only through the floating
   history panel. The migrated App Router currently exposes only `/`, `/generator`,
@@ -189,7 +189,13 @@ and a Conventional Commit in English are complete.
   - Confirm both routes have meaningful title and description metadata.
   - Confirm browser back/forward and refresh work on both routes.
   - Confirm favorites and history are not rendered twice in the root layout.
-- Planned commit: `feat(routes): add favorites and history pages`
+- Resolution:
+  - Added dedicated Next.js App Router pages `/history` (`app/history/page.tsx`) and
+    `/favorites` (`app/favorites/page.tsx`) with dedicated route metadata.
+  - Implemented full-page interactive views with empty states and seamless browser history support.
+  - Commit: `feat(routes): add favorites and history pages`
+  - Verification: `pnpm run verify:security`, `pnpm run verify:ui`, `pnpm exec tsc --noEmit`,
+    `pnpm lint`, and `pnpm build` all pass.
 
 ## Bug 8 - Conventional Commits are not enforced consistently
 
