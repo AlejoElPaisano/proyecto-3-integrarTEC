@@ -39,7 +39,7 @@ for (const file of browserOnlyFiles) {
 }
 
 const layout = await readProjectFile("app/layout.tsx");
-assert(layout.includes("<HistoryPanel />"), "the root layout must mount HistoryPanel");
+assert(layout.includes("<HistoryPanelLazy />"), "the root layout must mount the lazy HistoryPanel wrapper");
 assert(!layout.includes("<FavoritesPanel />"), "the root layout must not duplicate FavoritesPanel");
 
 console.log("Architecture verification passed: routes are server-first and browser APIs are client-only.");
