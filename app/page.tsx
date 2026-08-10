@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { WizardLayout } from "@/shared/components/ui/WizardLayout"
 import { StartButton } from "@/features/generator/components/StartButton"
 import { ClippyAssistant } from "@/features/clippy/components/ClippyAssistant"
@@ -159,6 +160,15 @@ export default function Home() {
           </div>
 
           <StartButton />
+
+          <div style={{ marginTop: "0.75rem", textAlign: "center" }}>
+            <Link
+              href="/strength-checker"
+              className="rounded-sm border border-(--color-border) px-4 py-2 text-[0.85rem] font-medium text-(--color-text-secondary) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent) hover:bg-(--color-accent-soft)"
+            >
+              🔍 Verificar contraseña existente
+            </Link>
+          </div>
         </div>
       </WizardLayout>
       <ClippyAssistant floating />
