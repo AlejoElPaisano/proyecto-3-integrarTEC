@@ -1,6 +1,14 @@
+import type { Metadata } from "next"
 import { WizardLayout } from "@/shared/components/ui/WizardLayout"
 import { StartButton } from "@/features/generator/components/StartButton"
 import { ClippyAssistant } from "@/features/clippy/components/ClippyAssistant"
+
+export const metadata: Metadata = {
+  title: "Generador de passphrases seguras",
+  description:
+    "PassFrases crea passphrases matemáticamente seguras y fáciles de recordar, cifradas localmente en tu navegador. Sin servidores, sin telemetría.",
+  alternates: { canonical: "/" },
+}
 
 const BENEFITS = [
   {

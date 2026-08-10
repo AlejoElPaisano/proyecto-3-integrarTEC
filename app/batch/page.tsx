@@ -1,6 +1,14 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import BatchGenerator from "@/features/batch/components/BatchGenerator"
 import { BatchStateController } from "@/features/batch/components/BatchStateController"
+
+export const metadata: Metadata = {
+  title: "Generación por lote",
+  description:
+    "Generá múltiples passphrases de una sola vez con detección de similitud entre frases, y agregalas automáticamente al historial de sesión.",
+  alternates: { canonical: "/batch" },
+}
 
 export default function BatchPage() {
   return (
