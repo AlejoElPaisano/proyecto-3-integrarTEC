@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppLayout } from "@/shared/components/ui/AppLayout";
 import HistoryPanelLazy from "@/features/batch/components/HistoryPanelLazy";
+import { SITE_URL } from "@/shared/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,6 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "PassFrases | Tu contraseña perfecta",
     template: "%s | PassFrases",
