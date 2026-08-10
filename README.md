@@ -57,9 +57,10 @@ El registro completo y detallado de cada bug, su impacto, verificación y commit
 Más allá de la migración fiel del original, se incorporaron mejoras que aprovechan capacidades nativas de Next.js y refuerzan la seguridad:
 
 - **Rutas dedicadas `/favorites` y `/history`** con metadata propia y deep-linking (Bug 7), sin duplicar el panel flotante del layout.
-- **Infraestructura SEO completa**: `sitemap.ts` y `robots.ts` programáticos, metadata con `title` + `description` + Open Graph en las 5 rutas, canonical URLs.
+- **Infraestructura SEO completa**: `sitemap.ts` y `robots.ts` programáticos, metadata con `title` + `description` + Open Graph en las 6 rutas, canonical URLs.
 - **Boundaries de error y carga**: `not-found.tsx` (404), `error.tsx` (boundary de ruta), `global-error.tsx` (boundary raíz), `loading.tsx` (skeleton de streaming).
 - **Defensa en profundidad**: Content-Security-Policy y headers de seguridad (HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) configurados en `next.config.ts`.
+- **Verificador de fortaleza de contraseñas** en `/strength-checker`: permite auditar cualquier contraseña, no solo las generadas por PassFrases, con entropía en bits (charset y patrones), tiempo estimado de crackeo en escenarios online y offline con GPU, y recomendaciones accesibles específicas. Es 100% local: la contraseña nunca se persiste ni se envía.
 - **Criptografía reforzada**: PBKDF2 con 600 000 iteraciones (recomendación OWASP 2023) y AES-GCM 256 para cifrado de favoritos, con mapa de passphrases solo en memoria por sesión.
 - **3 scripts de verificación automatizada**: `verify:security` (proyección de persistencia, sin `Math.random()`, sin `alert()`), `verify:architecture` (rutas Server-first, APIs de navegador aisladas), `verify:ui` (layouts responsive, React Portals).
 
@@ -89,17 +90,19 @@ proyecto-3-integrarTEC/
 │   ├── globals.css               # Tailwind v4 + design tokens (@theme)
 │   ├── generator/page.tsx        # ruta "/generator" (Server Component)
 │   ├── batch/page.tsx            # ruta "/batch" (Server Component)
+│   ├── strength-checker/page.tsx # ruta "/strength-checker" (Server Component)
 │   ├── history/                  # ruta "/history" + HistoryPageClient
 │   └── favorites/                # ruta "/favorites" + FavoritesPageClient
 ├── features/                     # Features por dominio
 │   ├── generator/                # store, generate, entropy, similarity, wordLists.json
 │   ├── batch/                    # BatchGenerator, BatchStateController, HistoryPanel
 │   ├── favorites/                # store, hooks, FavoritesPanel
-│   └── clippy/                   # ClippyAssistant (asistente flotante via Portal)
+│   ├── clippy/                   # ClippyAssistant (asistente flotante via Portal)
+│   └── strength-checker/         # análisis de fortaleza y tiempos de crackeo
 ├── shared/                       # Componentes, hooks y librerías compartidos
 │   ├── components/ui/             # AppLayout, WizardLayout, CopyButton, Toggle, etc.
 │   ├── hooks/useHasMounted.ts     # guard de hidratación
-│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, site.ts
+│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, strength.ts, site.ts
 │   └── types/crypto.types.ts
 ├── services/crypto.service.ts    # AES-GCM + PBKDF2 (Web Crypto API)
 ├── scripts/                       # verify:security, verify:architecture, verify:ui
