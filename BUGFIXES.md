@@ -205,38 +205,6 @@ and a Conventional Commit in English are complete.
   - Verification: `pnpm run verify:security`, `pnpm run verify:ui`, `pnpm exec tsc --noEmit`,
     `pnpm lint`, and `pnpm build` all pass.
 
-## Bug 8 - Conventional Commits are not enforced consistently
-
-- Status: [ ] Pending
-- Origin: Pre-existing process issue from the React project.
-- Current behavior: The historical repository contains both Conventional Commits and
-  unprefixed messages.
-- Impact: Commit history is harder to automate, review, and use for release or change
-  tracking.
-- Target behavior: All new commits use an English Conventional Commit prefix such as
-  `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, or `chore:`.
-- Verification:
-  - Review every commit created during this migration.
-  - Document the rule in the project documentation.
-  - Add commit-message validation only if it is appropriate for the project setup.
-- Planned commit: `chore: document conventional commit policy`
-
-## Bug 9 - Git authorship and feature ownership are unbalanced
-
-- Status: [ ] Pending
-- Origin: Pre-existing collaboration/process issue from the React project.
-- Current behavior: Historical commit authorship is concentrated among a small number
-  of contributors.
-- Impact: The repository history does not clearly demonstrate balanced ownership of
-  features and pull requests.
-- Target behavior: Assign future migration features to contributors, use small feature
-  branches and pull requests, and rotate reviewers.
-- Verification:
-  - Record feature ownership and reviewers in the project documentation.
-  - Confirm future migration work is distributed across contributors.
-  - Review branch and pull request history during the final project audit.
-- Planned commit: `docs: document migration feature ownership`
-
 ## Migration Regression 1 - Clipboard copied encrypted payloads
 
 - Status: [x] Resolved
