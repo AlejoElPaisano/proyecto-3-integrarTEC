@@ -17,6 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://passfrases.vercel.app"),
   title: {
     default: "PassFrases | Tu contraseña perfecta",
     template: "%s | PassFrases",
