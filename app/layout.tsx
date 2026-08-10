@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     description:
       "Crea passphrases de alta entropía y gestión de favoritos cifrados.",
     type: "website",
+    images: ["/og-image.png"],
   },
 };
 
