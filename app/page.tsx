@@ -1,6 +1,17 @@
 import { WizardLayout } from "@/shared/components/ui/WizardLayout"
 import { StartButton } from "@/features/generator/components/StartButton"
 import { ClippyAssistant } from "@/features/clippy/components/ClippyAssistant"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Inicio | PassFrases",
+  description: "Creá passphrases seguras y fáciles de recordar en 3 simples pasos. Generación 100% local con criptografía segura.",
+  openGraph: {
+    title: "PassFrases — Tu contraseña perfecta",
+    description: "Frases con sentido, alta entropía, generadas localmente con Web Crypto API.",
+    type: "website",
+  },
+}
 
 const BENEFITS = [
   {
