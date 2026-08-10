@@ -22,6 +22,7 @@ const GUESSES_PER_SECOND_OFFLINE = 1e12;
 
 const COMMON_WORDS = [
   "password",
+  "contraseña",
   "contrasena",
   "123456",
   "qwerty",
