@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePasswordStore } from "@/features/generator/store";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
+import { QRCodeButton } from "@/shared/components/ui/QRCodeButton";
 
 export default function BatchGenerator() {
 	const hasMounted = useHasMounted();
@@ -148,6 +149,8 @@ export default function BatchGenerator() {
 									<span className="flex-1 select-all break-all font-mono text-[0.85rem] font-semibold text-text">
 										{result.password}
 									</span>
+
+									<QRCodeButton value={result.password} label="" />
 
 									<button
 										type="button"

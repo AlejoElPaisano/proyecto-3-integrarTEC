@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CopyButton } from "@/shared/components/ui/CopyButton";
+import { QRCodeButton } from "@/shared/components/ui/QRCodeButton";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 
 interface PasswordActionsProps {
@@ -146,6 +147,8 @@ export function PasswordActions({
 				>
 					{saved ? "⭐ Guardada" : "⭐ Guardar"}
 				</button>
+
+				<QRCodeButton value={password} label="QR" />
 
 				<CopyButton text={password} full label="Copiar" />
 			</div>
