@@ -66,9 +66,15 @@ function detectCharsets(password: string): {
   return { charsetSize, warnings };
 }
 
-function detectPatterns(password: string): string[] {
+const COMMON_WORD_PENALTY_BITS = 40;
+
+function detectPatterns(password: string): {
+  warnings: string[];
+  commonWord: boolean;
+} {
   const warnings: string[] = [];
   const lower = password.toLowerCase();
+  let commonWord = false;
 
   if (/19\d{2}|20[0-2]\d/.test(password)) {
     warnings.push(
@@ -97,9 +103,10 @@ function detectPatterns(password: string): string[] {
     warnings.push(
       "Contiene una palabra extremadamente común: aparece en el top de brechas.",
     );
+    commonWord = true;
   }
 
-  return warnings;
+  return { warnings, commonWord };
 }
 
 function formatDuration(seconds: number): string {
@@ -126,13 +133,22 @@ function crackTimeSeconds(bits: number, guessesPerSecond: number): number {
 export function analyzeArbitraryPassword(password: string): StrengthAnalysis {
   const length = password.length;
   const { charsetSize, warnings: charsetWarnings } = detectCharsets(password);
-  const patternWarnings = detectPatterns(password);
+  const { warnings: patternWarnings, commonWord } = detectPatterns(password);
 
   // Shannon entropy baseline
   let bits = length > 0 ? length * Math.log2(charsetSize) : 0;
 
   // Pattern penalty: each detected pattern reduces ~6 bits (heuristic)
   bits -= patternWarnings.length * 6;
+
+  // A password containing a known breach-list word provides ~0 effective
+  // entropy against a modern attacker. Apply a strong penalty separately so
+  // common-word passwords ("password123", "contraseña123") do not get
+  // labelled as strong despite their Shannon length.
+  if (commonWord) {
+    bits -= COMMON_WORD_PENALTY_BITS;
+  }
+
   bits = Math.max(0, Math.round(bits * 10) / 10);
 
   const crackOnline = crackTimeSeconds(bits, GUESSES_PER_SECOND_ONLINE);
