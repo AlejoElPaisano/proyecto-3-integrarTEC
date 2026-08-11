@@ -37,12 +37,15 @@ export function StrengthCheckerClient() {
         <div
           style={{
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'space-between',
+            columnGap: '1rem',
+            rowGap: '0.5rem',
             marginBottom: '1.5rem',
           }}
         >
-          <div>
+          <div style={{ minWidth: 0, flex: '1 1 auto' }}>
             <h1
               style={{
                 fontSize: '1.5rem',

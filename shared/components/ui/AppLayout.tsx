@@ -45,7 +45,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         {/* Nav + security badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <nav aria-label="Navegación principal">
+          <nav aria-label="Navegación principal" className="hidden sm:block">
             <Link
               href="/strength-checker"
               className="rounded-sm border border-(--color-border) px-3 py-1.5 text-[0.8rem] font-medium text-(--color-text-secondary) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent) hover:text-(--color-accent)"
