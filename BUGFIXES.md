@@ -305,3 +305,13 @@ and a Conventional Commit in English are complete.
 2. Bug 7 and migration regressions: routing, copied ciphertext, hydration, and layout.
 3. Bugs 3, 4, and 5: accessibility, responsive behavior, and maintainability.
 4. Bugs 6, 8, and 9: documentation and collaboration process.
+
+## Extra Feature — Password Strength Checker (Section 9)
+
+- Status: [x] Implemented
+- Origin: Optional functionality added during the migration.
+- Route: `/strength-checker`.
+- Motivation: PassFrases generates passphrases, but users also need to audit passwords they already use on other sites.
+- Resolution: Added a standalone Server Component route with a small Client Component boundary. The feature reuses `EntropyMeter`, `STRENGTH_CONFIG`, and `getStrengthLevel`, while keeping the pasted password in local component state only. It is never persisted in Zustand or `localStorage`, and is never sent to a server.
+- Verification: Analyze a long passphrase, a short alphanumeric password, a password containing common patterns, and an empty input. Confirm entropy, online/offline crack-time estimates, inline warnings, and live-region announcements.
+- Commits: `2e9aea0 feat(strength): add arbitrary password strength analyzer`, `f554e5b feat(strength-checker): add /strength-checker route with live analysis`.

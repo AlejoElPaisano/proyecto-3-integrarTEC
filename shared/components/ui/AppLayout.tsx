@@ -1,5 +1,6 @@
 import { Shield } from 'lucide-react'
 import type { ReactNode } from 'react'
+import Link from 'next/link'
 
 interface AppLayoutProps {
   children: ReactNode
@@ -42,21 +43,33 @@ export function AppLayout({ children }: AppLayoutProps) {
           </span>
         </div>
 
-        {/* Badge seguridad */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.4rem',
-          padding: '0.35rem 0.8rem',
-          background: 'var(--color-success-soft)',
-          border: '1px solid rgba(34,197,94,0.2)',
-          borderRadius: '99px',
-          fontSize: '0.75rem',
-          fontWeight: 500,
-          color: 'var(--color-success)',
-        }}>
-          <span aria-hidden="true">🔒</span>
-          100% local
+        {/* Nav + security badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <nav aria-label="Navegación principal" className="hidden sm:block">
+            <Link
+              href="/strength-checker"
+              className="rounded-sm border border-(--color-border) px-3 py-1.5 text-[0.8rem] font-medium text-(--color-text-secondary) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent) hover:text-(--color-accent)"
+            >
+              🔍 Verificar
+            </Link>
+          </nav>
+
+          {/* Badge seguridad */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            padding: '0.35rem 0.8rem',
+            background: 'var(--color-success-soft)',
+            border: '1px solid rgba(34,197,94,0.2)',
+            borderRadius: '99px',
+            fontSize: '0.75rem',
+            fontWeight: 500,
+            color: 'var(--color-success)',
+          }}>
+            <span aria-hidden="true">🔒</span>
+            100% local
+          </div>
         </div>
       </header>
 

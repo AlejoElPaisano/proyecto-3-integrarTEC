@@ -14,7 +14,7 @@ function assert(condition, message) {
   }
 }
 
-const serverRouteFiles = ["app/page.tsx", "app/generator/page.tsx", "app/batch/page.tsx"];
+const serverRouteFiles = ["app/page.tsx", "app/generator/page.tsx", "app/batch/page.tsx", "app/strength-checker/page.tsx"];
 const browserOnlyFiles = [
   "features/generator/store.ts",
   "features/generator/generate.ts",
