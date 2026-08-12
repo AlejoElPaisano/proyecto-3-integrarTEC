@@ -324,3 +324,21 @@ and a Conventional Commit in English are complete.
 - Resolution: Added `QRCodeButton` and `QRCodeModal` (Client Components using the native `<dialog>` element and the `qrcode` library) in `shared/components/ui/`, wired into `PasswordActions` (single generator) and `BatchGenerator` (per-result). The QR is rendered on a `<canvas>` in the browser; no server or network is involved. Followup commit migrated both components to Tailwind utilities (Bug 5), removed a redundant `console.error`, restored focus on modal close, gave each batch row a unique `aria-label`, and added assertions to `verify-ui.mjs`.
 - Verification: Open the generator, click the QR button, confirm the modal shows a scannable code and closes cleanly with focus returning to the trigger. Repeat in `/batch` and confirm each row's QR button announces its index to screen readers.
 - Commits: `10b929c feat(ui): implement QRCodeButton and QRCodeModal components`, `f4a479c feat(generator): add QR code transfer to single and batch generator views`, `5ff4796 fix(qr): migrate QR components to Tailwind and restore focus on close`, `847d7bc fix(a11y): unique aria-label for batch QR buttons`.
+
+## Extra Feature — Keyboard Shortcuts
+
+- Status: [x] Implemented
+- Origin: Optional functionality added during the migration.
+- Motivation: Power users (developers, admins) generate many passphrases and benefit from keyboard-driven workflows.
+- Resolution: Added `useKeyboardShortcuts` hook (`shared/hooks/useKeyboardShortcuts.ts`) listening for `Ctrl/Cmd+G` (generate), `Ctrl/Cmd+C` (copy current) and `Ctrl/Cmd+B` (toggle history). `Ctrl/Cmd+C` is intercepted only when no input/textarea is focused and no text is selected to preserve normal copy behaviour. Copy feedback is announced via a `sr-only` `role=status` live region, never `alert()`. A `⌨️ Atajos` badge in `ClippyAssistant` toggles a small panel listing the shortcuts, with `⌘` or `Ctrl` shown based on `navigator.platform`.
+- Verification: On `/generator`, press each shortcut and confirm the action runs. Select text in any input and press `Ctrl/Cmd+C` to confirm normal copy still works. Open the `⌨️ Atajos` panel in Clippy and confirm the list matches the implemented shortcuts.
+- Commits: `f6a8e15 feat(shortcuts): add keyboard shortcuts hook for generate, copy, and history`, `a74ae4a feat(clippy): add keyboard shortcuts badge and panel`.
+
+## Extra Feature — Encrypted Favorites Backup
+
+- Status: [x] Implemented
+- Origin: Optional functionality added during the migration.
+- Motivation: Favorites live in `localStorage`; changing browsers or clearing data loses them. Backup makes them portable without weakening the security model.
+- Resolution: Extracted `sanitizeFavorites` into `features/favorites/sanitize.ts` (server-safe, no `'use client'`) so backup logic can reuse the same validation. Added `serializeBackup` and `parseBackup` in `shared/lib/favorites-io.ts` (server-safe) with a 500-favorite cap and discriminated-union error handling. Added `mergeFavorites` to the favorites store that skips duplicates by id and returns the number of imports. `FavoritesBackupButtons` (Client Component) exports a `.json` of ciphertexts and imports one via a hidden file input, showing a `ConfirmDialog` preview before merging. Wired into `/favorites` and the floating `HistoryPanel`.
+- Verification: On `/favorites`, export favorites and open the file in a text editor to confirm it contains only `ciphertext`/`iv`/`salt` (no plaintext). Clear `localStorage`, then import the file and confirm the favorites reappear (passphrase required to unlock). Import invalid JSON and confirm a `role=alert` error appears; import duplicates and confirm existing entries are skipped.
+- Commits: `acbaac4 feat(favorites): add backup serialization and merge logic`, `266d0e9 feat(favorites): add export and import buttons to favorites page`, `2dda5c2 feat(favorites): add backup buttons to floating history panel`.
