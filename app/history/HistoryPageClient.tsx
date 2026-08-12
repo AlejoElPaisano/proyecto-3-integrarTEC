@@ -5,6 +5,7 @@ import Link from "next/link"
 import { WizardLayout } from "@/shared/components/ui/WizardLayout"
 import { usePasswordStore } from "@/features/generator/store"
 import { useHasMounted } from "@/shared/hooks/useHasMounted"
+import { cn } from "@/shared/lib/cn"
 
 export function HistoryPageClient() {
   const hasMounted = useHasMounted()
@@ -43,12 +44,7 @@ export function HistoryPageClient() {
             <button
               type="button"
               onClick={clearHistory}
-              className="cursor-pointer rounded-lg px-3 py-1.5 font-sans text-xs font-semibold transition-colors duration-150 ease-out"
-              style={{
-                color: "var(--color-error)",
-                background: "rgba(239, 68, 68, 0.1)",
-                border: "1px solid rgba(239, 68, 68, 0.2)",
-              }}
+              className="cursor-pointer rounded-lg border border-[rgba(239,68,68,0.2)] bg-[rgba(239,68,68,0.1)] px-3 py-1.5 font-sans text-xs font-semibold text-(--color-error) transition-colors duration-150 ease-out"
             >
               Vaciar historial
             </button>
@@ -56,15 +52,9 @@ export function HistoryPageClient() {
         </div>
 
         {sessionHistory.length === 0 ? (
-          <div
-            className="flex flex-col items-center justify-center rounded-2xl p-8 text-center"
-            style={{
-              background: "var(--color-accent-soft)",
-              border: "1px solid var(--color-border)",
-            }}
-          >
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-(--color-border) bg-(--color-accent-soft) p-8 text-center">
             <div aria-hidden="true" className="mb-3 text-4xl">
-              🔍
+             🔍
             </div>
             <h2 className="mb-1 text-base font-bold text-(--color-text)">
               No hay frases en el historial
@@ -74,10 +64,7 @@ export function HistoryPageClient() {
             </p>
             <Link
               href="/generator"
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-5 py-2.5 font-sans text-sm font-bold text-white shadow-md transition-all duration-150 ease-out hover:-translate-y-0.5"
-              style={{
-                background: "linear-gradient(135deg, #ec4899, #818cf8)",
-              }}
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-(--gradient-cta) px-5 py-2.5 font-sans text-sm font-bold text-white shadow-md transition-all duration-150 ease-out hover:-translate-y-0.5"
             >
               ✨ Generar contraseña
             </Link>
@@ -87,27 +74,14 @@ export function HistoryPageClient() {
             {sessionHistory.map((item, index) => (
               <div
                 key={item.id}
-                className="flex flex-col gap-2 rounded-xl p-3.5 transition-all duration-150 ease-out"
-                style={{
-                  background: "var(--color-accent-soft)",
-                  border: "1px solid var(--color-border)",
-                }}
+                className="flex flex-col gap-2 rounded-xl border border-(--color-border) bg-(--color-accent-soft) p-3.5 transition-all duration-150 ease-out"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 overflow-hidden">
-                    <span
-                      className="shrink-0 rounded-md px-2 py-0.5 font-sans text-[0.7rem] font-extrabold"
-                      style={{
-                        background: "rgba(236, 72, 153, 0.15)",
-                        color: "var(--color-pink)",
-                      }}
-                    >
+                    <span className="shrink-0 rounded-md bg-[rgba(236,72,153,0.15)] px-2 py-0.5 font-sans text-[0.7rem] font-extrabold text-(--color-pink)">
                       #{sessionHistory.length - index}
                     </span>
-                    <span
-                      className="truncate font-mono text-sm font-bold"
-                      style={{ color: "var(--color-text)" }}
-                    >
+                    <span className="truncate font-mono text-sm font-bold text-(--color-text)">
                       {item.password ?? "••••••••••••"}
                     </span>
                   </div>
@@ -118,12 +92,12 @@ export function HistoryPageClient() {
                         type="button"
                         onClick={() => void handleCopy(item.id, item.password!)}
                         aria-label={copiedId === item.id ? "Contraseña copiada" : "Copiar contraseña"}
-                        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg font-sans text-xs transition-colors duration-150 ease-out"
-                        style={{
-                          background: copiedId === item.id ? "rgba(34, 197, 94, 0.15)" : "var(--color-surface)",
-                          border: "1px solid var(--color-border)",
-                          color: copiedId === item.id ? "var(--color-success)" : "var(--color-text)",
-                        }}
+                        className={cn(
+                          "flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-(--color-border) font-sans text-xs transition-colors duration-150 ease-out",
+                          copiedId === item.id
+                            ? "bg-[rgba(34,197,94,0.15)] text-(--color-success)"
+                            : "bg-(--color-surface) text-(--color-text)",
+                        )}
                       >
                         {copiedId === item.id ? "✅" : "📋"}
                       </button>
@@ -131,8 +105,7 @@ export function HistoryPageClient() {
                     {copyErrorId === item.id && (
                       <p
                         role="alert"
-                        className="text-[0.65rem] font-semibold"
-                        style={{ color: "var(--color-error)" }}
+                        className="text-[0.65rem] font-semibold text-(--color-error)"
                       >
                         No se pudo copiar
                       </p>
@@ -141,19 +114,14 @@ export function HistoryPageClient() {
                       type="button"
                       onClick={() => removeFromHistory(item.id)}
                       aria-label="Eliminar del historial"
-                      className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg font-sans text-xs transition-colors duration-150 ease-out"
-                      style={{
-                        background: "var(--color-surface)",
-                        border: "1px solid var(--color-border)",
-                        color: "var(--color-text-tertiary)",
-                      }}
+                      className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-(--color-border) bg-(--color-surface) font-sans text-xs text-(--color-text-tertiary) transition-colors duration-150 ease-out"
                     >
                       🗑️
                     </button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-[0.75rem]" style={{ color: "var(--color-text-tertiary)" }}>
+                <div className="flex items-center justify-between text-[0.75rem] text-(--color-text-tertiary)">
                   <span>{new Date(item.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                   <span>{item.bits} bits de entropía</span>
                 </div>

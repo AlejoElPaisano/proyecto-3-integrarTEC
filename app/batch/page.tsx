@@ -14,45 +14,14 @@ export default function BatchPage() {
   return (
     <>
       <BatchStateController />
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: "2rem 1rem",
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "680px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "1.5rem",
-            }}
-          >
+      <div className="flex min-h-screen flex-col items-center p-[2rem_1rem]">
+        <div className="w-full max-w-[680px]">
+          <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 800,
-                  letterSpacing: "-0.03em",
-                  background: "linear-gradient(135deg, #e2e2f0, #a78bfa)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  marginBottom: "0.25rem",
-                }}
-              >
+              <h1 className="mb-1 bg-clip-text text-[1.5rem] font-extrabold tracking-[-0.03em] text-transparent [background-image:linear-gradient(135deg,#e2e2f0,#a78bfa)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
                 Generación por lote
               </h1>
-              <p
-                style={{
-                  fontSize: "0.85rem",
-                  color: "var(--color-text-secondary)",
-                }}
-              >
+              <p className="text-[0.85rem] text-(--color-text-secondary)">
                 Generá múltiples frases de una sola vez
               </p>
             </div>
@@ -64,30 +33,11 @@ export default function BatchPage() {
             </Link>
           </div>
 
-          <div
-            className="glass-card"
-            style={{
-              background: "var(--color-card)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-xl)",
-              padding: "2.5rem",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              boxShadow: "var(--glass-shadow)",
-            }}
-          >
+          <div className="glass-card rounded-(--radius-xl) border border-(--color-border) bg-(--color-card) p-10 backdrop-blur-2xl [box-shadow:var(--glass-shadow)]">
             <BatchGenerator />
           </div>
 
-          <div
-            style={{
-              marginTop: "1.5rem",
-              textAlign: "center",
-              fontSize: "0.75rem",
-              color: "var(--color-text-tertiary)",
-              lineHeight: 1.6,
-            }}
-          >
+          <div className="mt-6 text-center text-[0.75rem] leading-[1.6] text-(--color-text-tertiary)">
             <p>
               Las frases generadas se agregan automáticamente al historial de sesión
             </p>
