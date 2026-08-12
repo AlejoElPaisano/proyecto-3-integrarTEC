@@ -37,96 +37,31 @@ export function ConfirmDialog({
     <dialog
       ref={ref}
       onClose={onCancel}
-      style={{
-        position: "fixed",
-        inset: 0,
-        margin: "auto",
-        padding: "2rem",
-        borderRadius: "var(--radius-lg)",
-        background: "var(--color-card)",
-        border: "1px solid var(--color-border)",
-        backdropFilter: "blur(16px)",
-        boxShadow: "var(--glass-shadow), 0 0 0 100vw rgba(0,0,0,0.5)",
-        maxWidth: "380px",
-        width: "90vw",
-        color: "var(--color-text)",
-        fontFamily: "var(--font-sans)",
-        zIndex: 9999,
-      }}
+      className="fixed inset-0 m-auto z-[9999] flex w-[90vw] max-w-[380px] flex-col rounded-(--radius-lg) border border-(--color-border) bg-(--color-card) p-8 font-sans text-(--color-text) backdrop-blur-2xl [box-shadow:var(--glass-shadow),0_0_0_100vw_rgba(0,0,0,0.5)]"
       aria-labelledby={titleId}
       aria-describedby={messageId}
     >
-      <p
-        id={titleId}
-        style={{
-          fontSize: "1.1rem",
-          fontWeight: 700,
-          marginBottom: "0.75rem",
-        }}
-      >
+      <p id={titleId} className="mb-3 text-[1.1rem] font-bold text-(--color-text)">
         {title}
       </p>
       <p
         id={messageId}
-        style={{
-          fontSize: "0.85rem",
-          color: "var(--color-text-secondary)",
-          marginBottom: "1.5rem",
-          lineHeight: 1.5,
-        }}
+        className="mb-6 text-[0.85rem] leading-[1.5] text-(--color-text-secondary)"
       >
         {message}
       </p>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "0.75rem",
-        }}
-      >
+      <div className="flex justify-end gap-3">
         <button
           type="button"
           onClick={onCancel}
-          style={{
-            all: "unset",
-            cursor: "pointer",
-            padding: "0.5rem 1.25rem",
-            borderRadius: "var(--radius-sm)",
-            border: "1px solid var(--color-border)",
-            fontSize: "0.85rem",
-            fontWeight: 500,
-            color: "var(--color-text-secondary)",
-            transition: "color, background-color var(--duration-fast) var(--ease-out)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "var(--color-accent-soft)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "transparent";
-          }}
+          className="cursor-pointer rounded-(--radius-sm) border border-(--color-border) bg-transparent px-5 py-2 text-[0.85rem] font-medium text-(--color-text-secondary) transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:bg-(--color-accent-soft)"
         >
           Cancelar
         </button>
         <button
           type="button"
           onClick={onConfirm}
-          style={{
-            all: "unset",
-            cursor: "pointer",
-            padding: "0.5rem 1.25rem",
-            borderRadius: "var(--radius-sm)",
-            background: "var(--color-error)",
-            color: "#fff",
-            fontSize: "0.85rem",
-            fontWeight: 600,
-            transition: "opacity var(--duration-fast) var(--ease-out)",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.opacity = "0.85";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.opacity = "1";
-          }}
+          className="cursor-pointer rounded-(--radius-sm) border-0 bg-(--color-error) px-5 py-2 text-[0.85rem] font-semibold text-white transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:opacity-85"
         >
           {confirmLabel}
         </button>
