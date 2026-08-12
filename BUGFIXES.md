@@ -330,6 +330,61 @@ and a Conventional Commit in English are complete.
   - Verification: `pnpm run verify:architecture`, `pnpm run verify:security`,
     `pnpm exec tsc --noEmit`, `pnpm lint`, and `pnpm build` all pass.
 
+## Server-side defense pattern (rubric Fase 5)
+
+- Status: [x] Implemented
+- Origin: Proyecto 3 rubric requirement (Clase 20-21) — not a code bug, but an
+  architecture hallmark the consigna demands demonstrating even when the app is
+  fully client-side.
+- Current behavior: PassFrases is 100% client-side for crypto and session. There
+  were no `proxy.ts`, no `server-only` DAL, no Zod validation, and no Route
+  Handler/Server Action, because there were no server mutations to protect.
+- Impact: The rubric's Fase 5 explicitly requires `proxy.ts` with a scoped
+  `matcher`, validation with Zod at runtime, and a `server-only`-marked data
+  access layer. Their absence would discount the "seguridad y mutaciones" axis
+  even though the rest of the app is secure.
+- Target behavior: Provide a minimal, illustrative implementation of the
+  server-side defense pattern (authenticate -> validate -> respond) that does
+  not weaken the local-only security model and is documented as illustrative.
+- Verification:
+  - `proxy.ts` exists at the project root and exports `proxy` + a `config`
+    with a `matcher` scoped to `/api/:path*` (does not run on every request).
+  - `lib/entropy.ts` imports `server-only` so it cannot be bundled into the
+    client; importing it from a Client Component fails the build.
+  - `app/api/entropy/route.ts` accepts a JSON body, validates it with a Zod
+    schema via `safeParse`, returns 400 with structured `fieldErrors` on
+    invalid input, 200 with `{ bits, strength }` on success, and 500 with a
+    generic message on unexpected failure (no stacks leaked).
+  - `pnpm run build`, `pnpm lint`, `pnpm exec tsc --noEmit`, and the three
+    `verify:*` scripts all pass.
+- Resolution:
+  - Installed `zod` and `server-only`.
+  - `proxy.ts` (root): exports `proxy(request)` returning `NextResponse.next()`
+    with `config.matcher = ['/api/:path*']` (Node.js runtime). PassFrases has
+    no login/sessions, so the proxy is intentionally illustrative and is
+    documented as such in the README.
+  - `lib/entropy.ts`: `server-only`-marked DAL wrapper that re-exports
+    `calculateEntropy` + `getStrengthLevel` from `features/generator/entropy`
+    (a server-safe module with no directives) under a typed `analyzeEntropy`
+    entry point. Marking the wrapper `server-only` guards the boundary.
+  - `app/api/entropy/route.ts`: POST Route Handler that parses the JSON body,
+    validates it with `PASSWORD_CONFIG_SCHEMA.safeParse`, responds with
+    predictable HTTP statuses (200/400/500), and never leaks internal stacks.
+    Demonstrates the authenticate -> validate (Zod) -> mutate -> respond order
+    from the rubric (authentication is implicit: the handler is the trust
+    boundary for the demo; PassFrases has no user accounts).
+  - README updated in both English and Spanish: technologies table, extra
+    features list, and project tree now reflect the new files and the
+    rationale for the illustrative server-side defense layer.
+  - Commit: (this change)
+- Verification runs:
+  - `pnpm run build`
+  - `pnpm lint`
+  - `pnpm exec tsc --noEmit`
+  - `pnpm run verify:security`
+  - `pnpm run verify:architecture`
+  - `pnpm run verify:ui`
+
 ## Priority
 
 1. Bugs 1 and 2: security and password-generation correctness.
