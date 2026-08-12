@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { Copy, Check } from 'lucide-react'
+import { cn } from '@/shared/lib/cn'
 
 interface CopyButtonProps {
   text?: string
@@ -37,43 +38,23 @@ export function CopyButton({ text, full, label, getText }: CopyButtonProps) {
     }
   }, [text, getText])
 
+  const disabled = !text && !getText
+
   return (
-    <div style={{ flex: full ? 1 : undefined }}>
+    <div className={cn(full && 'flex-1')}>
       <button
         type="button"
         onClick={handleCopy}
-        disabled={!text && !getText}
+        disabled={disabled}
         aria-label={copied ? 'Copiado' : 'Copiar'}
-        style={{
-          all: 'unset',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '0.4rem',
-          padding: full ? '0.85rem' : '0.85rem 1.2rem',
-          flex: full ? 1 : undefined,
-          width: full ? 'auto' : undefined,
-          borderRadius: '12px',
-          border: '1px solid var(--color-border)',
-          background: copied ? 'var(--color-success-soft)' : 'transparent',
-          color: copied ? 'var(--color-success)' : 'var(--color-text)',
-          fontSize: '0.9rem',
-          fontWeight: 600,
-          fontFamily: 'var(--font-sans)',
-          transition: 'border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out)',
-          opacity: !text && !getText ? 0.5 : 1,
-        }}
-        onMouseEnter={(e) => {
-          if (text || getText) {
-            e.currentTarget.style.borderColor = 'var(--color-accent)'
-            e.currentTarget.style.background = 'var(--color-accent-soft)'
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'var(--color-border)'
-          e.currentTarget.style.background = copied ? 'var(--color-success-soft)' : 'transparent'
-        }}
+        className={cn(
+          'group flex cursor-pointer items-center justify-center gap-[0.4rem] rounded-xl border border-(--color-border) bg-transparent font-sans text-[0.9rem] font-semibold text-(--color-text) transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)]',
+          full ? 'flex-1 p-[0.85rem]' : 'px-[1.2rem] py-[0.85rem]',
+          copied
+            ? 'bg-(--color-success-soft) text-(--color-success) hover:bg-(--color-success-soft)'
+            : 'hover:border-(--color-accent) hover:bg-(--color-accent-soft)',
+          disabled && 'opacity-50',
+        )}
       >
         {copied ? <Check size={18} aria-hidden="true" /> : <Copy size={18} aria-hidden="true" />}
         {copied ? 'Copiado' : label ?? 'Copiar'}
@@ -81,12 +62,7 @@ export function CopyButton({ text, full, label, getText }: CopyButtonProps) {
       {copyError && (
         <p
           role="alert"
-          style={{
-            marginTop: '0.4rem',
-            color: 'var(--color-error)',
-            fontSize: '0.7rem',
-            lineHeight: 1.4,
-          }}
+          className="mt-[0.4rem] text-[0.7rem] leading-[1.4] text-(--color-error)"
         >
           {copyError}
         </p>
