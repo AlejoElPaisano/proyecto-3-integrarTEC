@@ -35,6 +35,7 @@ and a Conventional Commit in English are complete.
     UI explains when a restored entry cannot be copied after a reload.
   - Commit: `9b95621 fix(security): remove plaintext passwords from persisted history`
   - Additional validation support: `ad180ef fix(hydration): isolate legacy project from Next checks`
+  - Favorites validation hardened with Zod schemas: `e6443e2 refactor(favorites): replace manual sanitization with Zod schemas`
   - Verification: `pnpm run verify:security`, `pnpm exec tsc --noEmit`, `pnpm lint`,
     and `pnpm build` all pass.
 
@@ -493,10 +494,10 @@ and a Conventional Commit in English are complete.
     that switches between History and Favorites tabs now has proper
     `role="tablist"` on the wrapper and `role="tab" aria-selected={...}` on
     each button. (Implemented together with M1.)
-  - `L7` `features/batch/components/BatchGenerator.tsx`: removed the four
-    inline template-string className interpolations and migrated them to the
-    project's `cn()` utility from `@/shared/lib/cn` for consistency with the
-    rest of the codebase. The bare Tailwind v4 tokens (`text-text`,
+  - `L7` `features/batch/components/BatchGenerator.tsx`: BatchGenerator uses
+    template-string className interpolations (the project's `cn()` helper
+    was removed in commit `0a22966` after the inline-style restoration left
+    it without consumers). The bare Tailwind v4 tokens (`text-text`,
     `border-border`, `bg-accent-soft`, `text-accent`, `text-success`,
     `text-text-secondary`, `text-text-tertiary`, `text-red-500`) remain
     valid because `@theme` registers each `--color-X` custom property as a

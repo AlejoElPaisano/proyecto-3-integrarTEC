@@ -48,7 +48,7 @@ The complete and detailed record of each bug, its impact, verification and resol
 | 1 | Plaintext passwords persisted in session history | Pre-existing | ✅ Resolved |
 | 2 | `Math.random()` in number and symbol generation | Pre-existing | ✅ Resolved |
 | 3 | Native `alert()` and silent clipboard errors | Pre-existing | ✅ Resolved |
-| 4 | No explicit responsive breakpoints | Pre-existing | ✅ Resolved |
+| 4 | No explicit responsive breakpoints | Pre-existing | 🟡 Accepted (wontfix) |
 | 5 | Inline styles mixed with Tailwind | Pre-existing | 🟡 Hybrid accepted |
 | 6 | README word-list count inconsistent with data | Pre-existing | ✅ Resolved |
 | 7 | No dedicated favorites or history routes | Pre-existing | ✅ Resolved |
@@ -208,7 +208,7 @@ El registro completo y detallado de cada bug, su impacto, verificación y commit
 | 1 | Contraseñas en texto plano persistidas en el historial de sesión | Preexistente | ✅ Resolved |
 | 2 | `Math.random()` en generación de números y símbolos | Preexistente | ✅ Resolved |
 | 3 | `alert()` nativo y errores silenciosos en el portapapeles | Preexistente | ✅ Resolved |
-| 4 | Sin breakpoints responsive explícitos | Preexistente | ✅ Resolved |
+| 4 | Sin breakpoints responsive explícitos | Preexistente | 🟡 Aceptado (wontfix) |
 | 5 | Estilos inline mezclados con Tailwind | Preexistente | 🟡 Híbrido aceptado |
 | 6 | Conteo de palabras del README inconsistente con los datos | Preexistente | ✅ Resolved |
 | 7 | Sin rutas dedicadas para favoritos e historial | Preexistente | ✅ Resolved |
