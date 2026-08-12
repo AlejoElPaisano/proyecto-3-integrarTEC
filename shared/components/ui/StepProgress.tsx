@@ -50,7 +50,6 @@ export function StepProgress({ currentStep }: StepProgressProps) {
             id={`step${step.number}`}
             role="tab"
             aria-selected={isActive}
-            aria-controls={`panel${step.number}`}
             tabIndex={isActive ? 0 : -1}
             className="relative z-[2] flex w-[100px] flex-col items-center gap-2"
           >

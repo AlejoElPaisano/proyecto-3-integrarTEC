@@ -108,7 +108,6 @@ export function FavoritesPanel({
                   ? "Favorita copiada"
                   : "Copiar o desbloquear favorita"
               }
-              aria-live="polite"
               className={cn(
                 "cursor-pointer rounded px-[0.3rem] py-[0.15rem] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)]",
                 compact ? "text-[0.7rem]" : "text-[0.85rem]",
@@ -119,6 +118,9 @@ export function FavoritesPanel({
             >
               {copiedId === fav.id ? "✅" : "📋"}
             </button>
+            <span role="status" aria-live="polite" className="sr-only">
+              {copiedId === fav.id ? "Favorita copiada al portapapeles." : ""}
+            </span>
 
             <button
               type="button"

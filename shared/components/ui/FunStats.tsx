@@ -13,6 +13,11 @@ interface FunStatsProps {
 const bubbleBase =
 	"inline-flex items-center gap-[0.35rem] rounded-full px-[0.9rem] py-[0.4rem] text-[0.75rem] font-medium";
 
+const bubbleActive =
+	"border border-[rgba(34,197,94,0.2)] bg-[rgba(34,197,94,0.08)] text-[var(--color-success)]";
+const bubbleInactive =
+	"border border-[rgba(239,68,68,0.2)] bg-[rgba(239,68,68,0.08)] text-[#ef4444]";
+
 export function FunStats({
 	wordCount,
 	bits,
@@ -48,16 +53,9 @@ export function FunStats({
 }
 
 function Bubble({ active, label }: { active: boolean; label: string }) {
-	const color = active ? "var(--color-success)" : "#ef4444";
-	const bg = active ? "rgba(34,197,94,0.08)" : "rgba(239,68,68,0.08)";
-	const border = active ? "1px solid rgba(34,197,94,0.2)" : "1px solid rgba(239,68,68,0.2)";
-
 	return (
-		<span
-			className={bubbleBase}
-			style={{ background: bg, border, color }}
-		>
-			{active ? "✓" : "✗"} {label}
+		<span className={cn(bubbleBase, active ? bubbleActive : bubbleInactive)}>
+			<span aria-hidden="true">{active ? "✓" : "✗"}</span> {label}
 		</span>
 	);
 }

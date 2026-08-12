@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { usePasswordStore } from "@/features/generator/store";
@@ -46,6 +46,27 @@ export default function HistoryPanel() {
 	} | null>(null);
 
 	const { favorites, removeFavorite, mergeFavorites } = useFavorites();
+
+	const dialogRef = useRef<HTMLDialogElement>(null);
+	const previousActiveElement = useRef<HTMLElement | null>(null);
+
+	useEffect(() => {
+		const el = dialogRef.current;
+		if (!el) return;
+		if (historyOpen && !el.open) {
+			previousActiveElement.current = document.activeElement as HTMLElement;
+			el.showModal();
+		} else if (!historyOpen && el.open) {
+			el.close();
+		}
+	}, [historyOpen]);
+
+	useEffect(() => {
+		if (!historyOpen && previousActiveElement.current) {
+			previousActiveElement.current.focus();
+			previousActiveElement.current = null;
+		}
+	}, [historyOpen]);
 
 	function handleConfirmClear() {
 		clearHistory();
@@ -106,17 +127,24 @@ export default function HistoryPanel() {
 			)}
 
 			{historyOpen && (
-				<div
-					role="dialog"
+				<dialog
+					ref={dialogRef}
+					onClose={toggleHistory}
 					aria-label={view === "favorites" ? "Favoritos" : "Historial de sesión"}
-					className="fixed bottom-20 right-6 z-[1001] flex max-h-[min(72vh,480px)] w-[calc(100vw-3rem)] max-w-[390px] flex-col overflow-hidden rounded-[20px] border border-(--glass-border) bg-(--color-card) backdrop-blur-2xl [box-shadow:0_12px_40px_rgba(0,0,0,0.4)]"
+					className="fixed bottom-25 right-6 z-[1001] flex max-h-[min(72vh,480px)] w-[calc(100vw-3rem)] max-w-[390px] flex-col overflow-hidden rounded-[20px] border border-(--glass-border) bg-(--color-card) p-0 backdrop-blur-2xl text-(--color-text) [box-shadow:0_12px_40px_rgba(0,0,0,0.4),0_0_0_100vw_rgba(0,0,0,0.55)]"
 				>
 					{/* Header */}
 					<div className="flex items-center justify-between border-b border-(--color-border) bg-[rgba(255,255,255,0.02)] p-[0.85rem_1rem]">
 						{/* Tab Switcher Segmented Control */}
-						<div className="inline-flex items-center gap-0.5 rounded-full border border-(--color-border) bg-(--color-surface) p-[3px]">
+						<div
+							role="tablist"
+							aria-label="Vistas del panel"
+							className="inline-flex items-center gap-0.5 rounded-full border border-(--color-border) bg-(--color-surface) p-[3px]"
+						>
 							<button
 								type="button"
+								role="tab"
+								aria-selected={view === "history"}
 								onClick={() => setView("history")}
 								className={cn(
 									"cursor-pointer rounded-full px-3 py-[0.3rem] text-[0.78rem] font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-out)]",
@@ -129,6 +157,8 @@ export default function HistoryPanel() {
 							</button>
 							<button
 								type="button"
+								role="tab"
+								aria-selected={view === "favorites"}
 								onClick={() => setView("favorites")}
 								className={cn(
 									"cursor-pointer rounded-full px-3 py-[0.3rem] text-[0.78rem] font-bold transition-all duration-[var(--duration-fast)] ease-[var(--ease-out)]",
@@ -275,7 +305,7 @@ export default function HistoryPanel() {
 							? "🔒 Historial temporal guardado en memoria de sesión"
 							: "🔐 Favoritos guardados cifrados localmente en tu navegador"}
 					</div>
-				</div>
+				</dialog>
 			)}
 
 			{confirmAction?.type === "clear" && (

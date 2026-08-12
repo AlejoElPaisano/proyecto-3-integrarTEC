@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import { usePasswordStore } from "@/features/generator/store"
 import type { PasswordConfig } from "@/features/generator/types"
 import { CategoryChips } from "@/features/generator/components/CategoryChips"
@@ -22,6 +22,7 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
   const setStep = usePasswordStore((state) => state.setStep)
   const setConfig = usePasswordStore((state) => state.setConfig)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const categoriesLabelId = useId()
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -172,11 +173,14 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
       </div>
 
       <div className={cardClass}>
-        <label className="mb-[0.65rem] flex items-center gap-2 text-[0.9rem] font-semibold text-(--color-text)">
+        <span
+          id={categoriesLabelId}
+          className="mb-[0.65rem] flex items-center gap-2 text-[0.9rem] font-semibold text-(--color-text)"
+        >
           <span aria-hidden="true" className={emojiClass}>🏷️</span>
           Categorías de palabras
-        </label>
-        <CategoryChips />
+        </span>
+        <CategoryChips labelledBy={categoriesLabelId} />
       </div>
 
       <button

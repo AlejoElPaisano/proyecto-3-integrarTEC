@@ -62,22 +62,24 @@ export function PasswordActions({
 					🔄 Generar nueva
 				</button>
 
-				<button
-					type="button"
-					onClick={handleSaveFavorite}
-					disabled={!password || saved}
-					aria-label={saved ? "Favorita guardada" : "Guardar como favorita"}
-					aria-live="polite"
-					className={cn(
-						"cursor-pointer rounded-xl border border-(--color-border) px-[1rem] py-[0.85rem] font-sans text-[0.9rem] font-semibold transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)]",
-						saved
-							? "bg-(--color-success-soft) text-(--color-success)"
-							: "bg-transparent text-(--color-text) hover:border-(--color-accent) hover:bg-(--color-accent-soft)",
-						!password && "opacity-50",
-					)}
-				>
-					{saved ? "⭐ Guardada" : "⭐ Guardar"}
-				</button>
+			<button
+				type="button"
+				onClick={handleSaveFavorite}
+				disabled={!password || saved}
+				aria-label={saved ? "Favorita guardada" : "Guardar como favorita"}
+				className={cn(
+					"cursor-pointer rounded-xl border border-(--color-border) px-[1rem] py-[0.85rem] font-sans text-[0.9rem] font-semibold transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)]",
+					saved
+						? "bg-(--color-success-soft) text-(--color-success)"
+						: "bg-transparent text-(--color-text) hover:border-(--color-accent) hover:bg-(--color-accent-soft)",
+					!password && "opacity-50",
+				)}
+			>
+				{saved ? "⭐ Guardada" : "⭐ Guardar"}
+			</button>
+			<span role="status" aria-live="polite" className="sr-only">
+				{saved ? "La favorita fue guardada correctamente." : ""}
+			</span>
 
 				<QRCodeButton value={password} label="QR" />
 

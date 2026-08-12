@@ -56,8 +56,10 @@ export function Toggle({
         )}
       >
         <span
-          className="inline-block h-5 w-5 rounded-full bg-white [box-shadow:0_1px_3px_rgba(0,0,0,0.3)] transition-[transform] duration-[var(--duration-fast)] ease-[var(--ease-out)]"
-          style={{ transform: checked ? "translateX(1.25rem)" : "translateX(0)" }}
+          className={cn(
+            "inline-block h-5 w-5 rounded-full bg-white [box-shadow:0_1px_3px_rgba(0,0,0,0.3)] transition-transform duration-[var(--duration-fast)] ease-[var(--ease-out)]",
+            checked ? "translate-x-5" : "translate-x-0",
+          )}
         />
       </button>
     </div>

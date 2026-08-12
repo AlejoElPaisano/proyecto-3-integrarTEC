@@ -1,7 +1,7 @@
 'use client'
 
 import { usePasswordStore } from "@/features/generator/store";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
@@ -99,6 +99,26 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 	const toggleHistory = usePasswordStore((state) => state.toggleHistory);
 	const [dismissedTipKey, setDismissedTipKey] = useState<string | null>(null);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
+	const shortcutsDialogRef = useRef<HTMLDialogElement>(null);
+	const previousActiveElement = useRef<HTMLElement | null>(null);
+
+	useEffect(() => {
+		const el = shortcutsDialogRef.current;
+		if (!el) return;
+		if (shortcutsOpen && !el.open) {
+			previousActiveElement.current = document.activeElement as HTMLElement;
+			el.showModal();
+		} else if (!shortcutsOpen && el.open) {
+			el.close();
+		}
+	}, [shortcutsOpen]);
+
+	useEffect(() => {
+		if (!shortcutsOpen && previousActiveElement.current) {
+			previousActiveElement.current.focus();
+			previousActiveElement.current = null;
+		}
+	}, [shortcutsOpen]);
 
 	const shortcutsEnabled = pathname === "/generator";
 	const modKey = useMemo(() => {
@@ -147,14 +167,15 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 	return createPortal(
 		<div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-3">
 			{shortcutsEnabled && shortcutsOpen && !historyOpen && (
-				<div
-					role="dialog"
+				<dialog
+					ref={shortcutsDialogRef}
+					onClose={() => setShortcutsOpen(false)}
 					aria-label="Atajos de teclado"
-				className="flex w-[calc(100vw-3rem)] max-w-[340px] flex-col gap-3 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl [box-shadow:var(--glass-shadow)]"
-			>
+					className="flex w-[calc(100vw-3rem)] max-w-[340px] flex-col gap-3 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-(--color-text) font-sans backdrop-blur-2xl [box-shadow:var(--glass-shadow),0_0_0_100vw_rgba(0,0,0,0.55)]"
+				>
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2 text-[0.95rem] font-bold text-(--color-text)">
-							<span className="text-[1rem]">⌨️</span>
+							<span className="text-[1rem]" aria-hidden="true">⌨️</span>
 							Atajos de teclado
 						</div>
 						<button
@@ -182,7 +203,7 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 							</li>
 						))}
 					</ul>
-				</div>
+				</dialog>
 			)}
 
 			{showBubble && (

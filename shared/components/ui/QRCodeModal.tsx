@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import QRCode from 'qrcode'
+import { cn } from '@/shared/lib/cn'
 import { CopyButton } from './CopyButton'
 import { Eye, EyeOff, QrCode, X, Smartphone, ShieldCheck } from 'lucide-react'
 
@@ -106,6 +107,7 @@ export function QRCodeModal({ open, value, onClose }: QRCodeModalProps) {
           />
           {qrError && (
             <div
+              role="alert"
               className="max-w-[240px] p-4 text-center text-[0.85rem] text-(--color-error)"
             >
               {qrError}
@@ -125,11 +127,12 @@ export function QRCodeModal({ open, value, onClose }: QRCodeModalProps) {
         {/* Vista previa de la contraseña */}
         <div className="flex w-full items-center justify-center gap-2 rounded-xl border border-(--color-border) bg-black/25 px-4 py-3">
           <span
-            className="font-mono text-[0.9rem] font-semibold break-all"
-            style={{
-              color: showPassword ? 'var(--color-text)' : 'var(--color-text-secondary)',
-              letterSpacing: showPassword ? 'normal' : '0.15em',
-            }}
+            className={cn(
+              "font-mono text-[0.9rem] font-semibold break-all",
+              showPassword
+                ? "tracking-normal text-(--color-text)"
+                : "tracking-[0.15em] text-(--color-text-secondary)",
+            )}
           >
             {showPassword ? value : '••••••••••••••••'}
           </span>

@@ -385,6 +385,79 @@ and a Conventional Commit in English are complete.
   - `pnpm run verify:architecture`
   - `pnpm run verify:ui`
 
+## Audit 2 - Accessibility and Bug 5 polish (fix/audit-bugs)
+
+- Status: [x] Resolved
+- Origin: Final deep audit of the `fix/audit-bugs` branch identified 5 medium
+  and 8 low polish findings on top of the previously resolved bugs. None of
+  them violated the Proyecto 3 rubric, but fixing them brings the project to
+  100% alignment with the idiomatic patterns already established in the
+  codebase and with ARIA best practices.
+- Verification:
+  - `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm run verify:security`,
+    `pnpm run verify:architecture`, `pnpm run verify:ui`, and `pnpm run build`
+    all pass after the fixes.
+  - Structural ripgrep checks confirm zero `aria-live` on `<button>` elements,
+    zero `<div role="dialog">` residual, zero `style={{ transform }}` inline
+    styles, and zero `aria-controls` referencing missing DOM ids.
+- Resolution (medium — accessibility):
+  - `M1` `features/batch/components/HistoryPanel.tsx`: replaced the
+    `<div role="dialog">` of the floating history/favorites panel with a
+    native `<dialog>` element driven by `ref + showDialog/close()` and a
+    `previousActiveElement` ref for focus restoration, matching the pattern
+    already used by `QRCodeModal` and `ConfirmDialog`. The panel now provides
+    a real focus trap and restores focus to the trigger button on close.
+  - `M2` `features/clippy/components/ClippyAssistant.tsx`: applied the same
+    native `<dialog>` migration to the keyboard-shortcuts panel.
+  - `M3` `features/batch/components/BatchGenerator.tsx`: removed
+    `aria-live="polite"` from the copy-all and per-result `<button>` elements
+    and added sibling `<span role="status" aria-live="polite" class="sr-only">`
+    announcing the copy state. This mirrors the pattern in
+    `features/generator/components/GeneratorPageClient.tsx:54`.
+  - `M4` `features/generator/components/PasswordActions.tsx`: same migration
+    for the save-favorite button, now announcing the saved state via a sibling
+    `sr-only role="status"` live region.
+  - `M5` `features/favorites/components/FavoritesPanel.tsx`: same migration
+    for the copy/unlock button on each favorite row.
+- Resolution (low — Tailwind idiom and ARIA hygiene):
+  - `L1` `shared/components/ui/QRCodeModal.tsx`: the password preview
+    two-state `style={{ color, letterSpacing }}` was migrated to Tailwind
+    `cn()` swaps (`tracking-normal text-(--color-text)` vs `tracking-[0.15em]
+    text-(--color-text-secondary)`), eliminating the static inline style.
+  - `L5` `shared/components/ui/QRCodeModal.tsx`: added `role="alert"` to the
+    QR-generation error block so screen readers announce the failure.
+  - `L2` `shared/components/ui/Toggle.tsx`: the knob `style={{ transform:
+    translateX(1.25rem) }}` was migrated to `cn(checked ? "translate-x-5" :
+    "translate-x-0")` under the existing `transition-transform` utility.
+  - `L3` `shared/components/ui/FunStats.tsx`: the `Bubble` static two-state
+    `style={{ background, border, color }}` was migrated to two precomputed
+    Tailwind class strings (`bubbleActive`/`bubbleInactive`) selected by
+    `cn()`. The `✓`/`✗` glyph is now wrapped in `<span aria-hidden="true">`
+    so it is not read aloud as "check mark" by screen readers (the label text
+    already conveys the meaning).
+  - `L4` `shared/components/ui/StepProgress.tsx`: removed the
+    `aria-controls={`panel${step.number}`}` attribute from each step tab
+    because the referenced panel ids (`#panel1`, `#panel2`, `#panel3`) do not
+    exist in the DOM; the `role="tab"` and `aria-selected` are kept.
+  - `L8` `features/generator/components/GeneratorForm.tsx`: replaced the
+    `<label>` that wrapped the "Categorías de palabras" heading (which had no
+    form control to label) with a `<span id={useId()}>`, and passed that id to
+    `CategoryChips` via a new `labelledBy` prop so the chips container now has
+    `role="group" aria-labelledby={...}`. The `<label>` element is no longer
+    misused for non-form content.
+  - `L9` `features/batch/components/HistoryPanel.tsx`: the segmented control
+    that switches between History and Favorites tabs now has proper
+    `role="tablist"` on the wrapper and `role="tab" aria-selected={...}` on
+    each button. (Implemented together with M1.)
+  - `L7` `features/batch/components/BatchGenerator.tsx`: removed the four
+    inline template-string className interpolations and migrated them to the
+    project's `cn()` utility from `@/shared/lib/cn` for consistency with the
+    rest of the codebase. The bare Tailwind v4 tokens (`text-text`,
+    `border-border`, `bg-accent-soft`, `text-accent`, `text-success`,
+    `text-text-secondary`, `text-text-tertiary`, `text-red-500`) remain
+    valid because `@theme` registers each `--color-X` custom property as a
+    Tailwind color named `X`.
+
 ## Priority
 
 1. Bugs 1 and 2: security and password-generation correctness.

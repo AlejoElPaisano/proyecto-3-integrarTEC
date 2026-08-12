@@ -15,7 +15,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 	emociones: "Emociones",
 };
 
-export function CategoryChips() {
+export function CategoryChips({ labelledBy }: { labelledBy?: string }) {
 	const hasMounted = useHasMounted();
 	const categories = Object.keys(wordLists);
 	const selectedCategories = usePasswordStore((state) => state.config.selectedCategories);
@@ -31,7 +31,11 @@ export function CategoryChips() {
 	if (!hasMounted) return null;
 
 	return (
-		<div className="flex flex-wrap justify-center gap-2">
+		<div
+			role="group"
+			aria-labelledby={labelledBy}
+			className="flex flex-wrap justify-center gap-2"
+		>
 			{categories.map((cat) => {
 				const active = selectedCategories.includes(cat);
 				return (
