@@ -128,7 +128,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
-- Status: [x] Resolved
+- Status: [~] In progress
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Migrated components combine extensive `style={{ ... }}` objects,
   embedded style tags, and Tailwind utility classes.
@@ -152,6 +152,10 @@ and a Conventional Commit in English are complete.
   - Additional layout work: `a60f1df fix(responsive): refactor generator form layout and option controls`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
+  - Reopened after audit found 96 remaining `style={{ ... }}` and 13 `onMouseEnter`/`onMouseLeave`
+    pairs that still mutate `style` directly across 7 components (`CopyButton`, `ConfirmDialog`,
+    `PasswordActions`, `GeneratorPanel`, `GeneratorForm`, `FavoritesPanel`, `HistoryPanel`).
+    A full migration to Tailwind utilities is in progress on branch `fix/audit-bugs`.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 
