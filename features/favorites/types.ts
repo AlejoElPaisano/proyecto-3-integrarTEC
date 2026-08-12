@@ -16,6 +16,12 @@ export interface FavoriteEntry {
   metadata: FavoriteMetadata
 }
 
+export interface FavoritesBackup {
+  formatVersion: 2
+  exportedAt: number
+  favorites: FavoriteEntry[]
+}
+
 export interface FavoriteState {
   favorites: FavoriteEntry[]
   unlocked: boolean
@@ -35,6 +41,7 @@ export interface FavoritesStore extends FavoriteState {
     metadata: FavoriteMetadata,
   ) => Promise<void>
   removeFavorite: (id: string) => void
+  mergeFavorites: (incoming: FavoriteEntry[]) => number
   copyToClipboard: (
     id: string,
     passphrase?: string,

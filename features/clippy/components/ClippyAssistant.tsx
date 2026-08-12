@@ -82,6 +82,12 @@ const SETTING_TIPS: Record<string, { icon: string; title: string; text: string }
 	},
 };
 
+const SHORTCUTS = [
+	{ keys: ["G"], label: "Generar nueva passphrase" },
+	{ keys: ["C"], label: "Copiar passphrase actual" },
+	{ keys: ["B"], label: "Abrir o cerrar historial" },
+] as const;
+
 export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: string | null; floating?: boolean }) {
 	const hasMounted = useHasMounted();
 	const currentStep = usePasswordStore((state) => state.currentStep);
@@ -90,6 +96,12 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 	const sessionHistory = usePasswordStore((state) => state.sessionHistory);
 	const toggleHistory = usePasswordStore((state) => state.toggleHistory);
 	const [dismissedTipKey, setDismissedTipKey] = useState<string | null>(null);
+	const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+	const modKey = useMemo(() => {
+		if (typeof navigator === "undefined") return "Ctrl";
+		return /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? "⌘" : "Ctrl";
+	}, []);
 
 	const tipKey = useMemo(() => {
 		if (currentStep === 2) return `step2-${activeTip ?? ""}`;
@@ -127,78 +139,68 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 
 	if (!hasMounted || !floating) return null;
 
-	const showBubble = autoTip && !historyOpen && !isDismissed;
+	const showBubble = autoTip && !historyOpen && !isDismissed && !shortcutsOpen;
 
 	return createPortal(
-		<div
-			style={{
-				position: "fixed",
-				bottom: "1.5rem",
-				right: "1.5rem",
-				zIndex: 1000,
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "flex-end",
-				gap: "0.75rem",
-			}}
-		>
+		<div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-3">
+			{shortcutsOpen && !historyOpen && (
+				<div
+					role="dialog"
+					aria-label="Atajos de teclado"
+					className="flex w-[calc(100vw-3rem)] max-w-[340px] flex-col gap-3 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl"
+					style={{ boxShadow: "var(--glass-shadow)" }}
+				>
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-2 text-[0.95rem] font-bold text-(--color-text)">
+							<span className="text-[1rem]">⌨️</span>
+							Atajos de teclado
+						</div>
+						<button
+							type="button"
+							onClick={() => setShortcutsOpen(false)}
+							aria-label="Cerrar lista de atajos"
+							className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-(--color-border) bg-(--color-accent-soft) text-[0.8rem] text-(--color-text-tertiary) transition-colors duration-150 ease-out hover:bg-white/15 hover:text-(--color-text)"
+						>
+							✕
+						</button>
+					</div>
+					<ul role="list" className="flex flex-col gap-2">
+						{SHORTCUTS.map((shortcut) => (
+							<li
+								key={shortcut.keys[0]}
+								role="listitem"
+								className="flex items-center justify-between gap-2 rounded-xl border border-(--color-border) bg-(--color-accent-soft) p-2.5"
+							>
+								<span className="text-[0.825rem] text-(--color-text-secondary)">
+									{shortcut.label}
+								</span>
+								<kbd className="rounded-md border border-(--color-border) bg-(--color-surface) px-2 py-0.5 font-mono text-[0.75rem] font-semibold text-(--color-text)">
+									{modKey} + {shortcut.keys.join(" + ")}
+								</kbd>
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
+
 			{showBubble && (
 				<div
 					role="status"
-					style={{
-						display: "flex",
-						flexDirection: "column",
-						gap: "0.85rem",
-						padding: "1.1rem 1.25rem",
-						borderRadius: "18px",
-						background: "var(--color-card)",
-						backdropFilter: "blur(20px)",
-						WebkitBackdropFilter: "blur(20px)",
-						border: "1px solid var(--glass-border)",
-						boxShadow: "var(--glass-shadow)",
-						fontSize: "0.875rem",
-						maxWidth: "380px",
-						width: "calc(100vw - 3rem)",
-					}}
+					className="flex w-[calc(100vw-3rem)] max-w-[380px] flex-col gap-3.5 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl"
+					style={{ boxShadow: "var(--glass-shadow)" }}
 				>
-					<div style={{ display: "flex", alignItems: "flex-start", gap: "0.85rem" }}>
+					<div className="flex items-start gap-3.5">
 						<div
 							aria-hidden="true"
-							style={{
-								width: "42px",
-								height: "42px",
-								borderRadius: "12px",
-								display: "grid",
-								placeItems: "center",
-								background: "var(--color-accent-soft)",
-								border: "1px solid var(--color-border)",
-								flexShrink: 0,
-								fontSize: "1.3rem",
-							}}
+							className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-xl border border-(--color-border) bg-(--color-accent-soft) text-[1.3rem]"
 						>
 							{autoTip.icon}
 						</div>
-						<div style={{ flex: 1 }}>
-							<strong
-								style={{
-									display: "block",
-									fontSize: "0.95rem",
-									fontWeight: 700,
-									color: "var(--color-text)",
-									marginBottom: "0.2rem",
-									lineHeight: 1.3,
-								}}
-							>
+						<div className="flex-1">
+							<strong className="mb-[0.2rem] block text-[0.95rem] font-bold leading-[1.3] text-(--color-text)">
 								{autoTip.title}
 							</strong>
-							<span
-								style={{
-									fontSize: "0.85rem",
-									color: "var(--color-text-secondary)",
-									lineHeight: 1.45,
-									display: "block",
-								}}
-							>
+							<span className="block text-[0.85rem] leading-[1.45] text-(--color-text-secondary)">
 								{autoTip.text}
 							</span>
 						</div>
@@ -206,63 +208,32 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 							type="button"
 							onClick={() => setDismissedTipKey(tipKey)}
 							aria-label="Descartar tip"
-							style={{
-								all: "unset",
-								cursor: "pointer",
-								flexShrink: 0,
-								width: "24px",
-								height: "24px",
-								borderRadius: "50%",
-								display: "grid",
-								placeItems: "center",
-								fontSize: "0.75rem",
-								color: "var(--color-text-tertiary)",
-								background: "var(--color-accent-soft)",
-								border: "1px solid var(--color-border)",
-								transition: "all var(--duration-fast) var(--ease-out)",
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.color = "var(--color-text)";
-								e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.color = "var(--color-text-tertiary)";
-								e.currentTarget.style.background = "var(--color-accent-soft)";
-							}}
+							className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-(--color-border) bg-(--color-accent-soft) text-[0.8rem] text-(--color-text-tertiary) transition-colors duration-150 ease-out hover:bg-white/15 hover:text-(--color-text)"
 						>
 							✕
 						</button>
 					</div>
 
 					{autoTip.type === "result" && autoTip.recommendations.length > 0 && (
-						<div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", marginTop: "0.25rem", paddingTop: "0.75rem", borderTop: "1px solid var(--color-border)" }}>
-							<div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem", fontWeight: 700, color: "var(--color-text)" }}>
-								<span style={{ fontSize: "1rem" }}>🛡️</span>
+						<div className="mt-1 flex flex-col gap-2.5 border-t border-(--color-border) pt-3">
+							<div className="flex items-center gap-2 text-[0.85rem] font-bold text-(--color-text)">
+								<span className="text-[1rem]">🛡️</span>
 								Sugerencias de seguridad
 							</div>
 							{autoTip.recommendations.map((rec) => (
 								<div
 									key={rec.id}
-									style={{
-										display: "flex",
-										alignItems: "flex-start",
-										gap: "0.65rem",
-										padding: "0.65rem 0.85rem",
-										borderRadius: "12px",
-										background: "var(--color-accent-soft)",
-										border: "1px solid var(--color-border)",
-										fontSize: "0.8rem",
-									}}
+									className="flex items-start gap-2.5 rounded-xl border border-(--color-border) bg-(--color-accent-soft) p-3 text-[0.8rem]"
 								>
-									<span style={{ fontSize: "0.95rem", flexShrink: 0, marginTop: "1px" }}>
+									<span className="mt-px shrink-0 text-[0.95rem]">
 										{rec.icon === "shield" ? "🛡️" : rec.icon === "warning" ? "⚠️" : "ℹ️"}
 									</span>
 									<div>
-										<strong style={{ display: "block", marginBottom: "0.15rem", color: "var(--color-text)", fontSize: "0.825rem" }}>
+										<strong className="mb-[0.15rem] block text-[0.825rem] text-(--color-text)">
 											{rec.title}
 										</strong>
 										{rec.detail && (
-											<span style={{ color: "var(--color-text-secondary)", lineHeight: 1.4, fontSize: "0.78rem" }}>
+											<span className="text-[0.78rem] leading-[1.4] text-(--color-text-secondary)">
 												{rec.detail}
 											</span>
 										)}
@@ -274,59 +245,34 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 				</div>
 			)}
 
-			<button
-				type="button"
-				onClick={toggleHistory}
-				aria-label={historyOpen ? "Cerrar historial" : "Abrir historial de sesión"}
-				aria-expanded={historyOpen}
-				style={{
-					all: "unset",
-					cursor: "pointer",
-					width: "52px",
-					height: "52px",
-					borderRadius: "50%",
-					background: "var(--gradient-cta)",
-					display: "grid",
-					placeItems: "center",
-					fontSize: "1.4rem",
-					boxShadow: "0 4px 24px var(--color-pink-glow)",
-					transition: "transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out)",
-					position: "relative",
-				}}
-				onMouseEnter={(e) => {
-					e.currentTarget.style.transform = "scale(1.1)";
-					e.currentTarget.style.boxShadow = "0 6px 32px var(--color-pink-glow)";
-				}}
-				onMouseLeave={(e) => {
-					e.currentTarget.style.transform = "scale(1)";
-					e.currentTarget.style.boxShadow = "0 4px 24px var(--color-pink-glow)";
-				}}
-			>
-				🤖
-				{sessionHistory.length > 0 && (
-					<span
-						style={{
-							position: "absolute",
-							top: "-4px",
-							right: "-4px",
-							display: "grid",
-							width: "20px",
-							height: "20px",
-							placeItems: "center",
-							borderRadius: "50%",
-							border: "2px solid var(--color-surface)",
-							background: "var(--color-pink)",
-							fontFamily: "var(--font-mono)",
-							fontSize: "0.65rem",
-							fontWeight: 700,
-							color: "#fff",
-							lineHeight: 1,
-						}}
-					>
-						{sessionHistory.length}
-					</span>
-				)}
-			</button>
+			<div className="flex items-center gap-2">
+				<button
+					type="button"
+					onClick={() => setShortcutsOpen((v) => !v)}
+					aria-label={shortcutsOpen ? "Cerrar lista de atajos" : "Ver atajos de teclado"}
+					aria-expanded={shortcutsOpen}
+					className="flex cursor-pointer items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-card) px-3 py-2 text-[0.72rem] font-semibold text-(--color-text-secondary) backdrop-blur-md transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
+				>
+					<span aria-hidden="true">⌨️</span>
+					Atajos
+				</button>
+
+				<button
+					type="button"
+					onClick={toggleHistory}
+					aria-label={historyOpen ? "Cerrar historial" : "Abrir historial de sesión"}
+					aria-expanded={historyOpen}
+					className="relative grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full bg-(--gradient-cta) text-[1.4rem] transition-transform duration-150 ease-out hover:scale-110"
+					style={{ boxShadow: "0 4px 24px var(--color-pink-glow)" }}
+				>
+					🤖
+					{sessionHistory.length > 0 && (
+						<span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-(--color-surface) bg-(--color-pink) font-mono text-[0.65rem] font-bold leading-none text-white">
+							{sessionHistory.length}
+						</span>
+					)}
+				</button>
+			</div>
 		</div>,
 		document.body
 	);

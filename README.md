@@ -63,6 +63,8 @@ Más allá de la migración fiel del original, se incorporaron mejoras que aprov
 - **Verificador de fortaleza de contraseñas** en `/strength-checker`: permite auditar cualquier contraseña, no solo las generadas por PassFrases, con entropía en bits (charset y patrones), tiempo estimado de crackeo en escenarios online y offline con GPU, y recomendaciones accesibles específicas. Es 100% local: la contraseña nunca se persiste ni se envía.
 - **Criptografía reforzada**: PBKDF2 con 600 000 iteraciones (recomendación OWASP 2023) y AES-GCM 256 para cifrado de favoritos, con mapa de passphrases solo en memoria por sesión.
 - **Transferencia vía QR** en el generador simple y por lote: muestra un código QR escaneable para copiar la passphrase al celular sin enviarla por internet. 100% local, el QR se genera en el navegador con la librería `qrcode`.
+- **Atajos de teclado** en el generador: `Ctrl/Cmd+G` genera una nueva passphrase, `Ctrl/Cmd+C` copia la actual (sin interferir cuando hay texto seleccionado o un input enfocado), y `Ctrl/Cmd+B` abre o cierra el panel de historial. Un mini-badge `⌨️ Atajos` en el asistente Clippy lista los atajos disponibles.
+- **Backup de favoritos cifrados** en `/favorites` y el panel flotante: exporta los favoritos a un archivo `.json` (solo ciphertext) e impórtalos en otro navegador sin perder el modelo de seguridad (los datos siguen cifrados con AES-GCM 256 y requieren la passphrase original para desencriptarlos).
 - **3 scripts de verificación automatizada**: `verify:security` (proyección de persistencia, sin `Math.random()`, sin `alert()`), `verify:architecture` (rutas Server-first, APIs de navegador aisladas), `verify:ui` (layouts responsive, React Portals).
 
 ## Link al deploy

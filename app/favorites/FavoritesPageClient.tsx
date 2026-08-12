@@ -5,10 +5,11 @@ import Link from "next/link"
 import { WizardLayout } from "@/shared/components/ui/WizardLayout"
 import { useFavorites } from "@/features/favorites/hooks/useFavorites"
 import { useHasMounted } from "@/shared/hooks/useHasMounted"
+import { FavoritesBackupButtons } from "@/features/favorites/components/FavoritesBackupButtons"
 
 export function FavoritesPageClient() {
   const hasMounted = useHasMounted()
-  const { favorites, removeFavorite, copyToClipboard } = useFavorites()
+  const { favorites, removeFavorite, copyToClipboard, mergeFavorites } = useFavorites()
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [unlockId, setUnlockId] = useState<string | null>(null)
   const [unlockPassphrase, setUnlockPassphrase] = useState("")
@@ -61,9 +62,12 @@ export function FavoritesPageClient() {
               Frases Favoritas
             </h1>
           </div>
-          <span className="rounded-full px-2.5 py-0.5 text-xs font-bold text-[#ec4899] bg-[rgba(236,72,153,0.15)]">
-            {favorites.length} guardadas
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full px-2.5 py-0.5 text-xs font-bold text-[#ec4899] bg-[rgba(236,72,153,0.15)]">
+              {favorites.length} guardadas
+            </span>
+            <FavoritesBackupButtons favorites={favorites} onMerge={mergeFavorites} />
+          </div>
         </div>
 
         {/* Error global de clipboard */}
