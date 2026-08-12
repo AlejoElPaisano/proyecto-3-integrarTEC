@@ -20,7 +20,7 @@ PassFrases creates memorable passphrase-phrases by combining thematic words (ani
 
 ### Reference to the original project
 
-This project is the migration of **`passfrases-proyect`**, a React + Vite SPA developed by Grupo 6 of the Tercer Proyecto Integrador. The original code is preserved in the [`Proyecto2ViejoGrupo6/`](./Proyecto2ViejoGrupo6) folder inside this same repository for comparison and audit purposes.
+This project is the migration of **`passfrases-proyect`**, a React + Vite SPA developed by Grupo 6 of the Tercer Proyecto Integrador.
 
 Original stack: React 19, React Router DOM 7, Vite 8, Zustand, Tailwind CSS 4, Web Crypto API.
 
@@ -121,8 +121,7 @@ proyecto-3-integrarTEC/
 ├── services/crypto.service.ts    # AES-GCM + PBKDF2 (Web Crypto API)
 ├── scripts/                       # verify:security, verify:architecture, verify:ui
 ├── next.config.ts                # CSP + security headers
-├── BUGFIXES.md                   # Bug tracker (9 + 3 regressions)
-└── Proyecto2ViejoGrupo6/          # Original React+Vite code (reference)
+└── BUGFIXES.md                   # Bug tracker (9 + 3 regressions)
 ```
 
 ### Development and verification commands
@@ -177,7 +176,7 @@ PassFrases crea frases-contraseña memorables combinando palabras temáticas (an
 
 ### Referencia al proyecto original
 
-Este proyecto es la migración de **`passfrases-proyect`**, una SPA React + Vite desarrollada por el Grupo 6 del Tercer Proyecto Integrador. El código original se conserva en la carpeta [`Proyecto2ViejoGrupo6/`](./Proyecto2ViejoGrupo6) dentro de este mismo repositorio para fines de comparación y auditoría.
+Este proyecto es la migración de **`passfrases-proyect`**, una SPA React + Vite desarrollada por el Grupo 6 del Tercer Proyecto Integrador.
 
 Stack del original: React 19, React Router DOM 7, Vite 8, Zustand, Tailwind CSS 4, Web Crypto API.
 
@@ -278,8 +277,7 @@ proyecto-3-integrarTEC/
 ├── services/crypto.service.ts    # AES-GCM + PBKDF2 (Web Crypto API)
 ├── scripts/                       # verify:security, verify:architecture, verify:ui
 ├── next.config.ts                # CSP + security headers
-├── BUGFIXES.md                   # Tracker de bugs (9 + 3 regresiones)
-└── Proyecto2ViejoGrupo6/          # Código original React+Vite (referencia)
+└── BUGFIXES.md                   # Tracker de bugs (9 + 3 regresiones)
 ```
 
 ### Comandos de desarrollo y verificación
