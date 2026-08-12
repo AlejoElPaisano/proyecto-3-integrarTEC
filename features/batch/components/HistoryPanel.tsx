@@ -316,37 +316,37 @@ export default function HistoryPanel() {
 						}}
 					>
 						{view === "favorites" ? (
-							favorites.length === 0 ? (
-								<div
-									style={{
-										borderRadius: "14px",
-										border: "1px solid var(--color-border)",
-										background: "var(--color-accent-soft)",
-										padding: "2rem 1rem",
-										textAlign: "center",
-										fontSize: "0.85rem",
-										color: "var(--color-text-tertiary)",
-									}}
-								>
-									<div style={{ fontSize: "2rem", marginBottom: "0.4rem" }}>⭐</div>
-									<p style={{ margin: 0, fontWeight: 600, color: "var(--color-text-secondary)" }}>
-										No tenés favoritos guardados
-									</p>
-									<span style={{ fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>
-										Guardá tus frases preferidas para verlas acá.
-									</span>
+							<>
+								<div style={{ paddingBottom: "0.5rem" }}>
+									<FavoritesBackupButtons favorites={favorites} onMerge={mergeFavorites} />
 								</div>
-							) : (
-								<>
-									<div style={{ paddingBottom: "0.5rem" }}>
-										<FavoritesBackupButtons favorites={favorites} onMerge={mergeFavorites} />
+								{favorites.length === 0 ? (
+									<div
+										style={{
+											borderRadius: "14px",
+											border: "1px solid var(--color-border)",
+											background: "var(--color-accent-soft)",
+											padding: "2rem 1rem",
+											textAlign: "center",
+											fontSize: "0.85rem",
+											color: "var(--color-text-tertiary)",
+										}}
+									>
+										<div style={{ fontSize: "2rem", marginBottom: "0.4rem" }}>⭐</div>
+										<p style={{ margin: 0, fontWeight: 600, color: "var(--color-text-secondary)" }}>
+											No tenés favoritos guardados
+										</p>
+										<span style={{ fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>
+											Importá un backup o guardá tus frases preferidas para verlas acá.
+										</span>
 									</div>
+								) : (
 									<FavoritesPanel
 										favorites={favorites}
 										onRemove={(id: string) => setConfirmAction({ type: "favorite", id })}
 									/>
-								</>
-							)
+								)}
+							</>
 						) : sessionHistory.length === 0 ? (
 							<div
 								style={{
