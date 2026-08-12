@@ -62,6 +62,7 @@ Más allá de la migración fiel del original, se incorporaron mejoras que aprov
 - **Defensa en profundidad**: Content-Security-Policy y headers de seguridad (HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) configurados en `next.config.ts`.
 - **Verificador de fortaleza de contraseñas** en `/strength-checker`: permite auditar cualquier contraseña, no solo las generadas por PassFrases, con entropía en bits (charset y patrones), tiempo estimado de crackeo en escenarios online y offline con GPU, y recomendaciones accesibles específicas. Es 100% local: la contraseña nunca se persiste ni se envía.
 - **Criptografía reforzada**: PBKDF2 con 600 000 iteraciones (recomendación OWASP 2023) y AES-GCM 256 para cifrado de favoritos, con mapa de passphrases solo en memoria por sesión.
+- **Transferencia vía QR** en el generador simple y por lote: muestra un código QR escaneable para copiar la passphrase al celular sin enviarla por internet. 100% local, el QR se genera en el navegador con la librería `qrcode`.
 - **3 scripts de verificación automatizada**: `verify:security` (proyección de persistencia, sin `Math.random()`, sin `alert()`), `verify:architecture` (rutas Server-first, APIs de navegador aisladas), `verify:ui` (layouts responsive, React Portals).
 
 ## Link al deploy
