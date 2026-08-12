@@ -3,6 +3,7 @@
 import { usePasswordStore } from "@/features/generator/store";
 import { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 const TIPS: Record<string, { icon: string; title: string; text: string }[]> = {
@@ -90,6 +91,7 @@ const SHORTCUTS = [
 
 export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: string | null; floating?: boolean }) {
 	const hasMounted = useHasMounted();
+	const pathname = usePathname();
 	const currentStep = usePasswordStore((state) => state.currentStep);
 	const currentResult = usePasswordStore((state) => state.currentResult);
 	const historyOpen = usePasswordStore((state) => state.historyOpen);
@@ -98,6 +100,7 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 	const [dismissedTipKey, setDismissedTipKey] = useState<string | null>(null);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
+	const shortcutsEnabled = pathname === "/generator";
 	const modKey = useMemo(() => {
 		if (typeof navigator === "undefined") return "Ctrl";
 		return /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? "⌘" : "Ctrl";
@@ -143,7 +146,7 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 
 	return createPortal(
 		<div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-3">
-			{shortcutsOpen && !historyOpen && (
+			{shortcutsEnabled && shortcutsOpen && !historyOpen && (
 				<div
 					role="dialog"
 					aria-label="Atajos de teclado"
@@ -246,16 +249,18 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 			)}
 
 			<div className="flex items-center gap-2">
-				<button
-					type="button"
-					onClick={() => setShortcutsOpen((v) => !v)}
-					aria-label={shortcutsOpen ? "Cerrar lista de atajos" : "Ver atajos de teclado"}
-					aria-expanded={shortcutsOpen}
-					className="flex cursor-pointer items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-card) px-3 py-2 text-[0.72rem] font-semibold text-(--color-text-secondary) backdrop-blur-md transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
-				>
-					<span aria-hidden="true">⌨️</span>
-					Atajos
-				</button>
+				{shortcutsEnabled && (
+					<button
+						type="button"
+						onClick={() => setShortcutsOpen((v) => !v)}
+						aria-label={shortcutsOpen ? "Cerrar lista de atajos" : "Ver atajos de teclado"}
+						aria-expanded={shortcutsOpen}
+						className="flex cursor-pointer items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-card) px-3 py-2 text-[0.72rem] font-semibold text-(--color-text-secondary) backdrop-blur-md transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
+					>
+						<span aria-hidden="true">⌨️</span>
+						Atajos
+					</button>
+				)}
 
 				<button
 					type="button"
