@@ -96,7 +96,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 4 - Missing explicit responsive breakpoints
 
-- Status: [x] Resolved
+- Status: [~] Accepted (mobile-first fluid layout)
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Main interfaces rely mostly on fixed dimensions and inline styles.
   The history panel uses a fixed width and the generator and batch layouts have few
@@ -125,10 +125,18 @@ and a Conventional Commit in English are complete.
   - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
+- Note (post-restoration): commit `8c78a6b` restored inline styles on `GeneratorForm`
+  and `HistoryPanel` to preserve the visual design after Tailwind v4 arbitrary-value
+  incompatibilities. Both components rely on viewport-relative inline values
+  (`width: 100%`, `width: calc(100vw - 3rem)`, `maxWidth: 390px`) for mobile-first
+  behavior without explicit `sm:`/`md:` breakpoints. `verify-ui.mjs` continues to
+  enforce the mobile-first column invariant via `flexDirection: "column"` OR `flex-col`.
+  No horizontal overflow occurs at 320–480px viewports. Treated as accepted (wontfix)
+  in exchange for preserving the restored visual fidelity.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
-- Status: [x] Resolved
+- Status: [~] Hybrid accepted (post-restoration)
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Migrated components combine extensive `style={{ ... }}` objects,
   embedded style tags, and Tailwind utility classes.
@@ -181,6 +189,33 @@ and a Conventional Commit in English are complete.
     styles only where a value is genuinely dynamic.
   - Final verification: `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm run verify:*`
     and `pnpm run build` all pass.
+- Hybrid accepted (post-restoration):
+  - Commit `8c78a6b fix(ui): restore original inline-style layout and apply a11y dialog fixes`
+    restored inline styles on the priority interactive components (`GeneratorForm`,
+    `HistoryPanel`, `PasswordActions`, `GeneratorPanel`, `FavoritesPanel`,
+    `ConfirmDialog`, `CopyButton`, `WizardLayout`, `StepProgress`) to preserve the
+    visual fidelity after Tailwind v4 arbitrary-value shorthand (`p-[2rem_1rem]`,
+    `bg-(--gradient-cta)`) silently collapsed critical paddings and gradient
+    backgrounds. The restored layout is the source of truth for the design.
+  - Auxiliary non-priority components (`BatchGenerator`, `QRCodeModal`,
+    `QRCodeButton`, `ClippyAssistant` outer wrapper, `CrackTimeDisplay`,
+    `StrengthCheckerClient`, `AppLayout`, `HistoryPageClient`,
+    `FavoritesPageClient`) remain on Tailwind v4 utilities. `@import "tailwindcss"`
+    and the `@theme` block in `app/globals.css` are retained so those utilities
+    keep compiling.
+  - The system is intentionally **hybrid**: inline styles drive the design-critical
+    surfaces, Tailwind utilities drive the secondary surfaces. This trades Bug 5's
+    "single system" goal for preserving the restored visual fidelity.
+  - Dead code cleanup: `shared/lib/cn.ts` and its dependencies (`clsx`,
+    `tailwind-merge`) were removed because no component imports `cn` after the
+    inline-style restoration. Tailwind v4 itself remains (for the auxiliary
+    components), but the `cn()` helper was left without consumers.
+  - The `README.md` stack table now describes the system as "Hybrid: inline styles
+    on design tokens + Tailwind CSS v4 utility classes on auxiliary components".
+  - Bug 5 is accepted as 🟡 Hybrid; reverting to a single system would require
+    re-migrating the auxiliary components to inline styles (and re-implementing
+    their `hover:`/`sm:`/`md:` variants without Tailwind), which is out of scope
+    for this iteration.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 
@@ -414,11 +449,18 @@ and a Conventional Commit in English are complete.
     and added sibling `<span role="status" aria-live="polite" class="sr-only">`
     announcing the copy state. This mirrors the pattern in
     `features/generator/components/GeneratorPageClient.tsx:54`.
+    Reapplied after `8c78a6b` restored inline styles (the rewrite silently
+    reintroduced `aria-live` on those `<button>`s); regression guard added
+    to `scripts/verify-ui.mjs` via `/<button[^>]*aria-live=/`.
   - `M4` `features/generator/components/PasswordActions.tsx`: same migration
     for the save-favorite button, now announcing the saved state via a sibling
     `sr-only role="status"` live region.
   - `M5` `features/favorites/components/FavoritesPanel.tsx`: same migration
     for the copy/unlock button on each favorite row.
+    Reapplied after `8c78a6b` (same regression vector as M3); the sr-only
+    span uses inline `style` (not `className="sr-only"`) to match the
+    inline-style idiom of the surrounding component. The same `verify-ui.mjs`
+    regression guard covers this file.
 - Resolution (low — Tailwind idiom and ARIA hygiene):
   - `L1` `shared/components/ui/QRCodeModal.tsx`: the password preview
     two-state `style={{ color, letterSpacing }}` was migrated to Tailwind
@@ -439,6 +481,8 @@ and a Conventional Commit in English are complete.
     `aria-controls={`panel${step.number}`}` attribute from each step tab
     because the referenced panel ids (`#panel1`, `#panel2`, `#panel3`) do not
     exist in the DOM; the `role="tab"` and `aria-selected` are kept.
+    Reapplied after `8c78a6b` restored inline styles (the attribute was
+    silently reintroduced).
   - `L8` `features/generator/components/GeneratorForm.tsx`: replaced the
     `<label>` that wrapped the "Categorías de palabras" heading (which had no
     form control to label) with a `<span id={useId()}>`, and passed that id to

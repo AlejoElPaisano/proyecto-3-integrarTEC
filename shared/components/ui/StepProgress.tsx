@@ -72,7 +72,6 @@ export function StepProgress({ currentStep }: StepProgressProps) {
             id={`step${step.number}`}
             role="tab"
             aria-selected={isActive}
-            aria-controls={`panel${step.number}`}
             tabIndex={isActive ? 0 : -1}
             style={{
               display: 'flex',

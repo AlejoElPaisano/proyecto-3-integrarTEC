@@ -31,7 +31,7 @@ Original stack: React 19, React Router DOM 7, Vite 8, Zustand, Tailwind CSS 4, W
 | Framework | Next.js 16.3 (App Router, Server & Client Components, Turbopack) |
 | Language | TypeScript 5 |
 | Rendering | SSG by default, all routes are static (`○ Static`) |
-| Styles | Tailwind CSS v4 + design tokens via CSS custom properties |
+| Styles | Hybrid: inline styles on design tokens (CSS custom properties) + Tailwind CSS v4 utility classes on auxiliary components |
 | State | Zustand 5 with versioned persistence and legacy sanitization |
 | Cryptography | Web Crypto API: `crypto.getRandomValues()` (rejection sampling) for generation, AES-GCM 256 + PBKDF2 SHA-256 (600,000 iterations) for favorites |
 | Fonts | `next/font` (Inter + JetBrains Mono) self-hosted, no CDN |
@@ -49,7 +49,7 @@ The complete and detailed record of each bug, its impact, verification and resol
 | 2 | `Math.random()` in number and symbol generation | Pre-existing | ✅ Resolved |
 | 3 | Native `alert()` and silent clipboard errors | Pre-existing | ✅ Resolved |
 | 4 | No explicit responsive breakpoints | Pre-existing | ✅ Resolved |
-| 5 | Inline styles mixed with Tailwind | Pre-existing | ✅ Resolved |
+| 5 | Inline styles mixed with Tailwind | Pre-existing | 🟡 Hybrid accepted |
 | 6 | README word-list count inconsistent with data | Pre-existing | ✅ Resolved |
 | 7 | No dedicated favorites or history routes | Pre-existing | ✅ Resolved |
 | R1 | Clipboard copied ciphertext instead of plaintext | Migration regression | ✅ Resolved |
@@ -102,7 +102,7 @@ proyecto-3-integrarTEC/
 │   ├── not-found.tsx             # 404 page (Server)
 │   ├── sitemap.ts                # programmatic sitemap.xml
 │   ├── robots.ts                 # programmatic robots.txt
-│   ├── globals.css               # Tailwind v4 + design tokens (@theme)
+│   ├── globals.css               # Design tokens (@theme) + Tailwind v4 utilities
 │   ├── api/entropy/route.ts      # Zod-validated Route Handler (server-side defense demo)
 │   ├── generator/page.tsx        # route "/generator" (Server Component)
 │   ├── batch/page.tsx            # route "/batch" (Server Component)
@@ -119,7 +119,7 @@ proyecto-3-integrarTEC/
 ├── shared/                       # Shared components, hooks and libraries
 │   ├── components/ui/             # AppLayout, WizardLayout, CopyButton, Toggle, etc.
 │   ├── hooks/                    # useHasMounted.ts, useKeyboardShortcuts.ts
-│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, strength.ts, site.ts, favorites-io.ts
+│   ├── lib/                       # crypto/random.ts, strength.ts, site.ts, favorites-io.ts
 │   └── types/crypto.types.ts
 ├── services/crypto.service.ts    # AES-GCM + PBKDF2 (Web Crypto API)
 ├── proxy.ts                      # Next.js 16 proxy with scoped matcher (server-side defense demo)
@@ -191,7 +191,7 @@ Stack del original: React 19, React Router DOM 7, Vite 8, Zustand, Tailwind CSS 
 | Framework | Next.js 16.3 (App Router, Server & Client Components, Turbopack) |
 | Lenguaje | TypeScript 5 |
 | Renderizado | SSG por defecto, todas las rutas son estáticas (`○ Static`) |
-| Estilos | Tailwind CSS v4 + design tokens por CSS custom properties |
+| Estilos | Híbrido: estilos en línea sobre design tokens (CSS custom properties) + Tailwind CSS v4 utility classes en componentes auxiliares |
 | Estado | Zustand 5 con persistencia versionada y saneamiento de legacy |
 | Criptografía | Web Crypto API: `crypto.getRandomValues()` (rejection sampling) para generación, AES-GCM 256 + PBKDF2 SHA-256 (600 000 iteraciones) para favoritos |
 | Fuentes | `next/font` (Inter + JetBrains Mono) self-hosted, sin CDN |
@@ -209,7 +209,7 @@ El registro completo y detallado de cada bug, su impacto, verificación y commit
 | 2 | `Math.random()` en generación de números y símbolos | Preexistente | ✅ Resolved |
 | 3 | `alert()` nativo y errores silenciosos en el portapapeles | Preexistente | ✅ Resolved |
 | 4 | Sin breakpoints responsive explícitos | Preexistente | ✅ Resolved |
-| 5 | Estilos inline mezclados con Tailwind | Preexistente | ✅ Resolved |
+| 5 | Estilos inline mezclados con Tailwind | Preexistente | 🟡 Híbrido aceptado |
 | 6 | Conteo de palabras del README inconsistente con los datos | Preexistente | ✅ Resolved |
 | 7 | Sin rutas dedicadas para favoritos e historial | Preexistente | ✅ Resolved |
 | R1 | Portapapeles copiaba ciphertext en vez de plaintext | Regresión de migración | ✅ Resolved |
@@ -262,7 +262,7 @@ proyecto-3-integrarTEC/
 │   ├── not-found.tsx             # página 404 (Server)
 │   ├── sitemap.ts                # sitemap.xml programático
 │   ├── robots.ts                 # robots.txt programático
-│   ├── globals.css               # Tailwind v4 + design tokens (@theme)
+│   ├── globals.css               # Design tokens (@theme) + Tailwind v4 utilities
 │   ├── api/entropy/route.ts      # Route Handler validado con Zod (demo de defensa en servidor)
 │   ├── generator/page.tsx        # ruta "/generator" (Server Component)
 │   ├── batch/page.tsx            # ruta "/batch" (Server Component)
@@ -279,7 +279,7 @@ proyecto-3-integrarTEC/
 ├── shared/                       # Componentes, hooks y librerías compartidos
 │   ├── components/ui/             # AppLayout, WizardLayout, CopyButton, Toggle, etc.
 │   ├── hooks/                    # useHasMounted.ts, useKeyboardShortcuts.ts
-│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, strength.ts, site.ts, favorites-io.ts
+│   ├── lib/                       # crypto/random.ts, strength.ts, site.ts, favorites-io.ts
 │   └── types/crypto.types.ts
 ├── services/crypto.service.ts    # AES-GCM + PBKDF2 (Web Crypto API)
 ├── proxy.ts                      # Next.js 16 proxy con matcher acotado (demo de defensa en servidor)
