@@ -110,18 +110,18 @@ proyecto-3-integrarTEC/
 ├── features/                     # Features by domain
 │   ├── generator/                # store, generate, entropy, similarity, wordLists.json
 │   ├── batch/                    # BatchGenerator, BatchStateController, HistoryPanel
-│   ├── favorites/                # store, hooks, FavoritesPanel
+│   ├── favorites/                # store, hooks, FavoritesPanel, FavoritesBackupButtons, sanitize
 │   ├── clippy/                   # ClippyAssistant (floating assistant via Portal)
 │   └── strength-checker/         # strength analysis and crack-time estimates
 ├── shared/                       # Shared components, hooks and libraries
 │   ├── components/ui/             # AppLayout, WizardLayout, CopyButton, Toggle, etc.
-│   ├── hooks/useHasMounted.ts     # hydration guard
-│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, strength.ts, site.ts
+│   ├── hooks/                    # useHasMounted.ts, useKeyboardShortcuts.ts
+│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, strength.ts, site.ts, favorites-io.ts
 │   └── types/crypto.types.ts
 ├── services/crypto.service.ts    # AES-GCM + PBKDF2 (Web Crypto API)
 ├── scripts/                       # verify:security, verify:architecture, verify:ui
 ├── next.config.ts                # CSP + security headers
-└── BUGFIXES.md                   # Bug tracker (9 + 3 regressions)
+└── BUGFIXES.md                   # Bug tracker (7 + 3 regressions)
 ```
 
 ### Development and verification commands
@@ -266,18 +266,18 @@ proyecto-3-integrarTEC/
 ├── features/                     # Features por dominio
 │   ├── generator/                # store, generate, entropy, similarity, wordLists.json
 │   ├── batch/                    # BatchGenerator, BatchStateController, HistoryPanel
-│   ├── favorites/                # store, hooks, FavoritesPanel
+│   ├── favorites/                # store, hooks, FavoritesPanel, FavoritesBackupButtons, sanitize
 │   ├── clippy/                   # ClippyAssistant (asistente flotante via Portal)
 │   └── strength-checker/         # análisis de fortaleza y tiempos de crackeo
 ├── shared/                       # Componentes, hooks y librerías compartidos
 │   ├── components/ui/             # AppLayout, WizardLayout, CopyButton, Toggle, etc.
-│   ├── hooks/useHasMounted.ts     # guard de hidratación
-│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, strength.ts, site.ts
+│   ├── hooks/                    # useHasMounted.ts, useKeyboardShortcuts.ts
+│   ├── lib/                       # cn (clsx+twMerge), crypto/random.ts, strength.ts, site.ts, favorites-io.ts
 │   └── types/crypto.types.ts
 ├── services/crypto.service.ts    # AES-GCM + PBKDF2 (Web Crypto API)
 ├── scripts/                       # verify:security, verify:architecture, verify:ui
 ├── next.config.ts                # CSP + security headers
-└── BUGFIXES.md                   # Tracker de bugs (9 + 3 regresiones)
+└── BUGFIXES.md                   # Tracker de bugs (7 + 3 regresiones)
 ```
 
 ### Comandos de desarrollo y verificación
