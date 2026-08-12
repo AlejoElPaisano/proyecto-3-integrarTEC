@@ -4,7 +4,6 @@ import { useState } from "react";
 import { usePasswordStore } from "@/features/generator/store";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
 import { QRCodeButton } from "@/shared/components/ui/QRCodeButton";
-import { cn } from "@/shared/lib/cn";
 
 export default function BatchGenerator() {
 	const hasMounted = useHasMounted();
@@ -61,25 +60,24 @@ export default function BatchGenerator() {
 					>
 						Cantidad
 					</span>
-				<div id="batchCount" role="group" aria-labelledby="batch-count-label" className="flex flex-wrap gap-[0.35rem]">
-					{[3, 5, 10, 20].map((n) => (
-						<button
-							type="button"
-							key={n}
-							onClick={() => setBatchCount(n)}
-							aria-label={`Seleccionar ${n} frases`}
-							aria-pressed={batchCount === n}
-							className={cn(
-								"px-3 py-[0.4rem] rounded-sm border font-mono text-[0.8rem] font-semibold cursor-pointer transition-all duration-150 ease-out",
-								batchCount === n
-									? "border-accent bg-accent-soft text-accent"
-									: "border-border bg-transparent text-text-secondary",
-							)}
-						>
-							{n}
-						</button>
-					))}
-				</div>
+					<div id="batchCount" role="group" aria-labelledby="batch-count-label" className="flex flex-wrap gap-[0.35rem]">
+						{[3, 5, 10, 20].map((n) => (
+							<button
+								type="button"
+								key={n}
+								onClick={() => setBatchCount(n)}
+								aria-label={`Seleccionar ${n} frases`}
+								aria-pressed={batchCount === n}
+								className={`px-3 py-[0.4rem] rounded-sm border font-mono text-[0.8rem] font-semibold cursor-pointer transition-all duration-150 ease-out ${
+									batchCount === n
+										? "border-accent bg-accent-soft text-accent"
+										: "border-border bg-transparent text-text-secondary"
+								}`}
+							>
+								{n}
+							</button>
+						))}
+					</div>
 				</div>
 
 				<button
@@ -108,16 +106,13 @@ export default function BatchGenerator() {
 						type="button"
 						onClick={handleCopyAll}
 						aria-label={copiedAll ? "Todas las frases fueron copiadas" : "Copiar todas las frases"}
-						className={cn(
-							"flex items-center justify-center gap-[0.4rem] rounded-sm border border-border px-2 py-[0.55rem] font-sans text-[0.8rem] font-medium cursor-pointer transition-all duration-150 ease-out",
-							copiedAll ? "text-success" : "text-text-secondary",
-						)}
+						aria-live="polite"
+						className={`flex items-center justify-center gap-[0.4rem] rounded-sm border border-border px-2 py-[0.55rem] font-sans text-[0.8rem] font-medium cursor-pointer transition-all duration-150 ease-out ${
+							copiedAll ? "text-success" : "text-text-secondary"
+						}`}
 					>
 						{copiedAll ? "✅ Copiadas todas" : "📋 Copiar todas"}
 					</button>
-					<span role="status" aria-live="polite" className="sr-only">
-						{copiedAll ? "Todas las frases fueron copiadas al portapapeles." : ""}
-					</span>
 					{copyAllError && (
 						<p role="alert" className="text-[0.75rem] text-red-500">
 							{copyAllError}
@@ -139,55 +134,53 @@ export default function BatchGenerator() {
 						{batchResults.results.map((result, i) => {
 							const isWarned = warnedIndices.has(i);
 							return (
-							<div
-								key={`${i}-${result.password}`}
-								className={cn(
-									"flex flex-wrap items-center gap-2 rounded-md border px-[0.85rem] py-[0.65rem] transition-all duration-150 ease-out",
-									isWarned
-										? "border-orange-500/25 bg-orange-500/[0.04]"
-										: "border-border bg-accent-soft",
-								)}
-							>
-								<span className="min-w-6 text-right font-mono text-[0.75rem] font-bold text-text-tertiary">
-									#{i + 1}
-								</span>
-
-								<span className="flex-1 select-all break-all font-mono text-[0.85rem] font-semibold text-text">
-									{result.password}
-								</span>
-
-								<QRCodeButton value={result.password} label="" ariaLabel={`Mostrar QR para frase ${i + 1}`} />
-
-								<button
-									type="button"
-									onClick={() => handleCopy(result.password, i)}
-									aria-label={`Copiar frase ${i + 1}`}
-									className={cn(
-										"shrink-0 cursor-pointer rounded-sm px-[0.4rem] py-[0.2rem] text-base transition-all duration-150 ease-out",
-										copiedIndex === i ? "text-success" : "text-text-tertiary",
-									)}
+								<div
+									key={`${i}-${result.password}`}
+									className={`flex flex-wrap items-center gap-2 rounded-md border px-[0.85rem] py-[0.65rem] transition-all duration-150 ease-out ${
+										isWarned
+											? "border-orange-500/25 bg-orange-500/[0.04]"
+											: "border-border bg-accent-soft"
+									}`}
 								>
-									{copiedIndex === i ? "✅" : "📋"}
-								</button>
-								<span role="status" aria-live="polite" className="sr-only">
-									{copiedIndex === i ? `Frase ${i + 1} copiada al portapapeles.` : ""}
-								</span>
-
-								{copyErrorIndex === i && (
-									<p role="alert" className="basis-full text-[0.75rem] text-red-500">
-										No se pudo copiar esta frase. Verifica los permisos del navegador.
-									</p>
-								)}
-
-								{isWarned && (
-									<span
-										className="shrink-0 text-[0.9rem]"
-										title="Similar a una frase del historial"
-									>
-										⚠️
+									<span className="min-w-6 text-right font-mono text-[0.75rem] font-bold text-text-tertiary">
+										#{i + 1}
 									</span>
-								)}
-							</div>
+
+									<span className="flex-1 select-all break-all font-mono text-[0.85rem] font-semibold text-text">
+										{result.password}
+									</span>
+
+									<QRCodeButton value={result.password} label="" ariaLabel={`Mostrar QR para frase ${i + 1}`} />
+
+									<button
+										type="button"
+										onClick={() => handleCopy(result.password, i)}
+										aria-label={`Copiar frase ${i + 1}`}
+										aria-live="polite"
+										className={`shrink-0 cursor-pointer rounded-sm px-[0.4rem] py-[0.2rem] text-base transition-all duration-150 ease-out ${
+											copiedIndex === i
+												? "text-success"
+												: "text-text-tertiary"
+										}`}
+									>
+										{copiedIndex === i ? "✅" : "📋"}
+									</button>
+
+									{copyErrorIndex === i && (
+										<p role="alert" className="basis-full text-[0.75rem] text-red-500">
+											No se pudo copiar esta frase. Verifica los permisos del navegador.
+										</p>
+									)}
+
+									{isWarned && (
+										<span
+											className="shrink-0 text-[0.9rem]"
+											title="Similar a una frase del historial"
+										>
+											⚠️
+										</span>
+									)}
+								</div>
 							);
 						})}
 					</div>

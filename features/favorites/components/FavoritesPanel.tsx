@@ -4,7 +4,6 @@ import { useState } from "react"
 import type { FavoriteEntry } from "@/features/favorites/types"
 import { useHasMounted } from "@/shared/hooks/useHasMounted"
 import { useFavorites } from "@/features/favorites/hooks/useFavorites"
-import { cn } from "@/shared/lib/cn"
 
 interface FavoritesPanelProps {
   favorites?: FavoriteEntry[]
@@ -64,39 +63,74 @@ export function FavoritesPanel({
   if (!hasMounted || favorites.length === 0) return null
 
   return (
-    <div className={cn(compact && "mt-3 border-t border-(--color-border) pt-3")}>
-      <p className="mb-2 flex items-center gap-[0.35rem] text-[0.75rem] font-semibold text-(--color-text-secondary)">
+    <div
+      style={{
+        borderTop: compact ? "1px solid var(--color-border)" : undefined,
+        marginTop: compact ? "0.75rem" : undefined,
+        paddingTop: compact ? "0.75rem" : undefined,
+      }}
+    >
+      <p
+        style={{
+          fontSize: "0.75rem",
+          fontWeight: 600,
+          color: "var(--color-text-secondary)",
+          margin: "0 0 0.5rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.35rem",
+        }}
+      >
         ⭐ Tus favoritas ({favorites.length})
       </p>
 
-      <div className="flex flex-col gap-2">
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         {favorites.slice(0, compact ? 3 : undefined).map((fav) => (
           <div
             key={fav.id}
-            className={cn(
-              "flex flex-wrap items-center gap-2 rounded-xl border border-(--color-border) bg-(--color-accent-soft) transition-[color,background-color,border-color,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out)]",
-              compact ? "px-3 py-2" : "px-4 py-3",
-            )}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              flexWrap: "wrap",
+              padding: compact ? "0.5rem 0.75rem" : "0.75rem 1rem",
+              borderRadius: compact ? "10px" : "12px",
+              background: "var(--color-accent-soft)",
+              border: "1px solid var(--color-border)",
+              transition: "color, background-color, border-color, box-shadow var(--duration-fast) var(--ease-out)",
+            }}
           >
             <div
-              className={cn(
-                "grid shrink-0 place-items-center rounded-[10px] bg-(--color-accent-soft)",
-                compact ? "h-7 w-7 text-[0.75rem]" : "h-9 w-9 text-[0.9rem]",
-              )}
+              style={{
+                width: compact ? "28px" : "36px",
+                height: compact ? "28px" : "36px",
+                borderRadius: compact ? "8px" : "10px",
+                display: "grid",
+                placeItems: "center",
+                background: "var(--color-accent-soft)",
+                flexShrink: 0,
+                fontSize: compact ? "0.75rem" : "0.9rem",
+              }}
             >
               🔒
             </div>
 
             <span
-              className={cn(
-                "flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-mono font-semibold text-(--color-text)",
-                compact ? "text-[0.7rem]" : "text-[0.8rem]",
-              )}
+              style={{
+                flex: 1,
+                color: "var(--color-text)",
+                fontFamily: "var(--font-mono)",
+                fontSize: compact ? "0.7rem" : "0.8rem",
+                fontWeight: 600,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
             >
               {fav.metadata.label ?? `Passphrase (${fav.metadata.bits} bits)`}
             </span>
 
-            <span className="whitespace-nowrap text-[0.6rem] text-(--color-text-tertiary)">
+            <span style={{ fontSize: "0.6rem", color: "var(--color-text-tertiary)", whiteSpace: "nowrap" }}>
               {fav.metadata.bits}b
             </span>
 
@@ -108,28 +142,42 @@ export function FavoritesPanel({
                   ? "Favorita copiada"
                   : "Copiar o desbloquear favorita"
               }
-              className={cn(
-                "cursor-pointer rounded px-[0.3rem] py-[0.15rem] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)]",
-                compact ? "text-[0.7rem]" : "text-[0.85rem]",
-                copiedId === fav.id
-                  ? "text-(--color-success)"
-                  : "text-(--color-text-tertiary)",
-              )}
+              aria-live="polite"
+              style={{
+                all: "unset",
+                cursor: "pointer",
+                fontSize: compact ? "0.7rem" : "0.85rem",
+                color:
+                  copiedId === fav.id
+                    ? "var(--color-success)"
+                    : "var(--color-text-tertiary)",
+                padding: "0.15rem 0.3rem",
+                borderRadius: "4px",
+                transition: "color var(--duration-fast) var(--ease-out)",
+              }}
             >
               {copiedId === fav.id ? "✅" : "📋"}
             </button>
-            <span role="status" aria-live="polite" className="sr-only">
-              {copiedId === fav.id ? "Favorita copiada al portapapeles." : ""}
-            </span>
 
             <button
               type="button"
               onClick={() => onRemove(fav.id)}
               aria-label="Eliminar favorita"
-              className={cn(
-                "cursor-pointer rounded px-[0.3rem] py-[0.15rem] text-(--color-text-tertiary) transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-(--color-error)",
-                compact ? "text-[0.65rem]" : "text-[0.75rem]",
-              )}
+              style={{
+                all: "unset",
+                cursor: "pointer",
+                fontSize: compact ? "0.65rem" : "0.75rem",
+                color: "var(--color-text-tertiary)",
+                padding: "0.15rem 0.3rem",
+                borderRadius: "4px",
+                transition: "color var(--duration-fast) var(--ease-out)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "var(--color-error)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "var(--color-text-tertiary)"
+              }}
             >
               🗑️
             </button>
@@ -140,11 +188,20 @@ export function FavoritesPanel({
                   event.preventDefault()
                   void handleCopy(fav.id)
                 }}
-                className="mt-2 flex w-full basis-full flex-col gap-[0.4rem]"
+                style={{
+                  flexBasis: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.4rem",
+                  marginTop: "0.5rem",
+                }}
               >
                 <label
                   htmlFor={`favorite-passphrase-${fav.id}`}
-                  className="text-[0.7rem] text-(--color-text-secondary)"
+                  style={{
+                    fontSize: "0.7rem",
+                    color: "var(--color-text-secondary)",
+                  }}
                 >
                   Ingresá la contraseña original para desbloquear y copiar
                 </label>
@@ -156,17 +213,40 @@ export function FavoritesPanel({
                   autoComplete="current-password"
                   autoFocus
                   required
-                  className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-[0.6rem] py-[0.45rem] font-mono text-[0.75rem] text-(--color-text)"
+                  style={{
+                    width: "100%",
+                    padding: "0.45rem 0.6rem",
+                    borderRadius: "8px",
+                    border: "1px solid var(--color-border)",
+                    background: "var(--color-surface)",
+                    color: "var(--color-text)",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.75rem",
+                  }}
                 />
                 {copyError && (
-                  <p role="alert" className="text-[0.7rem] text-(--color-error)">
+                  <p
+                    role="alert"
+                    style={{
+                      color: "var(--color-error)",
+                      fontSize: "0.7rem",
+                    }}
+                  >
                     {copyError}
                   </p>
                 )}
-                <div className="flex gap-[0.4rem]">
+                <div style={{ display: "flex", gap: "0.4rem" }}>
                   <button
                     type="submit"
-                    className="cursor-pointer rounded-md border border-(--color-accent) bg-(--color-accent-soft) px-[0.6rem] py-[0.35rem] text-[0.7rem] text-(--color-accent)"
+                    style={{
+                      cursor: "pointer",
+                      padding: "0.35rem 0.6rem",
+                      border: "1px solid var(--color-accent)",
+                      borderRadius: "6px",
+                      background: "var(--color-accent-soft)",
+                      color: "var(--color-accent)",
+                      fontSize: "0.7rem",
+                    }}
                   >
                     Desbloquear y copiar
                   </button>
@@ -177,7 +257,15 @@ export function FavoritesPanel({
                       setUnlockPassphrase("")
                       setCopyError(null)
                     }}
-                    className="cursor-pointer rounded-md border border-(--color-border) bg-transparent px-[0.6rem] py-[0.35rem] text-[0.7rem] text-(--color-text-secondary)"
+                    style={{
+                      cursor: "pointer",
+                      padding: "0.35rem 0.6rem",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "6px",
+                      background: "transparent",
+                      color: "var(--color-text-secondary)",
+                      fontSize: "0.7rem",
+                    }}
                   >
                     Cancelar
                   </button>

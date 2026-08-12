@@ -12,9 +12,28 @@ export function EntropyMeter({ bits, maxBits = 128 }: EntropyMeterProps) {
 	const percent = Math.min((bits / maxBits) * 100, 100);
 
 	return (
-		<div className="flex flex-col gap-2">
-			<div className="flex items-center gap-3">
-				<span className="shrink-0 whitespace-nowrap text-[0.8rem] text-(--color-text-secondary)">
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				gap: "0.5rem",
+			}}
+		>
+			<div
+				style={{
+					display: "flex",
+					alignItems: "center",
+					gap: "0.75rem",
+				}}
+			>
+				<span
+					style={{
+						fontSize: "0.8rem",
+						color: "var(--color-text-secondary)",
+						whiteSpace: "nowrap",
+						flexShrink: 0,
+					}}
+				>
 					Entropía
 				</span>
 
@@ -24,26 +43,56 @@ export function EntropyMeter({ bits, maxBits = 128 }: EntropyMeterProps) {
 					aria-valuemin={0}
 					aria-valuemax={100}
 					aria-label={`Entropía: ${bits.toFixed(1)} bits`}
-					className="h-[7px] flex-1 overflow-hidden rounded-full bg-(--color-border)"
+					style={{
+						flex: 1,
+						height: "7px",
+						background: "var(--color-border)",
+						borderRadius: "99px",
+						overflow: "hidden",
+					}}
 				>
 					<div
-						className="h-full rounded-full bg-[linear-gradient(90deg,#ef4444,#f97316,#eab308,#22c55e)] transition-[width] duration-[var(--duration-slow)] ease-[var(--ease-out)]"
-						style={{ width: `${percent}%` }}
+						style={{
+							height: "100%",
+							width: `${percent}%`,
+							borderRadius: "99px",
+							background:
+								"linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e)",
+							transition: "width var(--duration-slow) var(--ease-out)",
+						}}
 					/>
 				</div>
 
 				<span
 					aria-live="polite"
-					className="shrink-0 whitespace-nowrap font-mono text-[0.85rem] font-bold text-(--color-cyan)"
+					style={{
+						fontSize: "0.85rem",
+						fontWeight: 700,
+						color: "var(--color-cyan)",
+						fontFamily: "var(--font-mono)",
+						whiteSpace: "nowrap",
+						flexShrink: 0,
+					}}
 				>
 					{bits.toFixed(1)} bits
 				</span>
 			</div>
 
-			<div className="flex justify-center">
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+				}}
+			>
 				<span
-					className="inline-flex items-center gap-[0.35rem] rounded-full px-[0.9rem] py-[0.4rem] text-[0.75rem] font-medium"
 					style={{
+						display: "inline-flex",
+						alignItems: "center",
+						gap: "0.35rem",
+						padding: "0.4rem 0.9rem",
+						borderRadius: "99px",
+						fontSize: "0.75rem",
+						fontWeight: 500,
 						background: `${config.color}14`,
 						border: `1px solid ${config.color}33`,
 						color: config.color,

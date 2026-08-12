@@ -1,19 +1,11 @@
 'use client'
 
-import { useEffect, useId, useState } from "react"
+import { useEffect, useState } from "react"
 import { usePasswordStore } from "@/features/generator/store"
 import type { PasswordConfig } from "@/features/generator/types"
 import { CategoryChips } from "@/features/generator/components/CategoryChips"
 import { Toggle } from "@/shared/components/ui/Toggle"
 import { useHasMounted } from "@/shared/hooks/useHasMounted"
-
-const cardClass =
-  "rounded-[14px] border border-(--color-border) bg-(--color-accent-soft) p-[0.85rem_1rem]"
-
-const labelRowClass =
-  "mb-[0.5rem] flex items-center gap-2 text-[0.9rem] font-semibold text-(--color-text)"
-
-const emojiClass = "text-[1.1rem]"
 
 export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: string) => void }) {
   const hasMounted = useHasMounted()
@@ -22,7 +14,6 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
   const setStep = usePasswordStore((state) => state.setStep)
   const setConfig = usePasswordStore((state) => state.setConfig)
   const [showAdvanced, setShowAdvanced] = useState(false)
-  const categoriesLabelId = useId()
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -48,34 +39,79 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
   if (!hasMounted) return null
 
   return (
-    <div className="flex flex-col gap-[0.85rem] text-left">
-      <div className="mb-2 text-center">
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem", textAlign: "left" }}>
+      <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
         <div
           aria-hidden="true"
-          className="mb-[0.4rem] inline-block text-[2.5rem] [filter:drop-shadow(0_0_20px_rgba(99,102,241,0.3))]"
+          style={{
+            fontSize: "2.5rem",
+            display: "inline-block",
+            marginBottom: "0.4rem",
+            filter: "drop-shadow(0 0 20px rgba(99,102,241,0.3))",
+          }}
         >
           🎨
         </div>
 
-        <h1 className="mb-[0.3rem] bg-clip-text text-[1.8rem] font-extrabold tracking-[-0.03em] text-transparent [background-image:linear-gradient(135deg,#e2e2f0,#a78bfa)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
+        <h1
+          style={{
+            fontSize: "1.8rem",
+            fontWeight: 800,
+            letterSpacing: "-0.03em",
+            background: "linear-gradient(135deg, #e2e2f0, #a78bfa)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            marginBottom: "0.3rem",
+          }}
+        >
           Personalizá tu contraseña
         </h1>
 
-        <p className="text-[0.95rem] text-(--color-text-secondary)">
+        <p
+          style={{
+            color: "var(--color-text-secondary)",
+            fontSize: "0.95rem",
+          }}
+        >
           Ajustá la longitud, separadores y categorías a tu medida.
         </p>
       </div>
 
-      <div className={cardClass}>
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
         <label
           htmlFor="wordCount"
-          className="mb-[0.6rem] flex items-center justify-between text-[0.9rem] font-semibold text-(--color-text)"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+            marginBottom: "0.6rem",
+          }}
         >
-          <span className="flex items-center gap-2">
-            <span aria-hidden="true" className={emojiClass}>📝</span>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>📝</span>
             Cantidad de palabras
           </span>
-          <span className="rounded-lg bg-[rgba(236,72,153,0.15)] px-[0.6rem] py-[0.15rem] text-[0.95rem] font-extrabold text-[#ec4899]">
+          <span
+            style={{
+              fontWeight: 800,
+              fontSize: "0.95rem",
+              color: "#ec4899",
+              background: "rgba(236, 72, 153, 0.15)",
+              padding: "0.15rem 0.6rem",
+              borderRadius: "8px",
+            }}
+          >
             {config.wordCount}
           </span>
         </label>
@@ -90,18 +126,40 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
             updateOption("wordCount", Number(event.target.value))
             onSettingChange?.("wordCount")
           }}
-          className="w-full cursor-pointer [accent-color:var(--color-pink)]"
+          style={{
+            width: "100%",
+            cursor: "pointer",
+            accentColor: "var(--color-pink)",
+          }}
         />
-        <div className="mt-[0.4rem] flex justify-between text-[0.75rem] font-semibold text-(--color-text-tertiary)">
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.4rem", fontSize: "0.75rem", color: "var(--color-text-tertiary)", fontWeight: 600 }}>
           <span>2 palabras</span>
           <span>4 palabras</span>
           <span>6 palabras</span>
         </div>
       </div>
 
-      <div className={cardClass}>
-        <label htmlFor="separator" className={labelRowClass}>
-          <span aria-hidden="true" className={emojiClass}>🔗</span>
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
+        <label
+          htmlFor="separator"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+            marginBottom: "0.5rem",
+          }}
+        >
+          <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>🔗</span>
           Separador de palabras
         </label>
         <select
@@ -111,7 +169,18 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
             updateOption("separator", event.target.value)
             onSettingChange?.("separator")
           }}
-          className="w-full cursor-pointer rounded-[10px] border border-(--color-border) bg-(--color-surface) px-[0.85rem] py-[0.6rem] font-sans text-[0.875rem] text-(--color-text) outline-none"
+          style={{
+            width: "100%",
+            cursor: "pointer",
+            borderRadius: "10px",
+            border: "1px solid var(--color-border)",
+            background: "var(--color-surface)",
+            padding: "0.6rem 0.85rem",
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.875rem",
+            color: "var(--color-text)",
+            outline: "none",
+          }}
         >
           <option value="-">Guión ( - )</option>
           <option value=".">Punto ( . )</option>
@@ -120,24 +189,41 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
         </select>
       </div>
 
-      <div className={cardClass}>
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
         <button
           type="button"
           onClick={() => setShowAdvanced((current) => !current)}
           aria-expanded={showAdvanced}
-          className="flex w-full cursor-pointer items-center justify-between text-[0.9rem] font-semibold text-(--color-text)"
+          style={{
+            all: "unset",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            cursor: "pointer",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+          }}
         >
-          <span className="flex items-center gap-2">
-            <span aria-hidden="true" className={emojiClass}>⚙️</span>
+          <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>⚙️</span>
             Opciones avanzadas
           </span>
-          <span className="text-[0.85rem] font-bold text-(--color-pink)">
+          <span style={{ fontSize: "0.85rem", color: "var(--color-pink)", fontWeight: 700 }}>
             {showAdvanced ? "Ocultar ↑" : "Mostrar ↓"}
           </span>
         </button>
 
         {showAdvanced && (
-          <div className="mt-[0.85rem] flex flex-col gap-[0.6rem]">
+          <div style={{ marginTop: "0.85rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
             <Toggle
               id="includeNumbers"
               label="Incluir números"
@@ -172,21 +258,60 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
         )}
       </div>
 
-      <div className={cardClass}>
-        <span
-          id={categoriesLabelId}
-          className="mb-[0.65rem] flex items-center gap-2 text-[0.9rem] font-semibold text-(--color-text)"
+      <div
+        style={{
+          background: "var(--color-accent-soft)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "14px",
+          padding: "0.85rem 1rem",
+        }}
+      >
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "var(--color-text)",
+            marginBottom: "0.65rem",
+          }}
         >
-          <span aria-hidden="true" className={emojiClass}>🏷️</span>
+          <span aria-hidden="true" style={{ fontSize: "1.1rem" }}>🏷️</span>
           Categorías de palabras
-        </span>
-        <CategoryChips labelledBy={categoriesLabelId} />
+        </label>
+        <CategoryChips />
       </div>
 
       <button
         type="button"
         onClick={handleGenerate}
-        className="mt-2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-(--gradient-cta) px-8 py-4 font-sans text-[1.125rem] font-bold text-white transition-all duration-[150ms] ease-[cubic-bezier(0.16,1,0.3,1)] [box-shadow:0_4px_20px_rgba(236,72,153,0.25)] hover:-translate-y-0.5 hover:[box-shadow:0_8px_32px_rgba(236,72,153,0.35)]"
+        style={{
+          all: "unset",
+          cursor: "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "0.5rem",
+          marginTop: "0.5rem",
+          padding: "1rem 2rem",
+          borderRadius: "14px",
+          background: "linear-gradient(135deg, #ec4899, #818cf8)",
+          color: "#fff",
+          fontSize: "1.125rem",
+          fontWeight: 700,
+          fontFamily: "var(--font-sans)",
+          transition: "all 150ms cubic-bezier(0.16, 1, 0.3, 1)",
+          boxShadow: "0 4px 20px rgba(236,72,153,0.25)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-2px)"
+          e.currentTarget.style.boxShadow = "0 8px 32px rgba(236,72,153,0.35)"
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)"
+          e.currentTarget.style.boxShadow = "0 4px 20px rgba(236,72,153,0.25)"
+        }}
         aria-label="Generar contraseña con las opciones seleccionadas"
       >
         ✨ Generar frase mágica
@@ -194,3 +319,4 @@ export function GeneratorForm({ onSettingChange }: { onSettingChange?: (key: str
     </div>
   )
 }
+

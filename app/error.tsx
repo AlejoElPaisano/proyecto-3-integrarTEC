@@ -16,28 +16,56 @@ export default function ErrorPage({
 
   return (
     <div
-      className="flex min-h-screen flex-col items-center justify-center p-[2rem_1rem] text-center"
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2rem 1rem",
+        textAlign: "center",
+      }}
       role="alert"
     >
       <div
         aria-hidden="true"
-        className="mb-4 text-[2.5rem]"
+        style={{ fontSize: "2.5rem", marginBottom: "1rem" }}
       >
         ⚠️
       </div>
-      <h1 className="mb-2 text-[1.6rem] font-extrabold tracking-[-0.03em]">
+      <h1
+        style={{
+          fontSize: "1.6rem",
+          fontWeight: 800,
+          letterSpacing: "-0.03em",
+          marginBottom: "0.5rem",
+        }}
+      >
         Algo salió mal
       </h1>
-      <p className="mb-6 max-w-[420px] text-[0.95rem] text-(--color-text-secondary)">
+      <p
+        style={{
+          color: "var(--color-text-secondary)",
+          fontSize: "0.95rem",
+          maxWidth: "420px",
+          marginBottom: "1.5rem",
+        }}
+      >
         Ocurrió un error inesperado al renderizar esta página. Intentá de nuevo;
         si persiste, volvé al inicio.
       </p>
       {error.digest ? (
-        <p className="mb-6 text-[0.75rem] text-(--color-text-tertiary)">
+        <p
+          style={{
+            fontSize: "0.75rem",
+            color: "var(--color-text-tertiary)",
+            marginBottom: "1.5rem",
+          }}
+        >
           Código: {error.digest}
         </p>
       ) : null}
-      <div className="flex gap-3">
+      <div style={{ display: "flex", gap: "0.75rem" }}>
         <button
           type="button"
           onClick={() => retry()}

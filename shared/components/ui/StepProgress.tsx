@@ -1,7 +1,6 @@
 'use client'
 
 import { usePasswordStore } from '@/features/generator/store'
-import { cn } from '@/shared/lib/cn'
 
 interface StepProgressProps {
   currentStep?: number
@@ -27,17 +26,40 @@ export function StepProgress({ currentStep }: StepProgressProps) {
     <div
       role="tablist"
       aria-label="Pasos del asistente"
-      className="relative mb-6 flex items-center justify-center"
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: '1.5rem',
+        position: 'relative',
+      }}
     >
       <div
         aria-hidden="true"
-        className="absolute left-[calc(50%-160px)] right-[calc(50%-160px)] top-5 h-0.5 rounded-[1px] bg-(--color-border)"
+        style={{
+          position: 'absolute',
+          top: '20px',
+          left: 'calc(50% - 160px)',
+          right: 'calc(50% - 160px)',
+          height: '2px',
+          background: 'var(--color-border)',
+          borderRadius: '1px',
+        }}
       />
 
       <div
         aria-hidden="true"
-        className="absolute left-[calc(50%-160px)] top-5 h-0.5 max-w-[320px] rounded-[1px] bg-[linear-gradient(90deg,var(--color-pink),var(--color-accent))] transition-[width] duration-[var(--duration-slow)] ease-[var(--ease-out)]"
-        style={{ width: PROGRESS_WIDTH[activeStep] ?? '0%' }}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          left: 'calc(50% - 160px)',
+          height: '2px',
+          width: PROGRESS_WIDTH[activeStep] ?? '0%',
+          maxWidth: '320px',
+          background: 'linear-gradient(90deg, var(--color-pink), var(--color-accent))',
+          borderRadius: '1px',
+          transition: `width var(--duration-slow) var(--ease-out)`,
+        }}
       />
 
       {STEPS.map((step) => {
@@ -50,32 +72,62 @@ export function StepProgress({ currentStep }: StepProgressProps) {
             id={`step${step.number}`}
             role="tab"
             aria-selected={isActive}
+            aria-controls={`panel${step.number}`}
             tabIndex={isActive ? 0 : -1}
-            className="relative z-[2] flex w-[100px] flex-col items-center gap-2"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.5rem',
+              position: 'relative',
+              zIndex: 2,
+              width: '100px',
+            }}
           >
             <div
               aria-hidden="true"
-              className={cn(
-                "grid h-10 w-10 place-items-center rounded-full text-[0.9rem] font-bold backdrop-blur-md transition-all duration-[var(--duration-normal)] ease-[var(--ease-out)]",
-                isActive
-                  ? "border-2 border-(--color-pink) bg-(--gradient-cta) text-white [box-shadow:0_0_20px_var(--color-pink-glow)]"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                display: 'grid',
+                placeItems: 'center',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                backdropFilter: 'blur(8px)',
+                transition: `all var(--duration-normal) var(--ease-out)`,
+                background: isActive
+                  ? 'var(--gradient-cta)'
                   : isDone
-                    ? "border-2 border-(--color-accent) bg-(--gradient-blue) text-white"
-                    : "border-2 border-(--color-border) bg-[rgba(12,18,40,0.8)] text-(--color-text-tertiary)",
-              )}
+                    ? 'var(--gradient-blue)'
+                    : 'rgba(12,18,40,0.8)',
+                border: isActive
+                  ? '2px solid var(--color-pink)'
+                  : isDone
+                    ? '2px solid var(--color-accent)'
+                    : '2px solid var(--color-border)',
+                color: isActive || isDone ? '#fff' : 'var(--color-text-tertiary)',
+                boxShadow: isActive
+                  ? '0 0 20px var(--color-pink-glow)'
+                  : 'none',
+              }}
             >
               {step.number}
             </div>
 
             <span
-              className={cn(
-                "text-[0.7rem] font-medium uppercase tracking-[0.06em] transition-[color] duration-[var(--duration-fast)] ease-[var(--ease-out)]",
-                isActive
-                  ? "text-(--color-pink)"
+              style={{
+                fontSize: '0.7rem',
+                fontWeight: 500,
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                transition: `color var(--duration-fast) var(--ease-out)`,
+                color: isActive
+                  ? 'var(--color-pink)'
                   : isDone
-                    ? "text-(--color-accent)"
-                    : "text-(--color-text-tertiary)",
-              )}
+                    ? 'var(--color-accent)'
+                    : 'var(--color-text-tertiary)',
+              }}
             >
               {step.label}
             </span>

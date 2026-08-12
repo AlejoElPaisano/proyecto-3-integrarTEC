@@ -3,7 +3,6 @@
 import wordLists from "@/features/generator/wordLists.json";
 import { usePasswordStore } from "@/features/generator/store";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
-import { cn } from "@/shared/lib/cn";
 
 const CATEGORY_LABELS: Record<string, string> = {
 	animales: "Animales",
@@ -15,7 +14,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 	emociones: "Emociones",
 };
 
-export function CategoryChips({ labelledBy }: { labelledBy?: string }) {
+export function CategoryChips() {
 	const hasMounted = useHasMounted();
 	const categories = Object.keys(wordLists);
 	const selectedCategories = usePasswordStore((state) => state.config.selectedCategories);
@@ -31,11 +30,7 @@ export function CategoryChips({ labelledBy }: { labelledBy?: string }) {
 	if (!hasMounted) return null;
 
 	return (
-		<div
-			role="group"
-			aria-labelledby={labelledBy}
-			className="flex flex-wrap justify-center gap-2"
-		>
+		<div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center" }}>
 			{categories.map((cat) => {
 				const active = selectedCategories.includes(cat);
 				return (
@@ -44,12 +39,18 @@ export function CategoryChips({ labelledBy }: { labelledBy?: string }) {
 						key={cat}
 						onClick={() => toggleCategory(cat)}
 						aria-pressed={active}
-						className={cn(
-							"cursor-pointer rounded-full px-[0.9rem] py-[0.4rem] text-[0.75rem] font-semibold font-sans transition-[background,border-color,color] duration-[var(--duration-fast)] ease-[var(--ease-out)]",
-							active
-								? "border border-(--color-pink) bg-(--gradient-cta) text-white"
-								: "border border-(--color-border) bg-(--color-accent-soft) text-(--color-text-secondary)",
-						)}
+						style={{
+							padding: "0.4rem 0.9rem",
+							borderRadius: "99px",
+							fontSize: "0.75rem",
+							fontWeight: 600,
+							cursor: "pointer",
+							background: active ? "var(--gradient-cta)" : "var(--color-accent-soft)",
+							border: active ? "1px solid var(--color-pink)" : "1px solid var(--color-border)",
+							color: active ? "#fff" : "var(--color-text-secondary)",
+							transition: "background, border-color, color var(--duration-fast) var(--ease-out)",
+							fontFamily: "var(--font-sans)",
+						}}
 					>
 						{CATEGORY_LABELS[cat] ?? cat}
 					</button>
