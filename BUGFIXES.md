@@ -128,7 +128,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
-- Status: [~] In progress
+- Status: [x] Resolved
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Migrated components combine extensive `style={{ ... }}` objects,
   embedded style tags, and Tailwind utility classes.
@@ -155,7 +155,32 @@ and a Conventional Commit in English are complete.
   - Reopened after audit found 96 remaining `style={{ ... }}` and 13 `onMouseEnter`/`onMouseLeave`
     pairs that still mutate `style` directly across 7 components (`CopyButton`, `ConfirmDialog`,
     `PasswordActions`, `GeneratorPanel`, `GeneratorForm`, `FavoritesPanel`, `HistoryPanel`).
-    A full migration to Tailwind utilities is in progress on branch `fix/audit-bugs`.
+  - Full-app migration completed on branch `fix/audit-bugs`: migrated the 7 priority
+    components plus 19 additional files (`app/error.tsx`, `app/global-error.tsx`,
+    `app/loading.tsx`, `app/not-found.tsx`, `app/page.tsx`, `app/batch/page.tsx`,
+    `app/history/HistoryPageClient.tsx`, `app/favorites/FavoritesPageClient.tsx`,
+    `features/generator/components/StartButton.tsx`, `shared/components/ui/AppLayout.tsx`,
+    `shared/components/ui/WizardLayout.tsx`, `shared/components/ui/FunStats.tsx`,
+    `shared/components/ui/StepProgress.tsx`, `shared/components/ui/EntropyMeter.tsx`,
+    `shared/components/ui/Toggle.tsx`, `shared/components/ui/QRCodeModal.tsx`,
+    `features/generator/components/CategoryChips.tsx`, `features/clippy/components/ClippyAssistant.tsx`,
+    `features/strength-checker/components/CrackTimeDisplay.tsx`,
+    `features/strength-checker/components/StrengthCheckerClient.tsx`) to Tailwind v4
+    utilities, including arbitrary CSS variable properties (`bg-(--color-...)`) and
+    arbitrary box-shadow utilities (`[box-shadow:var(--glass-shadow),...]`).
+    Removed every `onMouseEnter`/`onMouseLeave` pair by replacing style mutations
+    with `hover:` variants. Embedded `<style>{...}</style>` blocks in `app/page.tsx`
+    (the `.btn-start` class) and `app/loading.tsx` (the `pf-loading-slide` keyframes)
+    were removed; the loading keyframes were moved to `app/globals.css`.
+  - The only inline styles that remain are genuinely dynamic values that cannot be
+    represented as static utilities: runtime-interpolated strength colors
+    (`${config.color}14` / `${config.color}33`), percentage/transform state-driven
+    widths and translations (progressbar width, Toggle knob translateX, StepProgress
+    per-step width, canvas display state), and the password-preview color/letterSpacing
+    toggle in QRCodeModal. These conform to the Bug 5 target rule of keeping inline
+    styles only where a value is genuinely dynamic.
+  - Final verification: `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm run verify:*`
+    and `pnpm run build` all pass.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 
