@@ -112,7 +112,6 @@ export function PasswordActions({
 					onClick={handleSaveFavorite}
 					disabled={!password || saved}
 					aria-label={saved ? "Favorita guardada" : "Guardar como favorita"}
-					aria-live="polite"
 					style={{
 						all: "unset",
 						cursor: "pointer",
@@ -152,6 +151,9 @@ export function PasswordActions({
 
 				<CopyButton text={password} full label="Copiar" />
 			</div>
+			<span role="status" aria-live="polite" style={{ position: "absolute", width: "1px", height: "1px", padding: 0, margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 }}>
+				{saved ? "La favorita fue guardada correctamente." : ""}
+			</span>
 			{saveError && (
 				<p
 					role="alert"

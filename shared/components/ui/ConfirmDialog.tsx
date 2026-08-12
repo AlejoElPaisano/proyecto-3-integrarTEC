@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -20,6 +20,8 @@ export function ConfirmDialog({
   onCancel,
 }: ConfirmDialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  const messageId = useId();
 
   useEffect(() => {
     const el = ref.current;
@@ -51,11 +53,11 @@ export function ConfirmDialog({
         fontFamily: "var(--font-sans)",
         zIndex: 9999,
       }}
-      aria-labelledby="confirm-title"
-      aria-describedby="confirm-message"
+      aria-labelledby={titleId}
+      aria-describedby={messageId}
     >
       <p
-        id="confirm-title"
+        id={titleId}
         style={{
           fontSize: "1.1rem",
           fontWeight: 700,
@@ -65,7 +67,7 @@ export function ConfirmDialog({
         {title}
       </p>
       <p
-        id="confirm-message"
+        id={messageId}
         style={{
           fontSize: "0.85rem",
           color: "var(--color-text-secondary)",

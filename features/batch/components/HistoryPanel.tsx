@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { usePasswordStore } from "@/features/generator/store";
@@ -39,6 +39,27 @@ export default function HistoryPanel() {
 	} | null>(null);
 
 	const { favorites, removeFavorite, mergeFavorites } = useFavorites();
+
+	const dialogRef = useRef<HTMLDialogElement>(null);
+	const previousActiveElement = useRef<HTMLElement | null>(null);
+
+	useEffect(() => {
+		const el = dialogRef.current;
+		if (!el) return;
+		if (historyOpen && !el.open) {
+			previousActiveElement.current = document.activeElement as HTMLElement;
+			el.showModal();
+		} else if (!historyOpen && el.open) {
+			el.close();
+		}
+	}, [historyOpen]);
+
+	useEffect(() => {
+		if (!historyOpen && previousActiveElement.current) {
+			previousActiveElement.current.focus();
+			previousActiveElement.current = null;
+		}
+	}, [historyOpen]);
 
 	function handleConfirmClear() {
 		clearHistory();
@@ -159,13 +180,17 @@ export default function HistoryPanel() {
 			)}
 
 			{historyOpen && (
-				<div
-					role="dialog"
+				<dialog
+					ref={dialogRef}
+					onClose={toggleHistory}
 					aria-label={view === "favorites" ? "Favoritos" : "Historial de sesión"}
 					style={{
 						position: "fixed",
 						bottom: "5rem",
 						right: "1.5rem",
+						top: "auto",
+						left: "auto",
+						margin: 0,
 						zIndex: 1001,
 						width: "calc(100vw - 3rem)",
 						maxWidth: "390px",
@@ -177,8 +202,10 @@ export default function HistoryPanel() {
 						backdropFilter: "blur(24px)",
 						WebkitBackdropFilter: "blur(24px)",
 						border: "1px solid var(--glass-border)",
-						boxShadow: "0 12px 40px rgba(0,0,0,0.4)",
+						boxShadow: "0 12px 40px rgba(0,0,0,0.4), 0 0 0 100vw rgba(0,0,0,0.55)",
 						overflow: "hidden",
+						color: "var(--color-text)",
+						padding: 0,
 					}}
 				>
 					{/* Header */}
@@ -316,37 +343,37 @@ export default function HistoryPanel() {
 						}}
 					>
 						{view === "favorites" ? (
-							favorites.length === 0 ? (
-								<div
-									style={{
-										borderRadius: "14px",
-										border: "1px solid var(--color-border)",
-										background: "var(--color-accent-soft)",
-										padding: "2rem 1rem",
-										textAlign: "center",
-										fontSize: "0.85rem",
-										color: "var(--color-text-tertiary)",
-									}}
-								>
-									<div style={{ fontSize: "2rem", marginBottom: "0.4rem" }}>⭐</div>
-									<p style={{ margin: 0, fontWeight: 600, color: "var(--color-text-secondary)" }}>
-										No tenés favoritos guardados
-									</p>
-									<span style={{ fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>
-										Guardá tus frases preferidas para verlas acá.
-									</span>
+							<>
+								<div style={{ paddingBottom: "0.5rem" }}>
+									<FavoritesBackupButtons favorites={favorites} onMerge={mergeFavorites} />
 								</div>
-							) : (
-								<>
-									<div style={{ paddingBottom: "0.5rem" }}>
-										<FavoritesBackupButtons favorites={favorites} onMerge={mergeFavorites} />
+								{favorites.length === 0 ? (
+									<div
+										style={{
+											borderRadius: "14px",
+											border: "1px solid var(--color-border)",
+											background: "var(--color-accent-soft)",
+											padding: "2rem 1rem",
+											textAlign: "center",
+											fontSize: "0.85rem",
+											color: "var(--color-text-tertiary)",
+										}}
+									>
+										<div style={{ fontSize: "2rem", marginBottom: "0.4rem" }}>⭐</div>
+										<p style={{ margin: 0, fontWeight: 600, color: "var(--color-text-secondary)" }}>
+											No tenés favoritos guardados
+										</p>
+										<span style={{ fontSize: "0.75rem", marginTop: "0.2rem", display: "block" }}>
+											Importá un backup o guardá tus frases preferidas para verlas acá.
+										</span>
 									</div>
+								) : (
 									<FavoritesPanel
 										favorites={favorites}
 										onRemove={(id: string) => setConfirmAction({ type: "favorite", id })}
 									/>
-								</>
-							)
+								)}
+							</>
 						) : sessionHistory.length === 0 ? (
 							<div
 								style={{
@@ -524,7 +551,7 @@ export default function HistoryPanel() {
 							? "🔒 Historial temporal guardado en memoria de sesión"
 							: "🔐 Favoritos guardados cifrados localmente en tu navegador"}
 					</div>
-				</div>
+				</dialog>
 			)}
 
 			{confirmAction?.type === "clear" && (

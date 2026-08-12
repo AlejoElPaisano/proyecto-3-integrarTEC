@@ -142,7 +142,6 @@ export function FavoritesPanel({
                   ? "Favorita copiada"
                   : "Copiar o desbloquear favorita"
               }
-              aria-live="polite"
               style={{
                 all: "unset",
                 cursor: "pointer",
@@ -158,6 +157,25 @@ export function FavoritesPanel({
             >
               {copiedId === fav.id ? "✅" : "📋"}
             </button>
+            {copiedId === fav.id && (
+              <span
+                role="status"
+                aria-live="polite"
+                style={{
+                  position: "absolute",
+                  width: "1px",
+                  height: "1px",
+                  padding: 0,
+                  margin: "-1px",
+                  overflow: "hidden",
+                  clip: "rect(0,0,0,0)",
+                  whiteSpace: "nowrap",
+                  border: 0,
+                }}
+              >
+                Favorita copiada al portapapeles
+              </span>
+            )}
 
             <button
               type="button"

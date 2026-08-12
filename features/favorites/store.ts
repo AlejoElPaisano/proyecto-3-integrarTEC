@@ -9,6 +9,7 @@ import type {
 } from "./types"
 import { encryptPassword, decryptPassword } from "@/services/crypto.service"
 import { sanitizeFavorites, isRecord } from "./sanitize"
+import { persistedDataSchema } from "./schema"
 
 const STORAGE_KEY = "passfrases-favorites-v1"
 const sessionPassphrases = new Map<string, string>()
@@ -26,8 +27,9 @@ function migrateIfNeeded(): void {
   const raw = localStorage.getItem(STORAGE_KEY)
   if (!raw) return
   try {
-    const data = JSON.parse(raw) as PersistedData
-    if (data.formatVersion !== 1 && data.formatVersion !== 2) {
+    const parsed: unknown = JSON.parse(raw)
+    const result = persistedDataSchema.safeParse(parsed)
+    if (!result.success) {
       localStorage.removeItem(STORAGE_KEY)
     }
   } catch {

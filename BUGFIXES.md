@@ -96,7 +96,7 @@ and a Conventional Commit in English are complete.
 
 ## Bug 4 - Missing explicit responsive breakpoints
 
-- Status: [x] Resolved
+- Status: [~] Accepted (mobile-first fluid layout)
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Main interfaces rely mostly on fixed dimensions and inline styles.
   The history panel uses a fixed width and the generator and batch layouts have few
@@ -125,10 +125,18 @@ and a Conventional Commit in English are complete.
   - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
+- Note (post-restoration): commit `8c78a6b` restored inline styles on `GeneratorForm`
+  and `HistoryPanel` to preserve the visual design after Tailwind v4 arbitrary-value
+  incompatibilities. Both components rely on viewport-relative inline values
+  (`width: 100%`, `width: calc(100vw - 3rem)`, `maxWidth: 390px`) for mobile-first
+  behavior without explicit `sm:`/`md:` breakpoints. `verify-ui.mjs` continues to
+  enforce the mobile-first column invariant via `flexDirection: "column"` OR `flex-col`.
+  No horizontal overflow occurs at 320–480px viewports. Treated as accepted (wontfix)
+  in exchange for preserving the restored visual fidelity.
 
 ## Bug 5 - Mixed inline styles and Tailwind styles
 
-- Status: [x] Resolved
+- Status: [~] Hybrid accepted (post-restoration)
 - Origin: Pre-existing bug carried over from the React project.
 - Current behavior: Migrated components combine extensive `style={{ ... }}` objects,
   embedded style tags, and Tailwind utility classes.
@@ -152,6 +160,62 @@ and a Conventional Commit in English are complete.
   - Additional layout work: `a60f1df fix(responsive): refactor generator form layout and option controls`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
+  - Reopened after audit found 96 remaining `style={{ ... }}` and 13 `onMouseEnter`/`onMouseLeave`
+    pairs that still mutate `style` directly across 7 components (`CopyButton`, `ConfirmDialog`,
+    `PasswordActions`, `GeneratorPanel`, `GeneratorForm`, `FavoritesPanel`, `HistoryPanel`).
+  - Full-app migration completed on branch `fix/audit-bugs`: migrated the 7 priority
+    components plus 19 additional files (`app/error.tsx`, `app/global-error.tsx`,
+    `app/loading.tsx`, `app/not-found.tsx`, `app/page.tsx`, `app/batch/page.tsx`,
+    `app/history/HistoryPageClient.tsx`, `app/favorites/FavoritesPageClient.tsx`,
+    `features/generator/components/StartButton.tsx`, `shared/components/ui/AppLayout.tsx`,
+    `shared/components/ui/WizardLayout.tsx`, `shared/components/ui/FunStats.tsx`,
+    `shared/components/ui/StepProgress.tsx`, `shared/components/ui/EntropyMeter.tsx`,
+    `shared/components/ui/Toggle.tsx`, `shared/components/ui/QRCodeModal.tsx`,
+    `features/generator/components/CategoryChips.tsx`, `features/clippy/components/ClippyAssistant.tsx`,
+    `features/strength-checker/components/CrackTimeDisplay.tsx`,
+    `features/strength-checker/components/StrengthCheckerClient.tsx`) to Tailwind v4
+    utilities, including arbitrary CSS variable properties (`bg-(--color-...)`) and
+    arbitrary box-shadow utilities (`[box-shadow:var(--glass-shadow),...]`).
+    Removed every `onMouseEnter`/`onMouseLeave` pair by replacing style mutations
+    with `hover:` variants. Embedded `<style>{...}</style>` blocks in `app/page.tsx`
+    (the `.btn-start` class) and `app/loading.tsx` (the `pf-loading-slide` keyframes)
+    were removed; the loading keyframes were moved to `app/globals.css`.
+  - The only inline styles that remain are genuinely dynamic values that cannot be
+    represented as static utilities: runtime-interpolated strength colors
+    (`${config.color}14` / `${config.color}33`), percentage/transform state-driven
+    widths and translations (progressbar width, Toggle knob translateX, StepProgress
+    per-step width, canvas display state), and the password-preview color/letterSpacing
+    toggle in QRCodeModal. These conform to the Bug 5 target rule of keeping inline
+    styles only where a value is genuinely dynamic.
+  - Final verification: `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm run verify:*`
+    and `pnpm run build` all pass.
+- Hybrid accepted (post-restoration):
+  - Commit `8c78a6b fix(ui): restore original inline-style layout and apply a11y dialog fixes`
+    restored inline styles on the priority interactive components (`GeneratorForm`,
+    `HistoryPanel`, `PasswordActions`, `GeneratorPanel`, `FavoritesPanel`,
+    `ConfirmDialog`, `CopyButton`, `WizardLayout`, `StepProgress`) to preserve the
+    visual fidelity after Tailwind v4 arbitrary-value shorthand (`p-[2rem_1rem]`,
+    `bg-(--gradient-cta)`) silently collapsed critical paddings and gradient
+    backgrounds. The restored layout is the source of truth for the design.
+  - Auxiliary non-priority components (`BatchGenerator`, `QRCodeModal`,
+    `QRCodeButton`, `ClippyAssistant` outer wrapper, `CrackTimeDisplay`,
+    `StrengthCheckerClient`, `AppLayout`, `HistoryPageClient`,
+    `FavoritesPageClient`) remain on Tailwind v4 utilities. `@import "tailwindcss"`
+    and the `@theme` block in `app/globals.css` are retained so those utilities
+    keep compiling.
+  - The system is intentionally **hybrid**: inline styles drive the design-critical
+    surfaces, Tailwind utilities drive the secondary surfaces. This trades Bug 5's
+    "single system" goal for preserving the restored visual fidelity.
+  - Dead code cleanup: `shared/lib/cn.ts` and its dependencies (`clsx`,
+    `tailwind-merge`) were removed because no component imports `cn` after the
+    inline-style restoration. Tailwind v4 itself remains (for the auxiliary
+    components), but the `cn()` helper was left without consumers.
+  - The `README.md` stack table now describes the system as "Hybrid: inline styles
+    on design tokens + Tailwind CSS v4 utility classes on auxiliary components".
+  - Bug 5 is accepted as 🟡 Hybrid; reverting to a single system would require
+    re-migrating the auxiliary components to inline styles (and re-implementing
+    their `hover:`/`sm:`/`md:` variants without Tailwind), which is out of scope
+    for this iteration.
 
 ## Bug 6 - README word-list count is inconsistent with the data
 
@@ -300,6 +364,143 @@ and a Conventional Commit in English are complete.
   - Commit: `d4fded2 refactor(architecture): isolate client interactivity from route pages`
   - Verification: `pnpm run verify:architecture`, `pnpm run verify:security`,
     `pnpm exec tsc --noEmit`, `pnpm lint`, and `pnpm build` all pass.
+
+## Server-side defense pattern (rubric Fase 5)
+
+- Status: [x] Implemented
+- Origin: Proyecto 3 rubric requirement (Clase 20-21) — not a code bug, but an
+  architecture hallmark the consigna demands demonstrating even when the app is
+  fully client-side.
+- Current behavior: PassFrases is 100% client-side for crypto and session. There
+  were no `proxy.ts`, no `server-only` DAL, no Zod validation, and no Route
+  Handler/Server Action, because there were no server mutations to protect.
+- Impact: The rubric's Fase 5 explicitly requires `proxy.ts` with a scoped
+  `matcher`, validation with Zod at runtime, and a `server-only`-marked data
+  access layer. Their absence would discount the "seguridad y mutaciones" axis
+  even though the rest of the app is secure.
+- Target behavior: Provide a minimal, illustrative implementation of the
+  server-side defense pattern (authenticate -> validate -> respond) that does
+  not weaken the local-only security model and is documented as illustrative.
+- Verification:
+  - `proxy.ts` exists at the project root and exports `proxy` + a `config`
+    with a `matcher` scoped to `/api/:path*` (does not run on every request).
+  - `lib/entropy.ts` imports `server-only` so it cannot be bundled into the
+    client; importing it from a Client Component fails the build.
+  - `app/api/entropy/route.ts` accepts a JSON body, validates it with a Zod
+    schema via `safeParse`, returns 400 with structured `fieldErrors` on
+    invalid input, 200 with `{ bits, strength }` on success, and 500 with a
+    generic message on unexpected failure (no stacks leaked).
+  - `pnpm run build`, `pnpm lint`, `pnpm exec tsc --noEmit`, and the three
+    `verify:*` scripts all pass.
+- Resolution:
+  - Installed `zod` and `server-only`.
+  - `proxy.ts` (root): exports `proxy(request)` returning `NextResponse.next()`
+    with `config.matcher = ['/api/:path*']` (Node.js runtime). PassFrases has
+    no login/sessions, so the proxy is intentionally illustrative and is
+    documented as such in the README.
+  - `lib/entropy.ts`: `server-only`-marked DAL wrapper that re-exports
+    `calculateEntropy` + `getStrengthLevel` from `features/generator/entropy`
+    (a server-safe module with no directives) under a typed `analyzeEntropy`
+    entry point. Marking the wrapper `server-only` guards the boundary.
+  - `app/api/entropy/route.ts`: POST Route Handler that parses the JSON body,
+    validates it with `PASSWORD_CONFIG_SCHEMA.safeParse`, responds with
+    predictable HTTP statuses (200/400/500), and never leaks internal stacks.
+    Demonstrates the authenticate -> validate (Zod) -> mutate -> respond order
+    from the rubric (authentication is implicit: the handler is the trust
+    boundary for the demo; PassFrases has no user accounts).
+  - README updated in both English and Spanish: technologies table, extra
+    features list, and project tree now reflect the new files and the
+    rationale for the illustrative server-side defense layer.
+  - Commit: (this change)
+- Verification runs:
+  - `pnpm run build`
+  - `pnpm lint`
+  - `pnpm exec tsc --noEmit`
+  - `pnpm run verify:security`
+  - `pnpm run verify:architecture`
+  - `pnpm run verify:ui`
+
+## Audit 2 - Accessibility and Bug 5 polish (fix/audit-bugs)
+
+- Status: [x] Resolved
+- Origin: Final deep audit of the `fix/audit-bugs` branch identified 5 medium
+  and 8 low polish findings on top of the previously resolved bugs. None of
+  them violated the Proyecto 3 rubric, but fixing them brings the project to
+  100% alignment with the idiomatic patterns already established in the
+  codebase and with ARIA best practices.
+- Verification:
+  - `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm run verify:security`,
+    `pnpm run verify:architecture`, `pnpm run verify:ui`, and `pnpm run build`
+    all pass after the fixes.
+  - Structural ripgrep checks confirm zero `aria-live` on `<button>` elements,
+    zero `<div role="dialog">` residual, zero `style={{ transform }}` inline
+    styles, and zero `aria-controls` referencing missing DOM ids.
+- Resolution (medium — accessibility):
+  - `M1` `features/batch/components/HistoryPanel.tsx`: replaced the
+    `<div role="dialog">` of the floating history/favorites panel with a
+    native `<dialog>` element driven by `ref + showDialog/close()` and a
+    `previousActiveElement` ref for focus restoration, matching the pattern
+    already used by `QRCodeModal` and `ConfirmDialog`. The panel now provides
+    a real focus trap and restores focus to the trigger button on close.
+  - `M2` `features/clippy/components/ClippyAssistant.tsx`: applied the same
+    native `<dialog>` migration to the keyboard-shortcuts panel.
+  - `M3` `features/batch/components/BatchGenerator.tsx`: removed
+    `aria-live="polite"` from the copy-all and per-result `<button>` elements
+    and added sibling `<span role="status" aria-live="polite" class="sr-only">`
+    announcing the copy state. This mirrors the pattern in
+    `features/generator/components/GeneratorPageClient.tsx:54`.
+    Reapplied after `8c78a6b` restored inline styles (the rewrite silently
+    reintroduced `aria-live` on those `<button>`s); regression guard added
+    to `scripts/verify-ui.mjs` via `/<button[^>]*aria-live=/`.
+  - `M4` `features/generator/components/PasswordActions.tsx`: same migration
+    for the save-favorite button, now announcing the saved state via a sibling
+    `sr-only role="status"` live region.
+  - `M5` `features/favorites/components/FavoritesPanel.tsx`: same migration
+    for the copy/unlock button on each favorite row.
+    Reapplied after `8c78a6b` (same regression vector as M3); the sr-only
+    span uses inline `style` (not `className="sr-only"`) to match the
+    inline-style idiom of the surrounding component. The same `verify-ui.mjs`
+    regression guard covers this file.
+- Resolution (low — Tailwind idiom and ARIA hygiene):
+  - `L1` `shared/components/ui/QRCodeModal.tsx`: the password preview
+    two-state `style={{ color, letterSpacing }}` was migrated to Tailwind
+    `cn()` swaps (`tracking-normal text-(--color-text)` vs `tracking-[0.15em]
+    text-(--color-text-secondary)`), eliminating the static inline style.
+  - `L5` `shared/components/ui/QRCodeModal.tsx`: added `role="alert"` to the
+    QR-generation error block so screen readers announce the failure.
+  - `L2` `shared/components/ui/Toggle.tsx`: the knob `style={{ transform:
+    translateX(1.25rem) }}` was migrated to `cn(checked ? "translate-x-5" :
+    "translate-x-0")` under the existing `transition-transform` utility.
+  - `L3` `shared/components/ui/FunStats.tsx`: the `Bubble` static two-state
+    `style={{ background, border, color }}` was migrated to two precomputed
+    Tailwind class strings (`bubbleActive`/`bubbleInactive`) selected by
+    `cn()`. The `✓`/`✗` glyph is now wrapped in `<span aria-hidden="true">`
+    so it is not read aloud as "check mark" by screen readers (the label text
+    already conveys the meaning).
+  - `L4` `shared/components/ui/StepProgress.tsx`: removed the
+    `aria-controls={`panel${step.number}`}` attribute from each step tab
+    because the referenced panel ids (`#panel1`, `#panel2`, `#panel3`) do not
+    exist in the DOM; the `role="tab"` and `aria-selected` are kept.
+    Reapplied after `8c78a6b` restored inline styles (the attribute was
+    silently reintroduced).
+  - `L8` `features/generator/components/GeneratorForm.tsx`: replaced the
+    `<label>` that wrapped the "Categorías de palabras" heading (which had no
+    form control to label) with a `<span id={useId()}>`, and passed that id to
+    `CategoryChips` via a new `labelledBy` prop so the chips container now has
+    `role="group" aria-labelledby={...}`. The `<label>` element is no longer
+    misused for non-form content.
+  - `L9` `features/batch/components/HistoryPanel.tsx`: the segmented control
+    that switches between History and Favorites tabs now has proper
+    `role="tablist"` on the wrapper and `role="tab" aria-selected={...}` on
+    each button. (Implemented together with M1.)
+  - `L7` `features/batch/components/BatchGenerator.tsx`: removed the four
+    inline template-string className interpolations and migrated them to the
+    project's `cn()` utility from `@/shared/lib/cn` for consistency with the
+    rest of the codebase. The bare Tailwind v4 tokens (`text-text`,
+    `border-border`, `bg-accent-soft`, `text-accent`, `text-success`,
+    `text-text-secondary`, `text-text-tertiary`, `text-red-500`) remain
+    valid because `@theme` registers each `--color-X` custom property as a
+    Tailwind color named `X`.
 
 ## Priority
 

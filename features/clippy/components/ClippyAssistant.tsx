@@ -1,8 +1,9 @@
 'use client'
 
 import { usePasswordStore } from "@/features/generator/store";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
 const TIPS: Record<string, { icon: string; title: string; text: string }[]> = {
@@ -90,6 +91,7 @@ const SHORTCUTS = [
 
 export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: string | null; floating?: boolean }) {
 	const hasMounted = useHasMounted();
+	const pathname = usePathname();
 	const currentStep = usePasswordStore((state) => state.currentStep);
 	const currentResult = usePasswordStore((state) => state.currentResult);
 	const historyOpen = usePasswordStore((state) => state.historyOpen);
@@ -98,6 +100,27 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 	const [dismissedTipKey, setDismissedTipKey] = useState<string | null>(null);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
+	const shortcutsEnabled = pathname === "/generator";
+	const shortcutsDialogRef = useRef<HTMLDialogElement>(null);
+	const shortcutsPreviousActive = useRef<HTMLElement | null>(null);
+
+	useEffect(() => {
+		const el = shortcutsDialogRef.current;
+		if (!el) return;
+		if (shortcutsOpen && !el.open) {
+			shortcutsPreviousActive.current = document.activeElement as HTMLElement;
+			el.showModal();
+		} else if (!shortcutsOpen && el.open) {
+			el.close();
+		}
+	}, [shortcutsOpen]);
+
+	useEffect(() => {
+		if (!shortcutsOpen && shortcutsPreviousActive.current) {
+			shortcutsPreviousActive.current.focus();
+			shortcutsPreviousActive.current = null;
+		}
+	}, [shortcutsOpen]);
 	const modKey = useMemo(() => {
 		if (typeof navigator === "undefined") return "Ctrl";
 		return /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? "⌘" : "Ctrl";
@@ -143,12 +166,32 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 
 	return createPortal(
 		<div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-3">
-			{shortcutsOpen && !historyOpen && (
-				<div
-					role="dialog"
+			{shortcutsEnabled && shortcutsOpen && !historyOpen && (
+				<dialog
+					ref={shortcutsDialogRef}
+					onClose={() => setShortcutsOpen(false)}
 					aria-label="Atajos de teclado"
-					className="flex w-[calc(100vw-3rem)] max-w-[340px] flex-col gap-3 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl"
-					style={{ boxShadow: "var(--glass-shadow)" }}
+					style={{
+						position: "fixed",
+						bottom: "5rem",
+						right: "1.5rem",
+						top: "auto",
+						left: "auto",
+						margin: 0,
+						width: "calc(100vw - 3rem)",
+						maxWidth: "340px",
+						borderRadius: "18px",
+						padding: "1rem",
+						display: "flex",
+						flexDirection: "column",
+						gap: "0.75rem",
+						background: "var(--color-card)",
+						backdropFilter: "blur(24px)",
+						border: "1px solid var(--glass-border)",
+						boxShadow: "var(--glass-shadow)",
+						color: "var(--color-text)",
+						fontSize: "0.875rem",
+					}}
 				>
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2 text-[0.95rem] font-bold text-(--color-text)">
@@ -180,7 +223,7 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 							</li>
 						))}
 					</ul>
-				</div>
+				</dialog>
 			)}
 
 			{showBubble && (
@@ -246,16 +289,18 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 			)}
 
 			<div className="flex items-center gap-2">
-				<button
-					type="button"
-					onClick={() => setShortcutsOpen((v) => !v)}
-					aria-label={shortcutsOpen ? "Cerrar lista de atajos" : "Ver atajos de teclado"}
-					aria-expanded={shortcutsOpen}
-					className="flex cursor-pointer items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-card) px-3 py-2 text-[0.72rem] font-semibold text-(--color-text-secondary) backdrop-blur-md transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
-				>
-					<span aria-hidden="true">⌨️</span>
-					Atajos
-				</button>
+				{shortcutsEnabled && (
+					<button
+						type="button"
+						onClick={() => setShortcutsOpen((v) => !v)}
+						aria-label={shortcutsOpen ? "Cerrar lista de atajos" : "Ver atajos de teclado"}
+						aria-expanded={shortcutsOpen}
+						className="flex cursor-pointer items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-card) px-3 py-2 text-[0.72rem] font-semibold text-(--color-text-secondary) backdrop-blur-md transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
+					>
+						<span aria-hidden="true">⌨️</span>
+						Atajos
+					</button>
+				)}
 
 				<button
 					type="button"

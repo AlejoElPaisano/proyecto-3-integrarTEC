@@ -122,6 +122,24 @@ body::after {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pf-loading-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* ─── Native <dialog> reset for floating panels ─────────────── */
+/* HistoryPanel and ClippyAssistant use showModal() for a11y    */
+/* but are visually positioned panels, not centered modals.     */
+dialog[style*="position: fixed"] {
+  /* Override browser UA sheet which sets max-width/height/margin */
+  max-width: none;
+  max-height: none;
+}
+dialog[style*="position: fixed"]::backdrop {
+  /* The panel renders its own overlay via box-shadow           */
+  display: none;
+}
+
 .glass-card {
   position: relative;
   overflow: hidden;

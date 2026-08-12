@@ -102,17 +102,21 @@ export default function BatchGenerator() {
 
 			{batchResults && batchResults.results.length > 0 && (
 				<>
-					<button
-						type="button"
-						onClick={handleCopyAll}
-						aria-label={copiedAll ? "Todas las frases fueron copiadas" : "Copiar todas las frases"}
-						aria-live="polite"
-						className={`flex items-center justify-center gap-[0.4rem] rounded-sm border border-border px-2 py-[0.55rem] font-sans text-[0.8rem] font-medium cursor-pointer transition-all duration-150 ease-out ${
-							copiedAll ? "text-success" : "text-text-secondary"
-						}`}
-					>
-						{copiedAll ? "✅ Copiadas todas" : "📋 Copiar todas"}
-					</button>
+				<button
+					type="button"
+					onClick={handleCopyAll}
+					aria-label={copiedAll ? "Todas las frases fueron copiadas" : "Copiar todas las frases"}
+					className={`flex items-center justify-center gap-[0.4rem] rounded-sm border border-border px-2 py-[0.55rem] font-sans text-[0.8rem] font-medium cursor-pointer transition-all duration-150 ease-out ${
+						copiedAll ? "text-success" : "text-text-secondary"
+					}`}
+				>
+					{copiedAll ? "✅ Copiadas todas" : "📋 Copiar todas"}
+				</button>
+				{copiedAll && (
+					<span role="status" aria-live="polite" className="sr-only">
+						Todas las frases fueron copiadas al portapapeles
+					</span>
+				)}
 					{copyAllError && (
 						<p role="alert" className="text-[0.75rem] text-red-500">
 							{copyAllError}
@@ -152,19 +156,23 @@ export default function BatchGenerator() {
 
 									<QRCodeButton value={result.password} label="" ariaLabel={`Mostrar QR para frase ${i + 1}`} />
 
-									<button
-										type="button"
-										onClick={() => handleCopy(result.password, i)}
-										aria-label={`Copiar frase ${i + 1}`}
-										aria-live="polite"
-										className={`shrink-0 cursor-pointer rounded-sm px-[0.4rem] py-[0.2rem] text-base transition-all duration-150 ease-out ${
-											copiedIndex === i
-												? "text-success"
-												: "text-text-tertiary"
-										}`}
-									>
-										{copiedIndex === i ? "✅" : "📋"}
-									</button>
+								<button
+									type="button"
+									onClick={() => handleCopy(result.password, i)}
+									aria-label={`Copiar frase ${i + 1}`}
+									className={`shrink-0 cursor-pointer rounded-sm px-[0.4rem] py-[0.2rem] text-base transition-all duration-150 ease-out ${
+										copiedIndex === i
+											? "text-success"
+											: "text-text-tertiary"
+									}`}
+								>
+									{copiedIndex === i ? "✅" : "📋"}
+								</button>
+								{copiedIndex === i && (
+									<span role="status" aria-live="polite" className="sr-only">
+										{`Frase ${i + 1} copiada al portapapeles`}
+									</span>
+								)}
 
 									{copyErrorIndex === i && (
 										<p role="alert" className="basis-full text-[0.75rem] text-red-500">
