@@ -8,6 +8,7 @@ import type {
   FavoritesStore,
 } from "./types"
 import { encryptPassword, decryptPassword } from "@/services/crypto.service"
+import { sanitizeFavorites, isRecord } from "./sanitize"
 
 const STORAGE_KEY = "passfrases-favorites-v1"
 const sessionPassphrases = new Map<string, string>()
@@ -18,62 +19,6 @@ interface PersistedData {
     favorites: FavoriteEntry[]
     unlocked: false
   }
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null
-}
-
-function isStrength(value: unknown): value is FavoriteMetadata["strength"] {
-  return (
-    value === "weak" ||
-    value === "medium" ||
-    value === "strong" ||
-    value === "very-strong"
-  )
-}
-
-function sanitizeFavorites(value: unknown): FavoriteEntry[] {
-  if (!Array.isArray(value)) return []
-
-  return value.flatMap((favorite): FavoriteEntry[] => {
-    if (!isRecord(favorite)) return []
-    if (!isRecord(favorite.encrypted) || !isRecord(favorite.metadata)) return []
-
-    const encrypted = favorite.encrypted
-    const metadata = favorite.metadata
-    if (
-      typeof favorite.id !== "string" ||
-      typeof encrypted.ciphertext !== "string" ||
-      typeof encrypted.iv !== "string" ||
-      typeof encrypted.salt !== "string" ||
-      !isStrength(metadata.strength) ||
-      !Number.isFinite(metadata.bits) ||
-      !Number.isFinite(metadata.wordCount) ||
-      !Number.isFinite(metadata.createdAt) ||
-      !Number.isFinite(metadata.updatedAt)
-    ) {
-      return []
-    }
-
-    return [
-      {
-        id: favorite.id,
-        encrypted: {
-          ciphertext: encrypted.ciphertext,
-          iv: encrypted.iv,
-          salt: encrypted.salt,
-        },
-        metadata: {
-          bits: metadata.bits as number,
-          strength: metadata.strength,
-          wordCount: metadata.wordCount as number,
-          createdAt: metadata.createdAt as number,
-          updatedAt: metadata.updatedAt as number,
-        },
-      },
-    ]
-  })
 }
 
 function migrateIfNeeded(): void {
@@ -124,6 +69,20 @@ export const useFavoriteStore = create<FavoritesStore>()(
         set((state) => ({
           favorites: state.favorites.filter((f) => f.id !== id),
         }))
+      },
+
+      mergeFavorites: (incoming: FavoriteEntry[]) => {
+        let added = 0
+        set((state) => {
+          const existingIds = new Set(state.favorites.map((f) => f.id))
+          const newFavorites = incoming.filter((f) => {
+            if (existingIds.has(f.id)) return false
+            added++
+            return true
+          })
+          return { favorites: [...newFavorites, ...state.favorites] }
+        })
+        return added
       },
 
       copyToClipboard: async (
