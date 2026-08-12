@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CopyButton } from "@/shared/components/ui/CopyButton";
 import { QRCodeButton } from "@/shared/components/ui/QRCodeButton";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
+import { cn } from "@/shared/lib/cn";
 
 interface PasswordActionsProps {
 	password: string;
@@ -48,61 +49,15 @@ export function PasswordActions({
 
 	return (
 		<>
-			<div
-				style={{
-					fontFamily: "var(--font-mono)",
-					fontSize: "1.4rem",
-					fontWeight: 700,
-					letterSpacing: "-0.01em",
-					padding: "1.25rem 1.5rem",
-					background: "rgba(0,0,0,0.3)",
-					border: "1px solid var(--color-border)",
-					borderRadius: "14px",
-					wordBreak: "break-all",
-					lineHeight: 1.5,
-					userSelect: "all",
-					textAlign: "center",
-					color: "var(--color-text)",
-					minHeight: "4rem",
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
-			>
+			<div className="flex min-h-16 items-center justify-center break-all rounded-[14px] border border-(--color-border) bg-black/30 p-[1.25rem_1.5rem] text-center font-mono text-[1.4rem] font-bold tracking-[-0.01em] leading-[1.5] text-(--color-text) [user-select:all]">
 				{password ?? "Generando…"}
 			</div>
 
-			<div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
+			<div className="mt-2 flex gap-3">
 				<button
 					type="button"
 					onClick={onRegenerate}
-					style={{
-						all: "unset",
-						cursor: "pointer",
-						flex: 1,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						gap: "0.4rem",
-						padding: "0.85rem",
-						borderRadius: "12px",
-						background: "var(--gradient-blue)",
-						color: "#fff",
-						fontSize: "0.9rem",
-						fontWeight: 600,
-						fontFamily: "var(--font-sans)",
-						transition:
-							"transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out)",
-					}}
-					onMouseEnter={(e) => {
-						e.currentTarget.style.boxShadow =
-							"0 4px 20px rgba(99,102,241,0.3)";
-						e.currentTarget.style.transform = "translateY(-1px)";
-					}}
-					onMouseLeave={(e) => {
-						e.currentTarget.style.boxShadow = "";
-						e.currentTarget.style.transform = "";
-					}}
+					className="flex flex-1 cursor-pointer items-center justify-center gap-[0.4rem] rounded-xl bg-(--gradient-blue) p-[0.85rem] font-sans text-[0.9rem] font-semibold text-white transition-[transform,box-shadow] duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(99,102,241,0.3)]"
 				>
 					🔄 Generar nueva
 				</button>
@@ -113,37 +68,13 @@ export function PasswordActions({
 					disabled={!password || saved}
 					aria-label={saved ? "Favorita guardada" : "Guardar como favorita"}
 					aria-live="polite"
-					style={{
-						all: "unset",
-						cursor: "pointer",
-						padding: "0.85rem 1rem",
-						borderRadius: "12px",
-						border: "1px solid var(--color-border)",
-						background: saved ? "var(--color-success-soft)" : "transparent",
-						color: saved
-							? "var(--color-success)"
-							: "var(--color-text)",
-						fontSize: "0.9rem",
-						fontWeight: 600,
-						fontFamily: "var(--font-sans)",
-						opacity: !password ? 0.5 : 1,
-						transition:
-							"border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out)",
-					}}
-					onMouseEnter={(e) => {
-						if (password && !saved) {
-							e.currentTarget.style.borderColor =
-								"var(--color-accent)";
-							e.currentTarget.style.background =
-								"var(--color-accent-soft)";
-						}
-					}}
-					onMouseLeave={(e) => {
-						e.currentTarget.style.borderColor = "var(--color-border)";
-						e.currentTarget.style.background = saved
-							? "var(--color-success-soft)"
-							: "transparent";
-					}}
+					className={cn(
+						"cursor-pointer rounded-xl border border-(--color-border) px-[1rem] py-[0.85rem] font-sans text-[0.9rem] font-semibold transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)]",
+						saved
+							? "bg-(--color-success-soft) text-(--color-success)"
+							: "bg-transparent text-(--color-text) hover:border-(--color-accent) hover:bg-(--color-accent-soft)",
+						!password && "opacity-50",
+					)}
 				>
 					{saved ? "⭐ Guardada" : "⭐ Guardar"}
 				</button>
@@ -155,12 +86,7 @@ export function PasswordActions({
 			{saveError && (
 				<p
 					role="alert"
-					style={{
-						marginTop: "0.5rem",
-						color: "var(--color-error)",
-						fontSize: "0.75rem",
-						textAlign: "center",
-					}}
+					className="mt-2 text-center text-[0.75rem] text-(--color-error)"
 				>
 					{saveError}
 				</p>
