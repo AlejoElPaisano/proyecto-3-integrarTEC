@@ -82,6 +82,12 @@ const SETTING_TIPS: Record<string, { icon: string; title: string; text: string }
 	},
 };
 
+const SHORTCUTS = [
+	{ keys: ["G"], label: "Generar nueva passphrase" },
+	{ keys: ["C"], label: "Copiar passphrase actual" },
+	{ keys: ["B"], label: "Abrir o cerrar historial" },
+] as const;
+
 export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: string | null; floating?: boolean }) {
 	const hasMounted = useHasMounted();
 	const currentStep = usePasswordStore((state) => state.currentStep);
@@ -90,6 +96,12 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 	const sessionHistory = usePasswordStore((state) => state.sessionHistory);
 	const toggleHistory = usePasswordStore((state) => state.toggleHistory);
 	const [dismissedTipKey, setDismissedTipKey] = useState<string | null>(null);
+	const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+	const modKey = useMemo(() => {
+		if (typeof navigator === "undefined") return "Ctrl";
+		return /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? "⌘" : "Ctrl";
+	}, []);
 
 	const tipKey = useMemo(() => {
 		if (currentStep === 2) return `step2-${activeTip ?? ""}`;
@@ -127,10 +139,50 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 
 	if (!hasMounted || !floating) return null;
 
-	const showBubble = autoTip && !historyOpen && !isDismissed;
+	const showBubble = autoTip && !historyOpen && !isDismissed && !shortcutsOpen;
 
 	return createPortal(
 		<div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-3">
+			{shortcutsOpen && !historyOpen && (
+				<div
+					role="dialog"
+					aria-label="Atajos de teclado"
+					className="flex w-[calc(100vw-3rem)] max-w-[340px] flex-col gap-3 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl"
+					style={{ boxShadow: "var(--glass-shadow)" }}
+				>
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-2 text-[0.95rem] font-bold text-(--color-text)">
+							<span className="text-[1rem]">⌨️</span>
+							Atajos de teclado
+						</div>
+						<button
+							type="button"
+							onClick={() => setShortcutsOpen(false)}
+							aria-label="Cerrar lista de atajos"
+							className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-(--color-border) bg-(--color-accent-soft) text-[0.8rem] text-(--color-text-tertiary) transition-colors duration-150 ease-out hover:bg-white/15 hover:text-(--color-text)"
+						>
+							✕
+						</button>
+					</div>
+					<ul role="list" className="flex flex-col gap-2">
+						{SHORTCUTS.map((shortcut) => (
+							<li
+								key={shortcut.keys[0]}
+								role="listitem"
+								className="flex items-center justify-between gap-2 rounded-xl border border-(--color-border) bg-(--color-accent-soft) p-2.5"
+							>
+								<span className="text-[0.825rem] text-(--color-text-secondary)">
+									{shortcut.label}
+								</span>
+								<kbd className="rounded-md border border-(--color-border) bg-(--color-surface) px-2 py-0.5 font-mono text-[0.75rem] font-semibold text-(--color-text)">
+									{modKey} + {shortcut.keys.join(" + ")}
+								</kbd>
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
+
 			{showBubble && (
 				<div
 					role="status"
@@ -193,21 +245,34 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 				</div>
 			)}
 
-			<button
-				type="button"
-				onClick={toggleHistory}
-				aria-label={historyOpen ? "Cerrar historial" : "Abrir historial de sesión"}
-				aria-expanded={historyOpen}
-				className="relative grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full bg-(--gradient-cta) text-[1.4rem] transition-transform duration-150 ease-out hover:scale-110"
-				style={{ boxShadow: "0 4px 24px var(--color-pink-glow)" }}
-			>
-				🤖
-				{sessionHistory.length > 0 && (
-					<span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-(--color-surface) bg-(--color-pink) font-mono text-[0.65rem] font-bold leading-none text-white">
-						{sessionHistory.length}
-					</span>
-				)}
-			</button>
+			<div className="flex items-center gap-2">
+				<button
+					type="button"
+					onClick={() => setShortcutsOpen((v) => !v)}
+					aria-label={shortcutsOpen ? "Cerrar lista de atajos" : "Ver atajos de teclado"}
+					aria-expanded={shortcutsOpen}
+					className="flex cursor-pointer items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-card) px-3 py-2 text-[0.72rem] font-semibold text-(--color-text-secondary) backdrop-blur-md transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
+				>
+					<span aria-hidden="true">⌨️</span>
+					Atajos
+				</button>
+
+				<button
+					type="button"
+					onClick={toggleHistory}
+					aria-label={historyOpen ? "Cerrar historial" : "Abrir historial de sesión"}
+					aria-expanded={historyOpen}
+					className="relative grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full bg-(--gradient-cta) text-[1.4rem] transition-transform duration-150 ease-out hover:scale-110"
+					style={{ boxShadow: "0 4px 24px var(--color-pink-glow)" }}
+				>
+					🤖
+					{sessionHistory.length > 0 && (
+						<span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-(--color-surface) bg-(--color-pink) font-mono text-[0.65rem] font-bold leading-none text-white">
+							{sessionHistory.length}
+						</span>
+					)}
+				</button>
+			</div>
 		</div>,
 		document.body
 	);
