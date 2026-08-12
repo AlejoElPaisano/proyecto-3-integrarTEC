@@ -8,43 +8,23 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative', zIndex: 1 }}>
+    <div className="relative z-[1] flex min-h-screen flex-col">
 
       {/* Skip link accesibilidad */}
       <a href="#main-content" className="skip-link">Saltar al contenido</a>
 
       {/* Header */}
-      <header style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0.75rem 1.25rem',
-        borderBottom: '1px solid var(--color-border)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        background: 'rgba(6,11,24,0.7)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-      }}>
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-(--color-border) bg-[rgba(6,11,24,0.7)] p-[0.75rem_1.25rem] backdrop-blur-md">
         {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <Shield size={22} style={{ color: 'var(--color-accent)' }} />
-          <span style={{
-            fontSize: '1.1rem',
-            fontWeight: 800,
-            letterSpacing: '-0.03em',
-            background: 'linear-gradient(135deg, #e2e2f0, #a78bfa)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}>
+        <div className="flex items-center gap-[0.6rem]">
+          <Shield size={22} className="text-(--color-accent)" />
+          <span className="bg-clip-text text-[1.1rem] font-extrabold tracking-[-0.03em] text-transparent [background-image:linear-gradient(135deg,#e2e2f0,#a78bfa)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
             PassFrases
           </span>
         </div>
 
         {/* Nav + security badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div className="flex items-center gap-3">
           <nav aria-label="Navegación principal" className="hidden sm:block">
             <Link
               href="/strength-checker"
@@ -55,18 +35,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </nav>
 
           {/* Badge seguridad */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            padding: '0.35rem 0.8rem',
-            background: 'var(--color-success-soft)',
-            border: '1px solid rgba(34,197,94,0.2)',
-            borderRadius: '99px',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-            color: 'var(--color-success)',
-          }}>
+          <div className="flex items-center gap-[0.4rem] rounded-full border border-[rgba(34,197,94,0.2)] bg-(--color-success-soft) px-[0.8rem] py-[0.35rem] text-[0.75rem] font-medium text-(--color-success)">
             <span aria-hidden="true">🔒</span>
             100% local
           </div>
@@ -76,20 +45,13 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Main */}
       <main
         id="main-content"
-        style={{ flex: 1 }}
+        className="flex-1"
       >
         {children}
       </main>
 
       {/* Footer */}
-      <footer style={{
-        textAlign: 'center',
-        padding: '0.75rem',
-        borderTop: '1px solid var(--color-border)',
-        background: 'rgba(6,11,24,0.85)',
-        fontSize: '0.75rem',
-        color: 'var(--color-text-tertiary)',
-      }}>
+      <footer className="border-t border-(--color-border) bg-[rgba(6,11,24,0.85)] p-3 text-center text-[0.75rem] text-(--color-text-tertiary)">
         PassFrases · Contraseñas generadas localmente, nunca enviadas a servidores
       </footer>
 

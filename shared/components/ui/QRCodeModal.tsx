@@ -72,13 +72,7 @@ export function QRCodeModal({ open, value, onClose }: QRCodeModalProps) {
       onClose={onClose}
       aria-labelledby="qr-title"
       aria-describedby="qr-instructions"
-      className="fixed inset-0 m-auto rounded-(--radius-lg) border border-(--color-border) bg-(--color-card) p-7 text-(--color-text) font-sans backdrop-blur-lg"
-      style={{
-        boxShadow: 'var(--glass-shadow), 0 0 0 100vw rgba(0,0,0,0.65)',
-        maxWidth: '420px',
-        width: '92vw',
-        zIndex: 9999,
-      }}
+      className="fixed inset-0 m-auto z-[9999] w-[92vw] max-w-[420px] rounded-(--radius-lg) border border-(--color-border) bg-(--color-card) p-7 text-(--color-text) font-sans backdrop-blur-lg [box-shadow:var(--glass-shadow),0_0_0_100vw_rgba(0,0,0,0.65)]"
     >
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -103,8 +97,7 @@ export function QRCodeModal({ open, value, onClose }: QRCodeModalProps) {
       <div className="flex flex-col items-center gap-4">
         {/* Contenedor del QR Canvas */}
         <div
-          className="flex items-center justify-center rounded-2xl bg-white p-3"
-          style={{ boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }}
+          className="flex items-center justify-center rounded-2xl bg-white p-3 [box-shadow:0_8px_24px_rgba(0,0,0,0.3)]"
         >
           <canvas
             ref={canvasRef}

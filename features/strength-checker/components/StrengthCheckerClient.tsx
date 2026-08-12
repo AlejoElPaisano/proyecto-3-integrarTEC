@@ -23,49 +23,15 @@ export function StrengthCheckerClient() {
   const strengthConfig = analysis ? STRENGTH_CONFIG[analysis.strength] : null
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '2rem 1rem',
-      }}
-    >
-      <div style={{ width: '100%', maxWidth: '680px' }}>
+    <div className="flex min-h-screen flex-col items-center p-[2rem_1rem]">
+      <div className="w-full max-w-[680px]">
         {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            columnGap: '1rem',
-            rowGap: '0.5rem',
-            marginBottom: '1.5rem',
-          }}
-        >
-          <div style={{ minWidth: 0, flex: '1 1 auto' }}>
-            <h1
-              style={{
-                fontSize: '1.5rem',
-                fontWeight: 800,
-                letterSpacing: '-0.03em',
-                background: 'linear-gradient(135deg, #e2e2f0, #a78bfa)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                marginBottom: '0.25rem',
-              }}
-            >
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <div className="min-w-0 flex-[1_1_auto]">
+            <h1 className="mb-1 bg-clip-text text-[1.5rem] font-extrabold tracking-[-0.03em] text-transparent [background-image:linear-gradient(135deg,#e2e2f0,#a78bfa)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
               Verificador de fortaleza
             </h1>
-            <p
-              style={{
-                fontSize: '0.85rem',
-                color: 'var(--color-text-secondary)',
-              }}
-            >
+            <p className="text-[0.85rem] text-(--color-text-secondary)">
               Pegá una contraseña para auditar su entropía y tiempo de crackeo
             </p>
           </div>
@@ -78,40 +44,20 @@ export function StrengthCheckerClient() {
         </div>
 
         {/* Glass card */}
-        <div
-          className="glass-card"
-          style={{
-            background: 'var(--glass-bg)',
-            border: '1px solid var(--glass-border)',
-            borderRadius: 'var(--radius-xl)',
-            padding: '2.5rem',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            boxShadow: 'var(--glass-shadow)',
-          }}
-        >
+        <div className="glass-card rounded-(--radius-xl) border border-(--glass-border) bg-(--glass-bg) p-10 backdrop-blur-2xl [box-shadow:var(--glass-shadow)]">
           {/* Emoji header */}
           <div
             aria-hidden="true"
-            style={{
-              fontSize: '2.5rem',
-              display: 'inline-block',
-              marginBottom: '0.75rem',
-              filter: 'drop-shadow(0 0 24px rgba(99,102,241,0.35))',
-            }}
+            className="mb-3 inline-block text-[2.5rem] [filter:drop-shadow(0_0_24px_rgba(99,102,241,0.35))]"
           >
             🔍
           </div>
 
           {/* Input + toggle */}
-          <div style={{ marginBottom: '1.25rem' }}>
+          <div className="mb-5">
             <label
               htmlFor="strength-input"
-              className="block text-[0.8rem] font-medium"
-              style={{
-                color: 'var(--color-text-secondary)',
-                marginBottom: '0.4rem',
-              }}
+              className="mb-[0.4rem] block text-[0.8rem] font-medium text-(--color-text-secondary)"
             >
               Contraseña a verificar
             </label>
@@ -124,24 +70,14 @@ export function StrengthCheckerClient() {
                 autoComplete="off"
                 spellCheck={false}
                 placeholder="Escribí o pegá una contraseña"
-                className="flex-1 rounded-lg px-3 py-2.5 font-mono text-sm outline-none transition-colors duration-150 ease-out"
-                style={{
-                  background: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  color: 'var(--color-text)',
-                }}
+                className="flex-1 rounded-lg border border-(--color-border) bg-(--color-surface) px-3 py-2.5 font-mono text-sm text-(--color-text) outline-none transition-colors duration-150 ease-out"
               />
               <button
                 type="button"
                 onClick={() => setVisible((v) => !v)}
                 aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 aria-pressed={visible}
-                className="cursor-pointer rounded-lg px-3 text-xs font-semibold transition-colors duration-150 ease-out"
-                style={{
-                  background: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  color: 'var(--color-text-secondary)',
-                }}
+                className="cursor-pointer rounded-lg border border-(--color-border) bg-(--color-surface) px-3 text-xs font-semibold text-(--color-text-secondary) transition-colors duration-150 ease-out"
               >
                 {visible ? '🙈' : '👁️'}
               </button>
@@ -153,20 +89,12 @@ export function StrengthCheckerClient() {
                 }}
                 disabled={password.length === 0}
                 aria-label="Limpiar campo"
-                className="cursor-pointer rounded-lg px-3 text-xs font-semibold transition-colors duration-150 ease-out disabled:cursor-not-allowed disabled:opacity-50"
-                style={{
-                  background: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  color: 'var(--color-text-tertiary)',
-                }}
+                className="cursor-pointer rounded-lg border border-(--color-border) bg-(--color-surface) px-3 text-xs font-semibold text-(--color-text-tertiary) transition-colors duration-150 ease-out disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Limpiar
               </button>
             </div>
-            <p
-              className="mt-2 text-[0.65rem]"
-              style={{ color: 'var(--color-text-tertiary)' }}
-            >
+            <p className="mt-2 text-[0.65rem] text-(--color-text-tertiary)">
               🔒 100% local: la contraseña no se envía ni se persiste. Se borra
               de la memoria al cerrar la página.
             </p>
@@ -208,21 +136,13 @@ export function StrengthCheckerClient() {
 
               {/* Warnings */}
               <div>
-                <h2
-                  className="mb-2 text-[0.8rem] font-bold"
-                  style={{ color: 'var(--color-text)' }}
-                >
+                <h2 className="mb-2 text-[0.8rem] font-bold text-(--color-text)">
                   Análisis de patrones
                 </h2>
                 {analysis.warnings.length === 0 ? (
                   <p
                     role="status"
-                    className="flex items-center gap-2 rounded-lg p-3 text-sm font-medium"
-                    style={{
-                      background: 'var(--color-success-soft)',
-                      border: '1px solid rgba(34,197,94,0.2)',
-                      color: 'var(--color-success)',
-                    }}
+                    className="flex items-center gap-2 rounded-lg border border-[rgba(34,197,94,0.2)] bg-(--color-success-soft) p-3 text-sm font-medium text-(--color-success)"
                   >
                     <span aria-hidden="true">✓</span>
                     No detectamos patrones débiles. Buena variedad de charset y
@@ -237,17 +157,11 @@ export function StrengthCheckerClient() {
                       <li
                         key={index}
                         role="listitem"
-                        className="flex items-start gap-2 rounded-lg p-2.5 text-xs"
-                        style={{
-                          background: 'var(--color-accent-soft)',
-                          border: '1px solid var(--color-border)',
-                          color: 'var(--color-text-secondary)',
-                        }}
+                        className="flex items-start gap-2 rounded-lg border border-(--color-border) bg-(--color-accent-soft) p-2.5 text-xs text-(--color-text-secondary)"
                       >
                         <span
                           aria-hidden="true"
-                          className="shrink-0 font-bold"
-                          style={{ color: 'var(--color-warning)' }}
+                          className="shrink-0 font-bold text-(--color-warning)"
                         >
                           ⚠️
                         </span>
@@ -261,12 +175,7 @@ export function StrengthCheckerClient() {
           )}
         </div>
 
-        <div
-          style={{
-            marginTop: '1.5rem',
-            textAlign: 'center',
-          }}
-        >
+        <div className="mt-6 text-center">
           <Link
             href="/"
             className="text-xs font-semibold text-(--color-pink) hover:underline"

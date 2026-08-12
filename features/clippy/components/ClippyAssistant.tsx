@@ -150,9 +150,8 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 				<div
 					role="dialog"
 					aria-label="Atajos de teclado"
-					className="flex w-[calc(100vw-3rem)] max-w-[340px] flex-col gap-3 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl"
-					style={{ boxShadow: "var(--glass-shadow)" }}
-				>
+				className="flex w-[calc(100vw-3rem)] max-w-[340px] flex-col gap-3 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl [box-shadow:var(--glass-shadow)]"
+			>
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2 text-[0.95rem] font-bold text-(--color-text)">
 							<span className="text-[1rem]">⌨️</span>
@@ -189,9 +188,8 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 			{showBubble && (
 				<div
 					role="status"
-					className="flex w-[calc(100vw-3rem)] max-w-[380px] flex-col gap-3.5 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl"
-					style={{ boxShadow: "var(--glass-shadow)" }}
-				>
+				className="flex w-[calc(100vw-3rem)] max-w-[380px] flex-col gap-3.5 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl [box-shadow:var(--glass-shadow)]"
+			>
 					<div className="flex items-start gap-3.5">
 						<div
 							aria-hidden="true"
@@ -267,9 +265,8 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 					onClick={toggleHistory}
 					aria-label={historyOpen ? "Cerrar historial" : "Abrir historial de sesión"}
 					aria-expanded={historyOpen}
-					className="relative grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full bg-(--gradient-cta) text-[1.4rem] transition-transform duration-150 ease-out hover:scale-110"
-					style={{ boxShadow: "0 4px 24px var(--color-pink-glow)" }}
-				>
+				className="relative grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full bg-(--gradient-cta) text-[1.4rem] transition-transform duration-150 ease-out hover:scale-110 [box-shadow:0_4px_24px_var(--color-pink-glow)]"
+			>
 					🤖
 					{sessionHistory.length > 0 && (
 						<span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-(--color-surface) bg-(--color-pink) font-mono text-[0.65rem] font-bold leading-none text-white">
