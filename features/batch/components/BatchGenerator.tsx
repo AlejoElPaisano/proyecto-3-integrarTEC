@@ -150,7 +150,7 @@ export default function BatchGenerator() {
 										{result.password}
 									</span>
 
-									<QRCodeButton value={result.password} label="" />
+									<QRCodeButton value={result.password} label="" ariaLabel={`Mostrar QR para frase ${i + 1}`} />
 
 									<button
 										type="button"

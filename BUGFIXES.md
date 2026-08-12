@@ -315,3 +315,12 @@ and a Conventional Commit in English are complete.
 - Resolution: Added a standalone Server Component route with a small Client Component boundary. The feature reuses `EntropyMeter`, `STRENGTH_CONFIG`, and `getStrengthLevel`, while keeping the pasted password in local component state only. It is never persisted in Zustand or `localStorage`, and is never sent to a server.
 - Verification: Analyze a long passphrase, a short alphanumeric password, a password containing common patterns, and an empty input. Confirm entropy, online/offline crack-time estimates, inline warnings, and live-region announcements.
 - Commits: `2e9aea0 feat(strength): add arbitrary password strength analyzer`, `f554e5b feat(strength-checker): add /strength-checker route with live analysis`.
+
+## Extra Feature — QR Code Transfer
+
+- Status: [x] Implemented
+- Origin: Optional functionality added during the migration.
+- Motivation: Lets the user transfer a generated passphrase to their phone by scanning a QR code, avoiding copy-paste mistakes and keeping the flow 100% local.
+- Resolution: Added `QRCodeButton` and `QRCodeModal` (Client Components using the native `<dialog>` element and the `qrcode` library) in `shared/components/ui/`, wired into `PasswordActions` (single generator) and `BatchGenerator` (per-result). The QR is rendered on a `<canvas>` in the browser; no server or network is involved. Followup commit migrated both components to Tailwind utilities (Bug 5), removed a redundant `console.error`, restored focus on modal close, gave each batch row a unique `aria-label`, and added assertions to `verify-ui.mjs`.
+- Verification: Open the generator, click the QR button, confirm the modal shows a scannable code and closes cleanly with focus returning to the trigger. Repeat in `/batch` and confirm each row's QR button announces its index to screen readers.
+- Commits: `10b929c feat(ui): implement QRCodeButton and QRCodeModal components`, `f4a479c feat(generator): add QR code transfer to single and batch generator views`, `5ff4796 fix(qr): migrate QR components to Tailwind and restore focus on close`, `847d7bc fix(a11y): unique aria-label for batch QR buttons`.
