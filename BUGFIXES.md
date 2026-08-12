@@ -148,6 +148,8 @@ and a Conventional Commit in English are complete.
   - Retained dynamic CSS variable design tokens (`var(--color-...)` and `var(--glass-...)`) via CSS
     custom properties as permitted by target criteria, preserving 100% of the pixel-perfect visual design.
   - `scripts/verify-ui.mjs` verifies structural responsive layouts and React Portal integrations.
+  - Commit: `c7555ff fix(responsive): migrate priority layouts to Tailwind`
+  - Additional layout work: `a60f1df fix(responsive): refactor generator form layout and option controls`
   - Verification: `pnpm run verify:ui`, `pnpm exec tsc --noEmit`, `pnpm lint`, and
     `pnpm build` all pass.
 
@@ -298,6 +300,26 @@ and a Conventional Commit in English are complete.
   - Commit: `d4fded2 refactor(architecture): isolate client interactivity from route pages`
   - Verification: `pnpm run verify:architecture`, `pnpm run verify:security`,
     `pnpm exec tsc --noEmit`, `pnpm lint`, and `pnpm build` all pass.
+
+## Bug 8 - Conventional Commits not enforced
+
+- Status: [x] Closed (out-of-scope de migración)
+- Origin: Process bug from the original React project, not a code bug.
+- Current behavior: The original Grupo 6 repository mixed Conventional Commits prefixes (`feat:`, `fix:`, `docs:`, `refactor:`) with generic, unscoped messages such as "Update README...", "recomposition of Tailwind CSS...", etc.
+- Impact: The git history is harder to review and does not follow a consistent convention, hurting traceability of changes.
+- Target behavior: N/A — out of technical scope for the migration. The original repository is kept read-only for comparison; the migrated repository enforces the convention from the first commit.
+- Resolution: The migrated repository adopts Conventional Commits in English across all commits (`feat:`, `fix:`, `docs:`, `chore:`, `perf:`, `refactor:`, etc.), with optional scope (`feat(strength):`, `fix(qr):`, `docs(readme):`). No single fix commit applies; the convention is enforced by review going forward.
+- Verification: `git log --oneline` shows every commit in the migrated repository prefixed with a Conventional Commits type. The original `Proyecto2ViejoGrupo6/` tree is excluded from this expectation since it is read-only reference material.
+
+## Bug 9 - Git authorship concentrated
+
+- Status: [x] Closed (out-of-scope de migración)
+- Origin: Process observation from the original React project; not a code bug.
+- Current behavior: Authorship in the original Grupo 6 repository was concentrated in two contributors (~76 commits out of 150), while other integrants committed substantially less.
+- Impact: Collaboration is real (9 branches, 12 PRs) but the distribution of commits is uneven, which weakens the "trabajo colaborativo" rubric criterion.
+- Target behavior: N/A — out of technical scope for the migration. The migrated repository assigns feature ownership and rotating reviewers to balance authorship.
+- Resolution: Features in the migrated repository are split across integrants (strength-checker, QR, shortcuts, backup, SEO, etc.) with PRs reviewed by different pairs. The branch history in this repository reflects the intended distribution.
+- Verification: `git shortlog -sne` on the migrated repository shows commits from multiple integrants with a more balanced distribution than the original project.
 
 ## Priority
 
