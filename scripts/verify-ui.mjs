@@ -25,7 +25,7 @@ const [generatorForm, historyPanel, clippyAssistant, batchGenerator, globals, qr
 ]);
 
 assert(generatorForm.includes("flexDirection: \"column\"") || generatorForm.includes("flex-col"), "GeneratorForm must use a mobile-first column layout");
-assert(historyPanel.includes("createPortal") && historyPanel.includes("calc(100vw - 3rem)"), "HistoryPanel must use React Portal and fit mobile viewports");
+assert(historyPanel.includes("createPortal") && /calc\(100vw\s*-\s*3rem\)/.test(historyPanel), "HistoryPanel must use React Portal and fit mobile viewports");
 assert(clippyAssistant.includes("createPortal"), "ClippyAssistant must use React Portal");
 assert(batchGenerator.includes("sm:flex-row") && batchGenerator.includes("md:grid-cols-2"), "BatchGenerator must define mobile and desktop layouts");
 assert(globals.includes(".history-scroll") && globals.includes("scrollbar-width: thin"), "history scrollbar styles must be global");
