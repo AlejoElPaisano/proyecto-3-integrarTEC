@@ -33,32 +33,19 @@ export default function GeneratorPanel({ onActiveTip }: { onActiveTip?: (key: st
 
 	if (!hasMounted) return null;
 
+	const backButtonClass =
+		"mt-1 cursor-pointer border-0 bg-transparent p-1 text-center font-sans text-[0.85rem] text-(--color-text-tertiary) transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:text-(--color-pink)";
+
 	if (currentStep === 2) {
 		return (
-			<div style={{ textAlign: "center" }}>
-				<div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+			<div className="text-center">
+				<div className="flex flex-col gap-[1.25rem]">
 					<GeneratorForm onSettingChange={(key) => onActiveTip?.(key)} />
 
 					<button
 						type="button"
 						onClick={handleBackToStart}
-						style={{
-							all: "unset",
-							cursor: "pointer",
-							textAlign: "center",
-							marginTop: "0.25rem",
-							fontSize: "0.85rem",
-							color: "var(--color-text-tertiary)",
-							fontFamily: "var(--font-sans)",
-							padding: "4px 0",
-							transition: "color var(--duration-fast) var(--ease-out)",
-						}}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.color = "var(--color-pink)";
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.color = "var(--color-text-tertiary)";
-						}}
+						className={backButtonClass}
 					>
 						← Volver a inicio
 					</button>
@@ -68,16 +55,9 @@ export default function GeneratorPanel({ onActiveTip }: { onActiveTip?: (key: st
 	}
 
 	return (
-		<div style={{ textAlign: "center" }}>
-			<div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-				<div
-					style={{
-						fontSize: "2.8rem",
-						display: "inline-block",
-						marginBottom: "0.5rem",
-						filter: "drop-shadow(0 0 24px rgba(99,102,241,0.35))",
-					}}
-				>
+		<div className="text-center">
+			<div className="flex flex-col gap-[1.25rem]">
+				<div className="mb-2 inline-block text-[2.8rem] [filter:drop-shadow(0_0_24px_rgba(99,102,241,0.35))]">
 					🛡️
 				</div>
 
@@ -105,23 +85,7 @@ export default function GeneratorPanel({ onActiveTip }: { onActiveTip?: (key: st
 				<button
 					type="button"
 					onClick={handleBackToStep2}
-					style={{
-						all: "unset",
-						cursor: "pointer",
-						textAlign: "center",
-						marginTop: "0.25rem",
-						fontSize: "0.85rem",
-						color: "var(--color-text-tertiary)",
-						fontFamily: "var(--font-sans)",
-						padding: "4px 0",
-						transition: "color var(--duration-fast) var(--ease-out)",
-					}}
-					onMouseEnter={(e) => {
-						e.currentTarget.style.color = "var(--color-pink)";
-					}}
-					onMouseLeave={(e) => {
-						e.currentTarget.style.color = "var(--color-text-tertiary)";
-					}}
+					className={backButtonClass}
 				>
 					← Personalizar
 				</button>
