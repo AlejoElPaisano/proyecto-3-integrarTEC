@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { usePasswordStore } from "@/features/generator/store";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { FavoritesPanel } from "@/features/favorites/components/FavoritesPanel";
+import { FavoritesBackupButtons } from "@/features/favorites/components/FavoritesBackupButtons";
 import { ConfirmDialog } from "@/shared/components/ui/ConfirmDialog";
 import { useHasMounted } from "@/shared/hooks/useHasMounted";
 
@@ -37,7 +38,7 @@ export default function HistoryPanel() {
 		id?: string;
 	} | null>(null);
 
-	const { favorites, removeFavorite } = useFavorites();
+	const { favorites, removeFavorite, mergeFavorites } = useFavorites();
 
 	function handleConfirmClear() {
 		clearHistory();
@@ -336,10 +337,15 @@ export default function HistoryPanel() {
 									</span>
 								</div>
 							) : (
-								<FavoritesPanel
-									favorites={favorites}
-									onRemove={(id: string) => setConfirmAction({ type: "favorite", id })}
-								/>
+								<>
+									<div style={{ paddingBottom: "0.5rem" }}>
+										<FavoritesBackupButtons favorites={favorites} onMerge={mergeFavorites} />
+									</div>
+									<FavoritesPanel
+										favorites={favorites}
+										onRemove={(id: string) => setConfirmAction({ type: "favorite", id })}
+									/>
+								</>
 							)
 						) : sessionHistory.length === 0 ? (
 							<div
