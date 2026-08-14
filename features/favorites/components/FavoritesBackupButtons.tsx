@@ -87,16 +87,32 @@ export function FavoritesBackupButtons({ favorites, onMerge }: FavoritesBackupBu
   }, [])
 
   return (
-    <div className="flex items-center gap-2">
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
       <button
         type="button"
         onClick={handleExport}
         disabled={favorites.length === 0}
         aria-label="Exportar favoritos cifrados"
         title="Descargar un archivo .json con tus favoritos cifrados"
-        className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-(--color-border) bg-(--color-accent-soft) px-2.5 py-1.5 text-[0.72rem] font-semibold text-(--color-text-secondary) transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text) disabled:cursor-not-allowed disabled:opacity-50"
+        className="transition-colors duration-150 ease-out hover:border-accent hover:text-text disabled:cursor-not-allowed disabled:opacity-50"
+        style={{
+          all: "unset",
+          cursor: favorites.length === 0 ? "not-allowed" : "pointer",
+          opacity: favorites.length === 0 ? 0.5 : 1,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.35rem",
+          padding: "0.45rem 0.8rem",
+          borderRadius: "10px",
+          border: "1px solid var(--color-border)",
+          background: "var(--color-accent-soft)",
+          color: "var(--color-text-secondary)",
+          fontSize: "0.75rem",
+          fontWeight: 600,
+          fontFamily: "var(--font-sans)",
+        }}
       >
-        <Download className="h-3.5 w-3.5" />
+        <Download className="h-3.5 w-3.5 shrink-0" />
         Exportar
       </button>
 
@@ -105,9 +121,24 @@ export function FavoritesBackupButtons({ favorites, onMerge }: FavoritesBackupBu
         onClick={() => fileInputRef.current?.click()}
         aria-label="Importar favoritos desde archivo de backup"
         title="Cargar un archivo .json de backup y mergear los favoritos"
-        className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-(--color-border) bg-(--color-accent-soft) px-2.5 py-1.5 text-[0.72rem] font-semibold text-(--color-text-secondary) transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
+        className="transition-colors duration-150 ease-out hover:border-accent hover:text-text"
+        style={{
+          all: "unset",
+          cursor: "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.35rem",
+          padding: "0.45rem 0.8rem",
+          borderRadius: "10px",
+          border: "1px solid var(--color-border)",
+          background: "var(--color-accent-soft)",
+          color: "var(--color-text-secondary)",
+          fontSize: "0.75rem",
+          fontWeight: 600,
+          fontFamily: "var(--font-sans)",
+        }}
       >
-        <Upload className="h-3.5 w-3.5" />
+        <Upload className="h-3.5 w-3.5 shrink-0" />
         Importar
       </button>
 
@@ -122,12 +153,12 @@ export function FavoritesBackupButtons({ favorites, onMerge }: FavoritesBackupBu
       />
 
       {error && (
-        <p role="alert" className="text-[0.65rem] font-semibold text-(--color-error)">
+        <p role="alert" className="text-[0.65rem] font-semibold text-error">
           {error}
         </p>
       )}
       {success && (
-        <p role="status" className="text-[0.65rem] font-semibold text-(--color-success)">
+        <p role="status" className="text-[0.65rem] font-semibold text-success">
           {success}
         </p>
       )}

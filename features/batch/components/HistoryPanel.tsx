@@ -61,6 +61,32 @@ export default function HistoryPanel() {
 		}
 	}, [historyOpen]);
 
+	useEffect(() => {
+		if (!historyOpen) return;
+
+		function handleClickOutside(event: MouseEvent | PointerEvent) {
+			const el = dialogRef.current;
+			if (!el) return;
+			const target = event.target as Node;
+			if (!el.contains(target)) {
+				const targetEl = event.target as HTMLElement;
+				if (
+					targetEl.closest?.('button[aria-label="Abrir historial de sesión"]') ||
+					targetEl.closest?.('button[aria-label="Cerrar historial"]') ||
+					targetEl.closest?.('button[aria-label="Cerrar historial de sesión"]')
+				) {
+					return;
+				}
+				toggleHistory();
+			}
+		}
+
+		document.addEventListener("pointerdown", handleClickOutside, true);
+		return () => {
+			document.removeEventListener("pointerdown", handleClickOutside, true);
+		};
+	}, [historyOpen, toggleHistory]);
+
 	function handleConfirmClear() {
 		clearHistory();
 		setConfirmAction(null);
@@ -431,11 +457,12 @@ export default function HistoryPanel() {
 												style={{
 													flex: 1,
 													fontFamily: "var(--font-mono)",
-													fontSize: "0.825rem",
+													fontSize: "0.875rem",
 													fontWeight: 600,
+													letterSpacing: "0.01em",
 													color: "var(--color-text)",
 													wordBreak: "break-all",
-													lineHeight: 1.4,
+													lineHeight: 1.45,
 												}}
 											>
 												{entry.password ?? "No disponible tras recargar"}
