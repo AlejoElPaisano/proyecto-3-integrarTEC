@@ -58,7 +58,20 @@ export default function BatchPage() {
             </div>
             <Link
               href="/generator"
-              className="rounded-sm border border-(--color-border) px-3.5 py-1.5 text-[0.85rem] font-medium text-(--color-accent) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent) hover:bg-(--color-accent-soft)"
+              className="transition-colors duration-150 ease-out hover:border-accent hover:bg-accent-soft"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.3rem",
+                padding: "0.4rem 0.85rem",
+                borderRadius: "var(--radius-sm)",
+                border: "1px solid var(--color-border)",
+                background: "transparent",
+                color: "var(--color-accent)",
+                fontSize: "0.85rem",
+                fontWeight: 500,
+                textDecoration: "none",
+              }}
             >
               ← Generador simple
             </Link>

@@ -30,7 +30,7 @@ export function CategoryChips() {
 	if (!hasMounted) return null;
 
 	return (
-		<div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center" }}>
+		<div role="group" aria-label="Categorías de palabras" style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center" }}>
 			{categories.map((cat) => {
 				const active = selectedCategories.includes(cat);
 				return (

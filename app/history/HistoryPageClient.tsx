@@ -32,10 +32,10 @@ export function HistoryPageClient() {
   return (
     <WizardLayout currentStep={2}>
       <div className="flex flex-col gap-4 text-left">
-        <div className="flex items-center justify-between border-b border-(--color-border) pb-3">
+        <div className="flex items-center justify-between border-b border-border pb-3">
           <div className="flex items-center gap-2">
             <span aria-hidden="true" className="text-2xl">📜</span>
-            <h1 className="text-xl font-extrabold text-(--color-text)">
+            <h1 className="text-xl font-extrabold text-text">
               Historial de frases
             </h1>
           </div>
@@ -66,10 +66,10 @@ export function HistoryPageClient() {
             <div aria-hidden="true" className="mb-3 text-4xl">
               🔍
             </div>
-            <h2 className="mb-1 text-base font-bold text-(--color-text)">
+            <h2 className="mb-1 text-base font-bold text-text">
               No hay frases en el historial
             </h2>
-            <p className="mb-5 text-xs text-(--color-text-secondary)">
+            <p className="mb-5 text-xs text-text-secondary">
               Las contraseñas que generes en esta sesión aparecerán guardadas aquí.
             </p>
             <Link
@@ -165,7 +165,7 @@ export function HistoryPageClient() {
         <div className="mt-4 flex justify-center">
           <Link
             href="/generator"
-            className="text-xs font-semibold text-(--color-pink) hover:underline"
+            className="text-xs font-semibold text-pink hover:underline"
           >
             ← Volver al generador
           </Link>

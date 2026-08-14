@@ -28,7 +28,8 @@ export function EntropyMeter({ bits, maxBits = 128 }: EntropyMeterProps) {
 			>
 				<span
 					style={{
-						fontSize: "0.8rem",
+						fontSize: "0.875rem",
+						fontWeight: 600,
 						color: "var(--color-text-secondary)",
 						whiteSpace: "nowrap",
 						flexShrink: 0,
@@ -45,7 +46,7 @@ export function EntropyMeter({ bits, maxBits = 128 }: EntropyMeterProps) {
 					aria-label={`Entropía: ${bits.toFixed(1)} bits`}
 					style={{
 						flex: 1,
-						height: "7px",
+						height: "8px",
 						background: "var(--color-border)",
 						borderRadius: "99px",
 						overflow: "hidden",
@@ -66,7 +67,7 @@ export function EntropyMeter({ bits, maxBits = 128 }: EntropyMeterProps) {
 				<span
 					aria-live="polite"
 					style={{
-						fontSize: "0.85rem",
+						fontSize: "0.95rem",
 						fontWeight: 700,
 						color: "var(--color-cyan)",
 						fontFamily: "var(--font-mono)",
@@ -88,11 +89,11 @@ export function EntropyMeter({ bits, maxBits = 128 }: EntropyMeterProps) {
 					style={{
 						display: "inline-flex",
 						alignItems: "center",
-						gap: "0.35rem",
-						padding: "0.4rem 0.9rem",
+						gap: "0.4rem",
+						padding: "0.4rem 1rem",
 						borderRadius: "99px",
-						fontSize: "0.75rem",
-						fontWeight: 500,
+						fontSize: "0.825rem",
+						fontWeight: 600,
 						background: `${config.color}14`,
 						border: `1px solid ${config.color}33`,
 						color: config.color,

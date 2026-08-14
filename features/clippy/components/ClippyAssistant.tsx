@@ -160,9 +160,31 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 		return null;
 	}, [currentStep, activeTip, currentResult]);
 
-	if (!hasMounted || !floating) return null;
+	const [closedStep, setClosedStep] = useState<number | null>(null);
+	const isStepClosed = closedStep === currentStep;
 
-	const showBubble = autoTip && !historyOpen && !isDismissed && !shortcutsOpen;
+	const showBubble = autoTip && !historyOpen && !isDismissed && !shortcutsOpen && !isStepClosed;
+	const bubbleRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!showBubble) return;
+
+		function handleClickOutside(event: MouseEvent | PointerEvent) {
+			if (bubbleRef.current && !bubbleRef.current.contains(event.target as Node)) {
+				setClosedStep(currentStep);
+				setDismissedTipKey(tipKey);
+			}
+		}
+
+		document.addEventListener("pointerdown", handleClickOutside, true);
+		document.addEventListener("click", handleClickOutside, true);
+		return () => {
+			document.removeEventListener("pointerdown", handleClickOutside, true);
+			document.removeEventListener("click", handleClickOutside, true);
+		};
+	}, [showBubble, tipKey, currentStep]);
+
+	if (!hasMounted || !floating) return null;
 
 	return createPortal(
 		<div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-3">
@@ -194,7 +216,7 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 					}}
 				>
 					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-2 text-[0.95rem] font-bold text-(--color-text)">
+						<div className="flex items-center gap-2 text-[0.95rem] font-bold text-text">
 							<span className="text-[1rem]">⌨️</span>
 							Atajos de teclado
 						</div>
@@ -202,22 +224,67 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 							type="button"
 							onClick={() => setShortcutsOpen(false)}
 							aria-label="Cerrar lista de atajos"
-							className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-(--color-border) bg-(--color-accent-soft) text-[0.8rem] text-(--color-text-tertiary) transition-colors duration-150 ease-out hover:bg-white/15 hover:text-(--color-text)"
+							className="transition-colors duration-150 ease-out hover:bg-white/15 hover:text-text"
+							style={{
+								all: "unset",
+								cursor: "pointer",
+								display: "grid",
+								placeItems: "center",
+								width: "24px",
+								height: "24px",
+								borderRadius: "50%",
+								border: "1px solid var(--color-border)",
+								background: "var(--color-accent-soft)",
+								color: "var(--color-text-tertiary)",
+								fontSize: "0.8rem",
+								flexShrink: 0,
+							}}
 						>
 							✕
 						</button>
 					</div>
-					<ul role="list" className="flex flex-col gap-2">
+					<ul
+						role="list"
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "0.5rem",
+							padding: 0,
+							margin: 0,
+							listStyle: "none",
+						}}
+					>
 						{SHORTCUTS.map((shortcut) => (
 							<li
 								key={shortcut.keys[0]}
 								role="listitem"
-								className="flex items-center justify-between gap-2 rounded-xl border border-(--color-border) bg-(--color-accent-soft) p-2.5"
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "space-between",
+									gap: "0.5rem",
+									padding: "0.6rem 0.75rem",
+									borderRadius: "12px",
+									border: "1px solid var(--color-border)",
+									background: "var(--color-accent-soft)",
+								}}
 							>
-								<span className="text-[0.825rem] text-(--color-text-secondary)">
+								<span className="text-[0.825rem] text-text-secondary">
 									{shortcut.label}
 								</span>
-								<kbd className="rounded-md border border-(--color-border) bg-(--color-surface) px-2 py-0.5 font-mono text-[0.75rem] font-semibold text-(--color-text)">
+								<kbd
+									style={{
+										display: "inline-block",
+										padding: "0.2rem 0.5rem",
+										borderRadius: "6px",
+										border: "1px solid var(--color-border)",
+										background: "var(--color-surface)",
+										color: "var(--color-text)",
+										fontFamily: "var(--font-mono)",
+										fontSize: "0.75rem",
+										fontWeight: 600,
+									}}
+								>
 									{modKey} + {shortcut.keys.join(" + ")}
 								</kbd>
 							</li>
@@ -228,22 +295,59 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 
 			{showBubble && (
 				<div
+					ref={bubbleRef}
 					role="status"
-					className="flex w-[calc(100vw-3rem)] max-w-[380px] flex-col gap-3.5 rounded-[18px] border border-(--glass-border) bg-(--color-card) p-4 text-[0.875rem] backdrop-blur-2xl"
-					style={{ boxShadow: "var(--glass-shadow)" }}
+					className="flex w-[calc(100vw-3rem)] max-w-[380px] flex-col gap-3.5"
+					style={{
+						padding: "1rem",
+						borderRadius: "18px",
+						background: "var(--color-card)",
+						border: "1px solid var(--glass-border)",
+						backdropFilter: "blur(24px)",
+						WebkitBackdropFilter: "blur(24px)",
+						boxShadow: "var(--glass-shadow)",
+						color: "var(--color-text)",
+						fontSize: "0.875rem",
+					}}
 				>
-					<div className="flex items-start gap-3.5">
+					<div style={{ display: "flex", alignItems: "flex-start", gap: "0.85rem" }}>
 						<div
 							aria-hidden="true"
-							className="grid h-[42px] w-[42px] shrink-0 place-items-center rounded-xl border border-(--color-border) bg-(--color-accent-soft) text-[1.3rem]"
+							style={{
+								display: "grid",
+								width: "42px",
+								height: "42px",
+								flexShrink: 0,
+								placeItems: "center",
+								borderRadius: "12px",
+								border: "1px solid var(--color-border)",
+								background: "var(--color-accent-soft)",
+								fontSize: "1.3rem",
+							}}
 						>
 							{autoTip.icon}
 						</div>
-						<div className="flex-1">
-							<strong className="mb-[0.2rem] block text-[0.95rem] font-bold leading-[1.3] text-(--color-text)">
+						<div style={{ flex: 1 }}>
+							<strong
+								style={{
+									display: "block",
+									fontSize: "0.95rem",
+									fontWeight: 700,
+									lineHeight: 1.3,
+									color: "var(--color-text)",
+									marginBottom: "0.2rem",
+								}}
+							>
 								{autoTip.title}
 							</strong>
-							<span className="block text-[0.85rem] leading-[1.45] text-(--color-text-secondary)">
+							<span
+								style={{
+									display: "block",
+									fontSize: "0.875rem",
+									lineHeight: 1.45,
+									color: "var(--color-text-secondary)",
+								}}
+							>
 								{autoTip.text}
 							</span>
 						</div>
@@ -251,32 +355,88 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 							type="button"
 							onClick={() => setDismissedTipKey(tipKey)}
 							aria-label="Descartar tip"
-							className="grid h-6 w-6 shrink-0 cursor-pointer place-items-center rounded-full border border-(--color-border) bg-(--color-accent-soft) text-[0.8rem] text-(--color-text-tertiary) transition-colors duration-150 ease-out hover:bg-white/15 hover:text-(--color-text)"
+							className="transition-colors duration-150 ease-out hover:bg-white/15 hover:text-text"
+							style={{
+								all: "unset",
+								cursor: "pointer",
+								display: "grid",
+								placeItems: "center",
+								width: "24px",
+								height: "24px",
+								borderRadius: "50%",
+								border: "1px solid var(--color-border)",
+								background: "var(--color-accent-soft)",
+								color: "var(--color-text-tertiary)",
+								fontSize: "0.8rem",
+								flexShrink: 0,
+							}}
 						>
 							✕
 						</button>
 					</div>
 
 					{autoTip.type === "result" && autoTip.recommendations.length > 0 && (
-						<div className="mt-1 flex flex-col gap-2.5 border-t border-(--color-border) pt-3">
-							<div className="flex items-center gap-2 text-[0.85rem] font-bold text-(--color-text)">
-								<span className="text-[1rem]">🛡️</span>
+						<div
+							style={{
+								marginTop: "0.25rem",
+								display: "flex",
+								flexDirection: "column",
+								gap: "0.6rem",
+								borderTop: "1px solid var(--color-border)",
+								paddingTop: "0.75rem",
+							}}
+						>
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "0.4rem",
+									fontSize: "0.85rem",
+									fontWeight: 700,
+									color: "var(--color-text)",
+								}}
+							>
+								<span style={{ fontSize: "1rem" }}>🛡️</span>
 								Sugerencias de seguridad
 							</div>
 							{autoTip.recommendations.map((rec) => (
 								<div
 									key={rec.id}
-									className="flex items-start gap-2.5 rounded-xl border border-(--color-border) bg-(--color-accent-soft) p-3 text-[0.8rem]"
+									style={{
+										display: "flex",
+										alignItems: "flex-start",
+										gap: "0.65rem",
+										padding: "0.75rem",
+										borderRadius: "12px",
+										border: "1px solid var(--color-border)",
+										background: "var(--color-accent-soft)",
+										fontSize: "0.8rem",
+									}}
 								>
-									<span className="mt-px shrink-0 text-[0.95rem]">
+									<span style={{ fontSize: "0.95rem", flexShrink: 0, marginTop: "1px" }}>
 										{rec.icon === "shield" ? "🛡️" : rec.icon === "warning" ? "⚠️" : "ℹ️"}
 									</span>
 									<div>
-										<strong className="mb-[0.15rem] block text-[0.825rem] text-(--color-text)">
+										<strong
+											style={{
+												display: "block",
+												marginBottom: "0.15rem",
+												fontSize: "0.825rem",
+												fontWeight: 700,
+												color: "var(--color-text)",
+											}}
+										>
 											{rec.title}
 										</strong>
 										{rec.detail && (
-											<span className="text-[0.78rem] leading-[1.4] text-(--color-text-secondary)">
+											<span
+												style={{
+													display: "block",
+													fontSize: "0.78rem",
+													lineHeight: 1.4,
+													color: "var(--color-text-secondary)",
+												}}
+											>
 												{rec.detail}
 											</span>
 										)}
@@ -295,7 +455,23 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 						onClick={() => setShortcutsOpen((v) => !v)}
 						aria-label={shortcutsOpen ? "Cerrar lista de atajos" : "Ver atajos de teclado"}
 						aria-expanded={shortcutsOpen}
-						className="flex cursor-pointer items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-card) px-3 py-2 text-[0.72rem] font-semibold text-(--color-text-secondary) backdrop-blur-md transition-colors duration-150 ease-out hover:border-(--color-accent) hover:text-(--color-text)"
+						className="transition-colors duration-150 ease-out hover:border-accent hover:text-text"
+						style={{
+							all: "unset",
+							cursor: "pointer",
+							display: "inline-flex",
+							alignItems: "center",
+							gap: "0.375rem",
+							padding: "0.45rem 0.85rem",
+							borderRadius: "99px",
+							border: "1px solid var(--color-border)",
+							background: "var(--color-card)",
+							color: "var(--color-text-secondary)",
+							fontSize: "0.72rem",
+							fontWeight: 600,
+							backdropFilter: "blur(12px)",
+							WebkitBackdropFilter: "blur(12px)",
+						}}
 					>
 						<span aria-hidden="true">⌨️</span>
 						Atajos
@@ -304,15 +480,18 @@ export function ClippyAssistant({ activeTip, floating = true }: { activeTip?: st
 
 				<button
 					type="button"
-					onClick={toggleHistory}
+					onClick={() => {
+						setClosedStep(null);
+						toggleHistory();
+					}}
 					aria-label={historyOpen ? "Cerrar historial" : "Abrir historial de sesión"}
 					aria-expanded={historyOpen}
-					className="relative grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full bg-(--gradient-cta) text-[1.4rem] transition-transform duration-150 ease-out hover:scale-110"
+					className="relative grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full bg-[var(--gradient-cta)] text-[1.4rem] transition-transform duration-150 ease-out hover:scale-110"
 					style={{ boxShadow: "0 4px 24px var(--color-pink-glow)" }}
 				>
 					🤖
 					{sessionHistory.length > 0 && (
-						<span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-(--color-surface) bg-(--color-pink) font-mono text-[0.65rem] font-bold leading-none text-white">
+						<span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-surface bg-pink font-mono text-[0.65rem] font-bold leading-none text-white">
 							{sessionHistory.length}
 						</span>
 					)}

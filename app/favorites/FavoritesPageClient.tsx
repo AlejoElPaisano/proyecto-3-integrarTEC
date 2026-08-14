@@ -55,10 +55,10 @@ export function FavoritesPageClient() {
     <WizardLayout currentStep={2}>
       <div className="flex flex-col gap-4 text-left">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-(--color-border) pb-3">
+        <div className="flex items-center justify-between border-b border-border pb-3">
           <div className="flex items-center gap-2">
             <span aria-hidden="true" className="text-2xl">⭐</span>
-            <h1 className="text-xl font-extrabold text-(--color-text)">
+            <h1 className="text-xl font-extrabold text-text">
               Frases Favoritas
             </h1>
           </div>
@@ -95,10 +95,10 @@ export function FavoritesPageClient() {
             }}
           >
             <div aria-hidden="true" className="mb-3 text-4xl">⭐</div>
-            <h2 className="mb-1 text-base font-bold text-(--color-text)">
+            <h2 className="mb-1 text-base font-bold text-text">
               Aún no tenés frases favoritas
             </h2>
-            <p className="mb-5 text-xs text-(--color-text-secondary)">
+            <p className="mb-5 text-xs text-text-secondary">
               Guardá tus contraseñas importantes haciendo clic en la estrella ⭐ en el generador.
             </p>
             <Link
@@ -183,7 +183,7 @@ export function FavoritesPageClient() {
                 {unlockId === fav.id && (
                   <form
                     onSubmit={(e) => { e.preventDefault(); void handleCopy(fav.id) }}
-                    className="flex flex-col gap-2 border-t border-(--color-border) pt-3 mt-1"
+                    className="flex flex-col gap-2 border-t border-border pt-3 mt-1"
                   >
                     <label
                       htmlFor={`favorite-passphrase-${fav.id}`}
@@ -252,7 +252,7 @@ export function FavoritesPageClient() {
         <div className="mt-4 flex justify-center">
           <Link
             href="/generator"
-            className="text-xs font-semibold text-(--color-pink) hover:underline"
+            className="text-xs font-semibold text-pink hover:underline"
           >
             ← Volver al generador
           </Link>

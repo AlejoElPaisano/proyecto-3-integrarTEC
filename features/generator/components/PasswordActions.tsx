@@ -72,7 +72,14 @@ export function PasswordActions({
 				{password ?? "Generando…"}
 			</div>
 
-			<div style={{ display: "flex", gap: "0.75rem", marginTop: "0.5rem" }}>
+			<div
+				style={{
+					display: "grid",
+					gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+					gap: "0.65rem",
+					marginTop: "0.5rem",
+				}}
+			>
 				<button
 					type="button"
 					onClick={onRegenerate}
@@ -84,7 +91,8 @@ export function PasswordActions({
 						alignItems: "center",
 						justifyContent: "center",
 						gap: "0.4rem",
-						padding: "0.85rem",
+						padding: "0.85rem 1rem",
+						boxSizing: "border-box",
 						borderRadius: "12px",
 						background: "var(--gradient-blue)",
 						color: "#fff",
@@ -115,6 +123,11 @@ export function PasswordActions({
 					style={{
 						all: "unset",
 						cursor: "pointer",
+						flex: 1,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						gap: "0.4rem",
 						padding: "0.85rem 1rem",
 						borderRadius: "12px",
 						border: "1px solid var(--color-border)",
@@ -147,7 +160,7 @@ export function PasswordActions({
 					{saved ? "⭐ Guardada" : "⭐ Guardar"}
 				</button>
 
-				<QRCodeButton value={password} label="QR" />
+				<QRCodeButton value={password} label="QR" full />
 
 				<CopyButton text={password} full label="Copiar" />
 			</div>

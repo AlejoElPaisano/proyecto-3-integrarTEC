@@ -50,7 +50,20 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="rounded-sm border border-(--color-border) px-4 py-2 text-[0.9rem] font-medium text-(--color-accent) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent) hover:bg-(--color-accent-soft)"
+        className="transition-colors duration-150 ease-out hover:border-accent hover:bg-accent-soft"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.3rem",
+          padding: "0.5rem 1.25rem",
+          borderRadius: "var(--radius-sm)",
+          border: "1px solid var(--color-border)",
+          background: "transparent",
+          color: "var(--color-accent)",
+          fontSize: "0.9rem",
+          fontWeight: 500,
+          textDecoration: "none",
+        }}
       >
         ← Volver al inicio
       </Link>
