@@ -27,8 +27,18 @@ export function AppLayout({ children }: AppLayoutProps) {
         top: 0,
         zIndex: 10,
       }}>
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        {/* Logo clicable para volver al inicio */}
+        <Link
+          href="/"
+          aria-label="Volver al inicio de PassFrases"
+          className="transition-opacity duration-150 ease-out hover:opacity-80"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.6rem',
+            textDecoration: 'none',
+          }}
+        >
           <Shield size={22} style={{ color: 'var(--color-accent)' }} />
           <span style={{
             fontSize: '1.1rem',
@@ -41,18 +51,10 @@ export function AppLayout({ children }: AppLayoutProps) {
           }}>
             PassFrases
           </span>
-        </div>
+        </Link>
 
-        {/* Nav + security badge */}
+        {/* Security badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <nav aria-label="Navegación principal" className="hidden sm:block">
-            <Link
-              href="/strength-checker"
-              className="rounded-sm border border-(--color-border) px-3 py-1.5 text-[0.8rem] font-medium text-(--color-text-secondary) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent) hover:text-(--color-accent)"
-            >
-              🔍 Verificar
-            </Link>
-          </nav>
 
           {/* Badge seguridad */}
           <div style={{

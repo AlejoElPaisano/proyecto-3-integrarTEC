@@ -30,26 +30,44 @@ const BENEFITS = [
 ]
 
 const styles = `
-.btn-start {
+.btn-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.btn-start, .btn-verify {
   all: unset;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 2rem;
-  padding: 1rem 2rem;
+  padding: 0.9rem 1.6rem;
   border-radius: 14px;
-  background: linear-gradient(135deg, #ec4899, #818cf8);
   color: #fff;
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   font-family: var(--font-sans);
+  text-decoration: none;
   transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+.btn-start {
+  background: linear-gradient(135deg, #ec4899, #818cf8);
 }
 .btn-start:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(236,72,153,0.35);
+}
+.btn-verify {
+  background: linear-gradient(135deg, #06b6d4, #6366f1);
+}
+.btn-verify:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(6,182,212,0.35);
 }
 `
 
@@ -159,15 +177,14 @@ export default function Home() {
             ))}
           </div>
 
-          <StartButton />
-
-          <div style={{ marginTop: "0.75rem", textAlign: "center" }}>
+          <div className="btn-cta-group">
             <Link
               href="/strength-checker"
-              className="rounded-sm border border-(--color-border) px-4 py-2 text-[0.85rem] font-medium text-(--color-text-secondary) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent) hover:bg-(--color-accent-soft)"
+              className="btn-verify"
             >
-              🔍 Verificar contraseña existente
+              🔍 Verificar contraseña
             </Link>
+            <StartButton />
           </div>
         </div>
       </WizardLayout>

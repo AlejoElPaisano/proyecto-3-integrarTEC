@@ -38,7 +38,7 @@ export function CopyButton({ text, full, label, getText }: CopyButtonProps) {
   }, [text, getText])
 
   return (
-    <div style={{ flex: full ? 1 : undefined }}>
+    <div style={{ flex: full ? 1 : undefined, display: full ? 'flex' : 'inline-block' }}>
       <button
         type="button"
         onClick={handleCopy}
@@ -47,13 +47,14 @@ export function CopyButton({ text, full, label, getText }: CopyButtonProps) {
         style={{
           all: 'unset',
           cursor: 'pointer',
-          display: 'flex',
+          display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
           gap: '0.4rem',
-          padding: full ? '0.85rem' : '0.85rem 1.2rem',
+          padding: '0.85rem 1rem',
           flex: full ? 1 : undefined,
-          width: full ? 'auto' : undefined,
+          width: full ? '100%' : 'auto',
+          boxSizing: 'border-box',
           borderRadius: '12px',
           border: '1px solid var(--color-border)',
           background: copied ? 'var(--color-success-soft)' : 'transparent',
