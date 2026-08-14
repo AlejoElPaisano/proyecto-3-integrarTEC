@@ -265,7 +265,7 @@ export function StrengthCheckerClient() {
                       >
                         <span
                           aria-hidden="true"
-                          style={{ color: 'var(--color-warning)', fontWeight: 700, shrink: 0 }}
+                          style={{ color: 'var(--color-warning)', fontWeight: 700, flexShrink: 0 }}
                         >
                           ⚠️
                         </span>

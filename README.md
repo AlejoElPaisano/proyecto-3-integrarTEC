@@ -10,9 +10,16 @@ PassFrases is a modern, mathematically secure passphrase generator migrated from
 
 ### Team
 
-<!-- TODO: fill in names and contact info before final submission -->
+## Group Members
 
-- _(to be completed)_
+| Member |
+|-----------|
+| **MARTINEZ ALEJO** |
+| **ORTEGA AYELEN** |
+| **RIVOIRA AGUSTINA** |
+| **VALDIVIEZO GISELE** |
+| **BRITEZ EMANUEL** |
+| **CALEGARI LUIS** |
 
 ### Brief description
 
@@ -55,6 +62,7 @@ The complete and detailed record of each bug, its impact, verification and resol
 | R1 | Clipboard copied ciphertext instead of plaintext | Migration regression | ✅ Resolved |
 | R2 | Persisted Zustand state rendered before hydration | Migration regression | ✅ Resolved |
 | R3 | Route pages became Client Components | Migration regression | ✅ Resolved |
+| A3 | RSC event handlers, mobile 4-button overflow & click-outside | UI & Audit 3 | ✅ Resolved |
 
 > Items 8 (commits without Conventional Commits) and 9 (inconsistent git authorship)
 > from the original feedback are process observations about the Grupo 6 repository,
@@ -170,9 +178,14 @@ PassFrases es un generador de passphrases moderno y matemáticamente seguro, mig
 
 ### Integrantes
 
-<!-- TODO: completar nombres y datos de contacto antes de la entrega final -->
-
-- _(a completar)_
+| Miembro |
+|-----------|
+| **MARTINEZ ALEJO** |
+| **ORTEGA AYELEN** |
+| **RIVOIRA AGUSTINA** |
+| **VALDIVIEZO GISELE** |
+| **BRITEZ EMANUEL** |
+| **CALEGARI LUIS** |
 
 ### Descripción breve
 
@@ -215,6 +228,7 @@ El registro completo y detallado de cada bug, su impacto, verificación y commit
 | R1 | Portapapeles copiaba ciphertext en vez de plaintext | Regresión de migración | ✅ Resolved |
 | R2 | Estado Zustand persistido renderizaba antes de la hidratación | Regresión de migración | ✅ Resolved |
 | R3 | Páginas de ruta marcadas como Client Components | Regresión de migración | ✅ Resolved |
+| A3 | Handlers RSC, desbordamiento móvil de 4 botones y click-outside | UI y Auditoría 3 | ✅ Resolved |
 
 > Los items 8 (Commits sin Convencional Commits) y 9 (autoría git inconsistente)
 > del feedback original son observaciones de proceso sobre el repositorio del
