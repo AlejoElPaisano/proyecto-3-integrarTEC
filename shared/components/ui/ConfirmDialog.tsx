@@ -56,7 +56,7 @@ export function ConfirmDialog({
       aria-labelledby={titleId}
       aria-describedby={messageId}
     >
-      <p
+      <h2
         id={titleId}
         style={{
           fontSize: "1.1rem",
@@ -65,7 +65,7 @@ export function ConfirmDialog({
         }}
       >
         {title}
-      </p>
+      </h2>
       <p
         id={messageId}
         style={{

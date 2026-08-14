@@ -65,19 +65,48 @@ export default function ErrorPage({
           Código: {error.digest}
         </p>
       ) : null}
-      <div style={{ display: "flex", gap: "0.75rem" }}>
+      <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", justifyContent: "center" }}>
         <button
           type="button"
           onClick={() => retry()}
-          className="rounded-sm border border-(--color-border) bg-(--color-accent-soft) px-4 py-2 text-[0.9rem] font-medium text-(--color-accent) transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent)"
+          className="transition-colors duration-150 ease-out hover:border-accent hover:bg-accent-soft"
+          style={{
+            all: "unset",
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.4rem",
+            padding: "0.6rem 1.25rem",
+            borderRadius: "10px",
+            border: "1px solid var(--color-border)",
+            background: "var(--color-accent-soft)",
+            color: "var(--color-accent)",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+          }}
         >
-          Reintentar
+          🔄 Reintentar
         </button>
         <Link
           href="/"
-          className="rounded-sm border border-(--color-border) px-4 py-2 text-[0.9rem] font-medium text-(--color-text-secondary) no-underline transition-colors duration-[var(--duration-fast)] hover:border-(--color-accent)"
+          className="transition-colors duration-150 ease-out hover:border-accent hover:bg-accent-soft"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.4rem",
+            padding: "0.6rem 1.25rem",
+            borderRadius: "10px",
+            border: "1px solid var(--color-border)",
+            background: "transparent",
+            color: "var(--color-text-secondary)",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
         >
-          Volver al inicio
+          ← Volver al inicio
         </Link>
       </div>
     </div>
