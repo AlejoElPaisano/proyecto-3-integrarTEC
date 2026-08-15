@@ -153,7 +153,6 @@ export function FavoritesPageClient() {
                       type="button"
                       onClick={() => void handleCopy(fav.id)}
                       aria-label={copiedId === fav.id ? "Favorita copiada" : "Copiar o desbloquear favorita"}
-                      aria-live="polite"
                       className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-xs transition-colors duration-150 ease-out"
                       style={{
                         background: copiedId === fav.id ? "rgba(34, 197, 94, 0.15)" : "var(--color-surface)",
@@ -163,6 +162,25 @@ export function FavoritesPageClient() {
                     >
                       {copiedId === fav.id ? "✅" : "📋"}
                     </button>
+                    {copiedId === fav.id && (
+                      <span
+                        role="status"
+                        aria-live="polite"
+                        style={{
+                          position: "absolute",
+                          width: "1px",
+                          height: "1px",
+                          padding: 0,
+                          margin: "-1px",
+                          overflow: "hidden",
+                          clip: "rect(0,0,0,0)",
+                          whiteSpace: "nowrap",
+                          border: 0,
+                        }}
+                      >
+                        Favorita copiada al portapapeles
+                      </span>
+                    )}
                     <button
                       type="button"
                       onClick={() => removeFavorite(fav.id)}

@@ -1,8 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { QrCode } from 'lucide-react';
-import { QRCodeModal } from './QRCodeModal';
+
+const QRCodeModal = dynamic(() => import('./QRCodeModal').then((m) => m.QRCodeModal), {
+  ssr: false,
+  loading: () => null,
+});
 
 interface QRCodeButtonProps {
   value: string;

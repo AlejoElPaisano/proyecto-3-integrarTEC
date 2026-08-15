@@ -14,7 +14,7 @@ function assert(condition, message) {
   }
 }
 
-const [generatorForm, historyPanel, clippyAssistant, batchGenerator, globals, qrCodeButton, qrCodeModal, favoritesPanel, passwordActions] = await Promise.all([
+const [generatorForm, historyPanel, clippyAssistant, batchGenerator, globals, qrCodeButton, qrCodeModal, favoritesPanel, passwordActions, favoritesPageClient, historyPageClient] = await Promise.all([
   readProjectFile("features/generator/components/GeneratorForm.tsx"),
   readProjectFile("features/batch/components/HistoryPanel.tsx"),
   readProjectFile("features/clippy/components/ClippyAssistant.tsx"),
@@ -24,6 +24,8 @@ const [generatorForm, historyPanel, clippyAssistant, batchGenerator, globals, qr
   readProjectFile("shared/components/ui/QRCodeModal.tsx"),
   readProjectFile("features/favorites/components/FavoritesPanel.tsx"),
   readProjectFile("features/generator/components/PasswordActions.tsx"),
+  readProjectFile("app/favorites/FavoritesPageClient.tsx"),
+  readProjectFile("app/history/HistoryPageClient.tsx"),
 ]);
 
 assert(generatorForm.includes("flexDirection: \"column\"") || generatorForm.includes("flex-col"), "GeneratorForm must use a mobile-first column layout");
@@ -37,6 +39,8 @@ assert(!qrCodeModal.includes("console.error"), "QRCodeModal must not log to cons
 assert(!clippyAssistant.includes("onMouseEnter"), "ClippyAssistant must use Tailwind hover variants instead of inline mouse handlers");
 assert(!/<button[^>]*aria-live=/.test(batchGenerator), "BatchGenerator must not place aria-live on <button> elements; use a sibling <span role=\"status\">");
 assert(!/<button[^>]*aria-live=/.test(favoritesPanel), "FavoritesPanel must not place aria-live on <button> elements; use a sibling <span role=\"status\">");
+assert(!/<button[^>]*aria-live=/.test(favoritesPageClient), "FavoritesPageClient must not place aria-live on <button> elements; use a sibling <span role=\"status\">");
+assert(!/<button[^>]*aria-live=/.test(historyPageClient), "HistoryPageClient must not place aria-live on <button> elements; use a sibling <span role=\"status\">");
 assert(passwordActions.includes("role=\"status\"") && passwordActions.includes("aria-live=\"polite\""), "PasswordActions must keep the sr-only <span role=\"status\" aria-live=\"polite\"> announcer");
 
 console.log("UI verification passed: priority components use responsive layouts and React Portals.");
