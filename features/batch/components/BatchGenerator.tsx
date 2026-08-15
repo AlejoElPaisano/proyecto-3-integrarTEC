@@ -1,0 +1,199 @@
+'use client'
+
+import { useState } from "react";
+import { usePasswordStore } from "@/features/generator/store";
+import { useHasMounted } from "@/shared/hooks/useHasMounted";
+import { QRCodeButton } from "@/shared/components/ui/QRCodeButton";
+
+export default function BatchGenerator() {
+	const hasMounted = useHasMounted();
+	const batchResults = usePasswordStore((state) => state.batchResults);
+	const batchCount = usePasswordStore((state) => state.batchCount);
+	const batchWarnings = usePasswordStore((state) => state.batchWarnings);
+	const generateBatch = usePasswordStore((state) => state.generateBatch);
+	const setBatchCount = usePasswordStore((state) => state.setBatchCount);
+	const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+	const [copiedAll, setCopiedAll] = useState(false);
+	const [copyErrorIndex, setCopyErrorIndex] = useState<number | null>(null);
+	const [copyAllError, setCopyAllError] = useState<string | null>(null);
+
+	async function handleCopy(password: string, index: number) {
+		setCopyErrorIndex(null);
+		try {
+			if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+			await navigator.clipboard.writeText(password);
+			setCopiedIndex(index);
+			setTimeout(() => setCopiedIndex(null), 2000);
+		} catch {
+			setCopiedIndex(null);
+			setCopyErrorIndex(index);
+		}
+	}
+
+	async function handleCopyAll() {
+		if (!batchResults) return;
+		setCopyAllError(null);
+		try {
+			if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+			await navigator.clipboard.writeText(
+				batchResults.results.map((r) => r.password).join("\n"),
+			);
+			setCopiedAll(true);
+			setTimeout(() => setCopiedAll(false), 2000);
+		} catch {
+			setCopiedAll(false);
+			setCopyAllError("No se pudieron copiar todas las frases. Verifica los permisos del navegador.");
+		}
+	}
+
+	const warnedIndices = new Set(batchWarnings.map((w) => w.index));
+
+	if (!hasMounted) return null;
+
+	return (
+		<div className="flex flex-col gap-6">
+			<div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+					<span
+						id="batch-count-label"
+						className="text-[0.85rem] font-semibold text-text"
+					>
+						Cantidad
+					</span>
+					<div id="batchCount" role="group" aria-labelledby="batch-count-label" className="flex flex-wrap gap-[0.35rem]">
+						{[3, 5, 10, 20].map((n) => (
+							<button
+								type="button"
+								key={n}
+								onClick={() => setBatchCount(n)}
+								aria-label={`Seleccionar ${n} frases`}
+								aria-pressed={batchCount === n}
+								className={`px-3 py-[0.4rem] rounded-sm border font-mono text-[0.8rem] font-semibold cursor-pointer transition-all duration-150 ease-out ${
+									batchCount === n
+										? "border-accent bg-accent-soft text-accent"
+										: "border-border bg-transparent text-text-secondary"
+								}`}
+							>
+								{n}
+							</button>
+						))}
+					</div>
+				</div>
+
+				<button
+					type="button"
+					onClick={generateBatch}
+					className="flex w-full items-center justify-center gap-[0.4rem] whitespace-nowrap rounded-md bg-[image:var(--gradient-blue)] px-5 py-[0.65rem] font-sans text-[0.9rem] font-bold text-white cursor-pointer transition-all duration-150 ease-out hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(99,102,241,0.3)] sm:w-auto"
+				>
+					✨ Generar {batchCount} frases
+				</button>
+			</div>
+
+			{!batchResults && (
+				<div className="px-4 py-12 text-center text-[0.9rem] text-text-tertiary">
+					<div className="mb-3 text-[2.5rem]">📋</div>
+					<p>
+						Hacé clic en{" "}
+						<strong className="text-text-secondary">Generar</strong>{" "}
+						para crear {batchCount} frases
+					</p>
+				</div>
+			)}
+
+			{batchResults && batchResults.results.length > 0 && (
+				<>
+				<button
+					type="button"
+					onClick={handleCopyAll}
+					aria-label={copiedAll ? "Todas las frases fueron copiadas" : "Copiar todas las frases"}
+					className={`flex items-center justify-center gap-[0.4rem] rounded-sm border border-border px-2 py-[0.55rem] font-sans text-[0.8rem] font-medium cursor-pointer transition-all duration-150 ease-out ${
+						copiedAll ? "text-success" : "text-text-secondary"
+					}`}
+				>
+					{copiedAll ? "✅ Copiadas todas" : "📋 Copiar todas"}
+				</button>
+				{copiedAll && (
+					<span role="status" aria-live="polite" className="sr-only">
+						Todas las frases fueron copiadas al portapapeles
+					</span>
+				)}
+					{copyAllError && (
+						<p role="alert" className="text-[0.75rem] text-red-500">
+							{copyAllError}
+						</p>
+					)}
+
+					{batchWarnings.length > 0 && (
+						<div className="flex items-center gap-2 rounded-md border border-orange-500/20 bg-orange-500/[0.08] px-4 py-[0.65rem] text-[0.8rem] font-medium text-orange-500">
+							<span>⚠️</span>
+							<span>
+								{batchWarnings.length === 1
+									? "1 frase es similar a una del historial"
+									: `${batchWarnings.length} frases son similares a frases del historial`}
+							</span>
+						</div>
+					)}
+
+					<div className="grid grid-cols-1 gap-[0.6rem] md:grid-cols-2">
+						{batchResults.results.map((result, i) => {
+							const isWarned = warnedIndices.has(i);
+							return (
+								<div
+									key={`${i}-${result.password}`}
+									className={`flex flex-wrap items-center gap-2 rounded-md border px-[0.85rem] py-[0.65rem] transition-all duration-150 ease-out ${
+										isWarned
+											? "border-orange-500/25 bg-orange-500/[0.04]"
+											: "border-border bg-accent-soft"
+									}`}
+								>
+									<span className="min-w-6 text-right font-mono text-[0.75rem] font-bold text-text-tertiary">
+										#{i + 1}
+									</span>
+
+									<span className="flex-1 select-all break-all font-mono text-[0.85rem] font-semibold text-text">
+										{result.password}
+									</span>
+
+									<QRCodeButton value={result.password} label="" ariaLabel={`Mostrar QR para frase ${i + 1}`} />
+
+								<button
+									type="button"
+									onClick={() => handleCopy(result.password, i)}
+									aria-label={`Copiar frase ${i + 1}`}
+									className={`shrink-0 cursor-pointer rounded-sm px-[0.4rem] py-[0.2rem] text-base transition-all duration-150 ease-out ${
+										copiedIndex === i
+											? "text-success"
+											: "text-text-tertiary"
+									}`}
+								>
+									{copiedIndex === i ? "✅" : "📋"}
+								</button>
+								{copiedIndex === i && (
+									<span role="status" aria-live="polite" className="sr-only">
+										{`Frase ${i + 1} copiada al portapapeles`}
+									</span>
+								)}
+
+									{copyErrorIndex === i && (
+										<p role="alert" className="basis-full text-[0.75rem] text-red-500">
+											No se pudo copiar esta frase. Verifica los permisos del navegador.
+										</p>
+									)}
+
+									{isWarned && (
+										<span
+											className="shrink-0 text-[0.9rem]"
+											title="Similar a una frase del historial"
+										>
+											⚠️
+										</span>
+									)}
+								</div>
+							);
+						})}
+					</div>
+				</>
+			)}
+		</div>
+	);
+}
