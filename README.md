@@ -89,9 +89,7 @@ Beyond the faithful migration of the original, improvements were incorporated th
 
 ### Deploy link
 
-<!-- TODO: add the Vercel link after the first deploy -->
-
-_(pending deploy)_
+https://passfrases.vercel.app/
 
 ### Repository link
 
@@ -255,9 +253,7 @@ Más allá de la migración fiel del original, se incorporaron mejoras que aprov
 
 ### Link al deploy
 
-<!-- TODO: agregar el link de Vercel tras el primer deploy -->
-
-_(pendiente de deploy)_
+https://passfrases.vercel.app/
 
 ### Link al repositorio
 
